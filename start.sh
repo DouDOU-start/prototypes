@@ -73,11 +73,11 @@ echo
 # 显示项目信息
 echo -e "${CYAN}📦 可用的原型项目:${NC}"
 echo -e "   📱 点当餐厅 - 餐厅管理系统"
-echo -e "      ├─ 小程序端: /diandang/miniprogram"
-echo -e "      └─ 商家后台: /diandang/merchant-dashboard"
+echo -e "      ├─ 小程序端: /diandang/miniprogram/"
+echo -e "      └─ 商家后台: /diandang/merchant/"
 echo -e "   🛒 Mall商城 - 电商购物系统"
-echo -e "      ├─ 小程序端: /mall/miniprogram"
-echo -e "      └─ 管理后台: /mall/admin"
+echo -e "      ├─ 小程序端: /mall/miniprogram/"
+echo -e "      └─ 管理后台: /mall/admin/"
 echo
 
 # 检查服务是否已经在运行

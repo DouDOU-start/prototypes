@@ -55,17 +55,17 @@ node serve.js
 
 ### 本地访问
 - **首页**: http://localhost:3000
-- **点当餐厅 - 小程序端**: http://localhost:3000/diandang/miniprogram
-- **点当餐厅 - 商家后台**: http://localhost:3000/diandang/merchant
-- **Mall商城 - 小程序端**: http://localhost:3000/mall/miniprogram
-- **Mall商城 - 管理员后台**: http://localhost:3000/mall/admin
+- **点当餐厅 - 小程序端**: http://localhost:3000/diandang/miniprogram/
+- **点当餐厅 - 商家后台**: http://localhost:3000/diandang/merchant/
+- **Mall商城 - 小程序端**: http://localhost:3000/mall/miniprogram/
+- **Mall商城 - 管理员后台**: http://localhost:3000/mall/admin/
 
 ### 公网访问
 - **首页**: http://106.12.5.203:3000
-- **点当餐厅 - 小程序端**: http://106.12.5.203:3000/diandang/miniprogram
-- **点当餐厅 - 商家后台**: http://106.12.5.203:3000/diandang/merchant
-- **Mall商城 - 小程序端**: http://106.12.5.203:3000/mall/miniprogram
-- **Mall商城 - 管理员后台**: http://106.12.5.203:3000/mall/admin
+- **点当餐厅 - 小程序端**: http://106.12.5.203:3000/diandang/miniprogram/
+- **点当餐厅 - 商家后台**: http://106.12.5.203:3000/diandang/merchant/
+- **Mall商城 - 小程序端**: http://106.12.5.203:3000/mall/miniprogram/
+- **Mall商城 - 管理员后台**: http://106.12.5.203:3000/mall/admin/
 
 ## 📂 项目结构
 

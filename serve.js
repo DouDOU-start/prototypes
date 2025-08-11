@@ -249,7 +249,7 @@ function generateIndexPage() {
                 </div>
                 <p class="project-description">完整的餐厅管理系统，包含顾客端小程序和商家管理后台</p>
                 <div class="endpoints">
-                    <a href="/diandang/miniprogram" class="endpoint">
+                    <a href="/diandang/miniprogram/" class="endpoint">
                         <div class="endpoint-info">
                             <i class="fas fa-mobile-alt endpoint-icon"></i>
                             <div class="endpoint-details">
@@ -259,7 +259,7 @@ function generateIndexPage() {
                         </div>
                         <i class="fas fa-arrow-right endpoint-arrow"></i>
                     </a>
-                    <a href="/diandang/merchant" class="endpoint">
+                    <a href="/diandang/merchant/" class="endpoint">
                         <div class="endpoint-info">
                             <i class="fas fa-chart-line endpoint-icon"></i>
                             <div class="endpoint-details">
@@ -280,7 +280,7 @@ function generateIndexPage() {
                 </div>
                 <p class="project-description">电商商城系统，支持小程序购物和管理员后台</p>
                 <div class="endpoints">
-                    <a href="/mall/miniprogram" class="endpoint">
+                    <a href="/mall/miniprogram/" class="endpoint">
                         <div class="endpoint-info">
                             <i class="fas fa-mobile-alt endpoint-icon"></i>
                             <div class="endpoint-details">
@@ -290,7 +290,7 @@ function generateIndexPage() {
                         </div>
                         <i class="fas fa-arrow-right endpoint-arrow"></i>
                     </a>
-                    <a href="/mall/admin" class="endpoint">
+                    <a href="/mall/admin/" class="endpoint">
                         <div class="endpoint-info">
                             <i class="fas fa-cog endpoint-icon"></i>
                             <div class="endpoint-details">
@@ -370,11 +370,26 @@ const server = http.createServer(async (req, res) => {
                 res.writeHead(302, { 'Location': '/' });
                 res.end();
                 return;
-            } else if (pathname === '/diandang/miniprogram' || pathname === '/diandang/miniprogram/') {
+            } else if (pathname === '/diandang/miniprogram') {
+                // 重定向到以斜杠结尾的URL，确保相对路径正确解析
+                res.writeHead(301, { 'Location': '/diandang/miniprogram/' });
+                res.end();
+                return;
+            } else if (pathname === '/diandang/miniprogram/') {
                 filePath = path.join(__dirname, 'diandang', 'miniprogram', 'index.html');
-            } else if (pathname === '/diandang/merchant-dashboard' || pathname === '/diandang/merchant-dashboard/') {
+            } else if (pathname === '/diandang/merchant-dashboard') {
+                // 重定向到以斜杠结尾的URL，确保相对路径正确解析
+                res.writeHead(301, { 'Location': '/diandang/merchant-dashboard/' });
+                res.end();
+                return;
+            } else if (pathname === '/diandang/merchant-dashboard/') {
                 filePath = path.join(__dirname, 'diandang', 'merchant-dashboard', 'index.html');
-            } else if (pathname === '/diandang/merchant' || pathname === '/diandang/merchant/') {
+            } else if (pathname === '/diandang/merchant') {
+                // 重定向到以斜杠结尾的URL，确保相对路径正确解析
+                res.writeHead(301, { 'Location': '/diandang/merchant/' });
+                res.end();
+                return;
+            } else if (pathname === '/diandang/merchant/') {
                 filePath = path.join(__dirname, 'diandang', 'merchant-dashboard', 'index.html');
             } else if (pathname.startsWith('/diandang/miniprogram/')) {
                 const subPath = pathname.replace('/diandang/miniprogram/', '');
@@ -425,9 +440,19 @@ const server = http.createServer(async (req, res) => {
                 res.writeHead(302, { 'Location': '/' });
                 res.end();
                 return;
-            } else if (pathname === '/mall/miniprogram' || pathname === '/mall/miniprogram/') {
+            } else if (pathname === '/mall/miniprogram') {
+                // 重定向到以斜杠结尾的URL，确保相对路径正确解析
+                res.writeHead(301, { 'Location': '/mall/miniprogram/' });
+                res.end();
+                return;
+            } else if (pathname === '/mall/miniprogram/') {
                 filePath = path.join(__dirname, 'mall', 'miniprogram', 'index.html');
-            } else if (pathname === '/mall/admin' || pathname === '/mall/admin/') {
+            } else if (pathname === '/mall/admin') {
+                // 重定向到以斜杠结尾的URL，确保相对路径正确解析
+                res.writeHead(301, { 'Location': '/mall/admin/' });
+                res.end();
+                return;
+            } else if (pathname === '/mall/admin/') {
                 filePath = path.join(__dirname, 'mall', 'admin', 'index.html');
             } else if (pathname.startsWith('/mall/miniprogram/')) {
                 const subPath = pathname.replace('/mall/miniprogram/', '');
@@ -506,17 +531,17 @@ server.listen(PORT, HOST, () => {
     console.log('📱 访问地址:');
     console.log(`   本地访问:`);
     console.log(`     首页:                    http://localhost:${PORT}`);
-    console.log(`     点当餐厅 - 小程序端:     http://localhost:${PORT}/diandang/miniprogram`);
-    console.log(`     点当餐厅 - 商家后台:     http://localhost:${PORT}/diandang/merchant`);
-    console.log(`     Mall商城 - 小程序端:     http://localhost:${PORT}/mall/miniprogram`);
-    console.log(`     Mall商城 - 管理员后台:   http://localhost:${PORT}/mall/admin`);
+    console.log(`     点当餐厅 - 小程序端:     http://localhost:${PORT}/diandang/miniprogram/`);
+    console.log(`     点当餐厅 - 商家后台:     http://localhost:${PORT}/diandang/merchant/`);
+    console.log(`     Mall商城 - 小程序端:     http://localhost:${PORT}/mall/miniprogram/`);
+    console.log(`     Mall商城 - 管理员后台:   http://localhost:${PORT}/mall/admin/`);
     console.log('');
     console.log(`   公网访问:`);
     console.log(`     首页:                    http://106.12.5.203:${PORT}`);
-    console.log(`     点当餐厅 - 小程序端:     http://106.12.5.203:${PORT}/diandang/miniprogram`);
-    console.log(`     点当餐厅 - 商家后台:     http://106.12.5.203:${PORT}/diandang/merchant`);
-    console.log(`     Mall商城 - 小程序端:     http://106.12.5.203:${PORT}/mall/miniprogram`);
-    console.log(`     Mall商城 - 管理员后台:   http://106.12.5.203:${PORT}/mall/admin`);
+    console.log(`     点当餐厅 - 小程序端:     http://106.12.5.203:${PORT}/diandang/miniprogram/`);
+    console.log(`     点当餐厅 - 商家后台:     http://106.12.5.203:${PORT}/diandang/merchant/`);
+    console.log(`     Mall商城 - 小程序端:     http://106.12.5.203:${PORT}/mall/miniprogram/`);
+    console.log(`     Mall商城 - 管理员后台:   http://106.12.5.203:${PORT}/mall/admin/`);
     console.log('');
     console.log('💡 使用提示:');
     console.log('   - 所有原型都已整合到统一平台');
