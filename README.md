@@ -34,6 +34,9 @@ cd prototypes
 
 **管理命令：**
 ```bash
+# 查看服务状态
+./status.sh
+
 # 查看服务器日志
 tail -f server.log
 
@@ -43,9 +46,10 @@ node serve.js
 
 **服务器管理：**
 - 服务器运行在后台，不会阻塞终端
-- PID文件：`server.pid`
-- 日志文件：`server.log`
-- 支持重复启动检测
+- PID文件：`server.pid` - 存储服务器进程ID
+- 日志文件：`server.log` - 记录服务器运行日志
+- 状态脚本：`./status.sh` - 查看详细的服务状态
+- 支持重复启动检测和优雅关闭
 
 ## 📱 访问地址
 

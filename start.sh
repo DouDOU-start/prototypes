@@ -117,6 +117,7 @@ echo -e "   日志文件: $LOG_FILE"
 echo -e "   PID文件: $PID_FILE"
 echo
 echo -e "${BLUE}💡 管理命令:${NC}"
+echo -e "   查看状态: ./status.sh"
 echo -e "   查看日志: tail -f $LOG_FILE"
 echo -e "   停止服务: ./stop.sh"
 echo -e "   重启服务: ./stop.sh && ./start.sh"

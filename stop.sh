@@ -124,3 +124,4 @@ fi
 echo
 echo -e "${GREEN}🎉 原型展示平台已完全停止${NC}"
 echo -e "${BLUE}如需重新启动，请运行: ./start.sh${NC}"
+echo -e "${CYAN}查看服务状态，请运行: ./status.sh${NC}"
