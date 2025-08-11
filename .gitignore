@@ -102,3 +102,8 @@ Thumbs.db
 # Backup files
 *.bak
 *.backup
+
+# Server runtime files
+server.pid
+server.log
+nohup.out

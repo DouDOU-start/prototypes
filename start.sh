@@ -80,13 +80,44 @@ echo -e "      ├─ 小程序端: /mall/miniprogram"
 echo -e "      └─ 管理后台: /mall/admin"
 echo
 
+# 检查服务是否已经在运行
+PID_FILE="./server.pid"
+LOG_FILE="./server.log"
+
+if [ -f "$PID_FILE" ]; then
+    PID=$(cat "$PID_FILE")
+    if ps -p $PID > /dev/null 2>&1; then
+        echo -e "${YELLOW}⚠️  服务器已在运行中 (PID: $PID)${NC}"
+        echo -e "${BLUE}如需重启服务器，请先运行 ./stop.sh${NC}"
+        exit 1
+    else
+        # PID文件存在但进程不存在，清理PID文件
+        rm -f "$PID_FILE"
+    fi
+fi
+
 # 启动服务器
 echo -e "${GREEN}🚀 正在启动原型展示平台服务器...${NC}"
-echo -e "${BLUE}按 Ctrl+C 可停止服务器${NC}"
 echo
 
 # 延迟1秒后启动
 sleep 1
 
-# 启动 Node.js 服务器
-node serve.js
+# 启动 Node.js 服务器到后台
+nohup node serve.js > "$LOG_FILE" 2>&1 &
+SERVER_PID=$!
+
+# 保存PID到文件
+echo $SERVER_PID > "$PID_FILE"
+
+echo -e "${GREEN}✅ 服务器已启动 (PID: $SERVER_PID)${NC}"
+echo -e "${CYAN}📋 服务器信息:${NC}"
+echo -e "   进程ID: $SERVER_PID"
+echo -e "   日志文件: $LOG_FILE"
+echo -e "   PID文件: $PID_FILE"
+echo
+echo -e "${BLUE}💡 管理命令:${NC}"
+echo -e "   查看日志: tail -f $LOG_FILE"
+echo -e "   停止服务: ./stop.sh"
+echo -e "   重启服务: ./stop.sh && ./start.sh"
+echo
