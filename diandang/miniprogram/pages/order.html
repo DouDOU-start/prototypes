@@ -1,0 +1,36 @@
+<div class="page" id="order">
+  <div class="header">
+    <button class="back-btn" onclick="showPage('cart')"><i class="fas fa-arrow-left"></i></button>
+    <h1>确认订单</h1>
+    <div></div>
+  </div>
+  <div class="order-content">
+    <div class="order-section">
+      <div class="section-header"><i class="fas fa-map-marker-alt section-icon"></i><span class="section-name">餐桌信息</span></div>
+      <input type="text" class="table-input" placeholder="请输入桌号" value="A08">
+    </div>
+    <div class="order-section">
+      <div class="section-header"><i class="fas fa-utensils section-icon"></i><span class="section-name">订单详情</span></div>
+      <div class="cart-item">
+        <div class="cart-item-image"><i class="fas fa-drumstick-bite"></i></div>
+        <div class="cart-item-info"><div class="cart-item-name">宫保鸡丁 × 2</div><div class="cart-item-price">¥64</div></div>
+      </div>
+      <div class="cart-item">
+        <div class="cart-item-image"><i class="fas fa-fish"></i></div>
+        <div class="cart-item-info"><div class="cart-item-name">红烧鲈鱼 × 1</div><div class="cart-item-price">¥48</div></div>
+      </div>
+    </div>
+    <div class="order-section">
+      <div class="section-header"><i class="fas fa-comment section-icon"></i><span class="section-name">备注信息</span></div>
+      <textarea class="note-input" placeholder="请输入备注信息，如忌口、特殊要求等..."></textarea>
+    </div>
+    <div class="order-section">
+      <div class="section-header"><i class="fas fa-receipt section-icon"></i><span class="section-name">费用明细</span></div>
+      <div class="order-summary"><span class="summary-item">菜品费用</span><span class="summary-value">¥112.00</span></div>
+      <div class="order-summary"><span class="summary-item">包装费</span><span class="summary-value">¥2.00</span></div>
+      <div class="order-summary"><span class="summary-item">服务费</span><span class="summary-value">¥0.00</span></div>
+      <div class="order-summary final-total"><span>实付金额</span><span>¥114.00</span></div>
+    </div>
+    <button class="place-order-btn" onclick="showPage('payment')">去支付 ¥114.00</button>
+  </div>
+</div> 

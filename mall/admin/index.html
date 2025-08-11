@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>GuitarMall 商家端原型</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { primary: '#0ea5e9', success: '#10b981', warn: '#f59e0b' } } }
+    };
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] select-none">
+  <!-- 顶部栏 -->
+  <header class="fixed top-0 inset-x-0 z-40 h-14 bg-white/90 backdrop-blur border-b border-slate-200 flex items-center px-4">
+    <div class="flex items-center gap-3">
+      <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=80&auto=format&fit=crop" />
+      <div class="font-semibold">商家中心</div>
+    </div>
+    <div class="ml-auto flex items-center gap-3">
+      <button id="app-scan" class="text-slate-600" aria-label="扫码"><i class="fa-solid fa-qrcode text-lg"></i></button>
+      <button id="app-notify" class="text-slate-600" aria-label="通知"><i class="fa-regular fa-bell text-lg"></i></button>
+    </div>
+  </header>
+
+  <main class="pt-14 pb-20">
+    <!-- 仪表盘 -->
+    <section data-screen="dashboard" class="block">
+      <div class="p-4 space-y-4">
+        <!-- 指标卡片 -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="rounded-xl bg-white p-4 shadow-sm">
+            <div class="text-xs text-slate-500">今日成交额</div>
+            <div id="app-metric-today" class="text-xl font-semibold mt-1">¥0</div>
+          </div>
+          <div class="rounded-xl bg-white p-4 shadow-sm">
+            <div class="text-xs text-slate-500">待发货</div>
+            <div id="app-metric-toship" class="text-xl font-semibold mt-1">0</div>
+          </div>
+          <div class="rounded-xl bg-white p-4 shadow-sm">
+            <div class="text-xs text-slate-500">库存告警</div>
+            <div id="app-metric-stock" class="text-xl font-semibold mt-1">0</div>
+          </div>
+        </div>
+
+        <!-- 快捷入口 -->
+        <div class="grid grid-cols-4 gap-3 text-center">
+          <button data-link-screen="orders" class="rounded-xl bg-white p-3 shadow-sm">
+            <i class="fa-solid fa-clipboard-list text-primary"></i>
+            <div class="text-xs mt-1">订单</div>
+          </button>
+          <button data-link-screen="products" class="rounded-xl bg-white p-3 shadow-sm">
+            <i class="fa-solid fa-box-open text-success"></i>
+            <div class="text-xs mt-1">商品</div>
+          </button>
+          <button data-link-screen="inventory" class="rounded-xl bg-white p-3 shadow-sm">
+            <i class="fa-solid fa-cubes text-warn"></i>
+            <div class="text-xs mt-1">库存</div>
+          </button>
+          <button data-link-screen="analytics" class="rounded-xl bg-white p-3 shadow-sm">
+            <i class="fa-solid fa-chart-line text-slate-800"></i>
+            <div class="text-xs mt-1">数据</div>
+          </button>
+        </div>
+
+        <!-- 订单待办 -->
+        <div class="rounded-xl bg-white p-4 shadow-sm">
+          <div class="font-semibold mb-2">待处理</div>
+          <div class="grid grid-cols-3 gap-2 text-center text-sm">
+            <button class="rounded-lg border py-2" data-link-screen="orders">待付款 <span class="ml-1" id="app-badge-pending">0</span></button>
+            <button class="rounded-lg border py-2" data-link-screen="orders">待发货 <span class="ml-1" id="app-badge-ship">0</span></button>
+            <button class="rounded-lg border py-2" data-link-screen="orders">售后 <span class="ml-1" id="app-badge-after">0</span></button>
+          </div>
+        </div>
+
+        <!-- 简易趋势图（条形图模拟） -->
+        <div class="rounded-xl bg-white p-4 shadow-sm">
+          <div class="font-semibold mb-2">近7日成交额</div>
+          <div id="app-chart" class="flex items-end gap-2 h-24"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 订单管理 -->
+    <section data-screen="orders" class="hidden">
+      <div class="px-4 pt-3">
+        <div class="flex gap-2 overflow-x-auto no-scrollbar" id="app-order-tabs"></div>
+      </div>
+      <div class="px-4 py-3 space-y-3" id="app-orders-list"></div>
+    </section>
+
+    <!-- 订单详情 -->
+    <section data-screen="order-detail" class="hidden">
+      <div class="px-4 py-4 space-y-4" id="app-order-detail"></div>
+      <div class="fixed bottom-16 inset-x-0 p-3 bg-white border-t" id="app-order-actions"></div>
+    </section>
+
+    <!-- 商品管理 -->
+    <section data-screen="products" class="hidden">
+      <div class="p-4 space-y-3">
+        <div class="flex items-center gap-2">
+          <input id="app-prod-search" placeholder="搜索商品" class="flex-1 px-4 py-3 rounded-xl bg-slate-100 focus:outline-none" />
+          <button id="app-prod-add" class="h-11 px-4 rounded-xl bg-primary text-white"><i class="fa-solid fa-plus"></i> 新建</button>
+        </div>
+        <div id="app-products-list" class="space-y-3"></div>
+      </div>
+    </section>
+
+    <!-- 商品编辑 -->
+    <section data-screen="product-edit" class="hidden">
+      <div class="p-4 space-y-3 max-w-screen-sm mx-auto">
+        <div class="flex items-center justify-between">
+          <div class="font-semibold">商品编辑</div>
+          <button data-back class="h-10 px-3 rounded-lg border">返回</button>
+        </div>
+        <div class="rounded-xl bg-white p-4 space-y-3 shadow-sm">
+          <div>
+            <label class="text-sm text-slate-600">名称</label>
+            <input id="app-pe-title" class="w-full px-3 py-2 rounded-lg bg-slate-100" />
+          </div>
+          <div>
+            <label class="text-sm text-slate-600">价格</label>
+            <input id="app-pe-price" type="number" class="w-full px-3 py-2 rounded-lg bg-slate-100" />
+          </div>
+          <div>
+            <label class="text-sm text-slate-600">类目</label>
+            <select id="app-pe-cat" class="w-full px-3 py-2 rounded-lg bg-slate-100"></select>
+          </div>
+          <div>
+            <label class="text-sm text-slate-600">主图</label>
+            <input id="app-pe-image" placeholder="图片URL（可用 Unsplash）" class="w-full px-3 py-2 rounded-lg bg-slate-100" />
+          </div>
+          <div>
+            <label class="text-sm text-slate-600">库存</label>
+            <input id="app-pe-stock" type="number" class="w-full px-3 py-2 rounded-lg bg-slate-100" />
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button id="app-pe-save" class="flex-1 h-11 rounded-xl bg-primary text-white">保存</button>
+          <button id="app-pe-delete" class="h-11 px-4 rounded-xl border">删除</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 视频管理 -->
+    <section data-screen="videos" class="hidden">
+      <div class="p-4 space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="font-semibold">商家视频</div>
+          <div class="flex items-center gap-2">
+            <button id="app-video-export" class="h-10 px-3 rounded-lg border">导出JSON</button>
+            <button id="app-video-add" class="h-10 px-3 rounded-lg bg-primary text-white"><i class="fa-solid fa-plus"></i> 新建</button>
+          </div>
+        </div>
+        <div id="app-videos-list" class="space-y-3"></div>
+      </div>
+    </section>
+
+    <!-- 视频编辑 -->
+    <section data-screen="video-edit" class="hidden">
+      <div class="p-4 space-y-3 max-w-screen-sm mx-auto">
+        <div class="flex items-center justify-between">
+          <div class="font-semibold">视频编辑</div>
+          <button data-back class="h-10 px-3 rounded-lg border">返回</button>
+        </div>
+        <div class="rounded-xl bg-white p-4 space-y-3 shadow-sm">
+          <div>
+            <label class="text-sm text-slate-600">标题</label>
+            <input id="app-ve-title" class="w-full px-3 py-2 rounded-lg bg-slate-100" />
+          </div>
+          <div>
+            <label class="text-sm text-slate-600">封面 URL</label>
+            <input id="app-ve-cover" placeholder="图片URL（Unsplash 可用）" class="w-full px-3 py-2 rounded-lg bg-slate-100" />
+          </div>
+          <div>
+            <label class="text-sm text-slate-600">视频 URL</label>
+            <input id="app-ve-url" placeholder="视频URL（MP4/HLS）" class="w-full px-3 py-2 rounded-lg bg-slate-100" />
+          </div>
+          <div>
+            <label class="text-sm text-slate-600">关联商品</label>
+            <select id="app-ve-product" class="w-full px-3 py-2 rounded-lg bg-slate-100"></select>
+          </div>
+          <div>
+            <label class="text-sm text-slate-600">商家名称</label>
+            <input id="app-ve-merchant" class="w-full px-3 py-2 rounded-lg bg-slate-100" />
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button id="app-ve-save" class="flex-1 h-11 rounded-xl bg-primary text-white">保存</button>
+          <button id="app-ve-delete" class="h-11 px-4 rounded-xl border">删除</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 库存 -->
+    <section data-screen="inventory" class="hidden">
+      <div class="p-4 space-y-3">
+        <div class="rounded-xl bg-white p-4 shadow-sm">
+          <div class="font-semibold mb-2">库存列表</div>
+          <div id="app-inv-list" class="divide-y"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 数据分析 -->
+    <section data-screen="analytics" class="hidden">
+      <div class="p-4 space-y-3">
+        <div class="rounded-xl bg-white p-4 shadow-sm">
+          <div class="font-semibold mb-2">转化漏斗</div>
+          <div class="space-y-2">
+            <div class="h-8 bg-slate-100 rounded-lg overflow-hidden"><div id="app-funnel-visit" class="h-full bg-primary" style="width: 80%"></div></div>
+            <div class="h-8 bg-slate-100 rounded-lg overflow-hidden"><div id="app-funnel-cart" class="h-full bg-sky-500" style="width: 50%"></div></div>
+            <div class="h-8 bg-slate-100 rounded-lg overflow-hidden"><div id="app-funnel-pay" class="h-full bg-emerald-500" style="width: 35%"></div></div>
+          </div>
+        </div>
+        <div class="rounded-xl bg-white p-4 shadow-sm">
+          <div class="font-semibold mb-2">热销品类</div>
+          <div id="app-top-cats" class="grid grid-cols-2 gap-2"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 消息中心 -->
+    <section data-screen="messages" class="hidden">
+      <div class="p-4 space-y-3" id="app-msg-list"></div>
+    </section>
+
+    <!-- 我的（店铺设置/结算） -->
+    <section data-screen="me" class="hidden">
+      <div class="p-4 space-y-4">
+        <div class="rounded-2xl bg-gradient-to-r from-primary to-sky-600 text-white p-4">
+          <div class="font-semibold">我的店铺</div>
+          <div class="text-white/80 text-sm">GuitarMall 官方旗舰店</div>
+        </div>
+        <div class="rounded-xl bg-white divide-y shadow-sm">
+          <button class="w-full text-left px-4 py-3 flex items-center gap-3"><i class="fa-solid fa-store text-sky-500"></i> 店铺设置</button>
+          <button class="w-full text-left px-4 py-3 flex items-center gap-3"><i class="fa-solid fa-ticket text-amber-500"></i> 营销与优惠</button>
+          <button class="w-full text-left px-4 py-3 flex items-center gap-3"><i class="fa-solid fa-sack-dollar text-emerald-500"></i> 结算与提现</button>
+          <button class="w-full text-left px-4 py-3 flex items-center gap-3"><i class="fa-solid fa-users text-purple-500"></i> 员工与权限</button>
+          <button class="w-full text-left px-4 py-3 flex items-center gap-3"><i class="fa-solid fa-gear text-slate-500"></i> 系统设置</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 底部导航 -->
+  <nav class="fixed bottom-0 inset-x-0 h-16 bg-white/95 backdrop-blur border-t border-slate-200 z-40">
+    <div class="grid grid-cols-6 h-full text-xs">
+      <button data-nav="dashboard" class="flex flex-col items-center justify-center text-primary">
+        <i class="fa-solid fa-gauge"></i><span>仪表盘</span>
+      </button>
+      <button data-nav="orders" class="flex flex-col items-center justify-center text-slate-600">
+        <i class="fa-solid fa-clipboard-list"></i><span>订单</span>
+      </button>
+      <button data-nav="products" class="flex flex-col items-center justify-center text-slate-600">
+        <i class="fa-solid fa-box-open"></i><span>商品</span>
+      </button>
+      <button data-nav="videos" class="flex flex-col items-center justify-center text-slate-600">
+        <i class="fa-solid fa-video"></i><span>视频</span>
+      </button>
+      <button data-nav="messages" class="flex flex-col items-center justify-center text-slate-600 relative">
+        <i class="fa-regular fa-comments"></i><span>消息</span>
+        <span id="app-msg-badge" class="absolute top-1 right-6 h-4 min-w-4 px-1 rounded-full bg-rose-500 text-white text-[10px] leading-4 hidden">0</span>
+      </button>
+      <button data-nav="me" class="flex flex-col items-center justify-center text-slate-600">
+        <i class="fa-regular fa-user"></i><span>我的</span>
+      </button>
+    </div>
+  </nav>
+
+  <script src="./main.js"></script>
+</body>
+</html> 

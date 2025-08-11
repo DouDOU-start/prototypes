@@ -1,0 +1,40 @@
+<div class="page" id="payment">
+  <div class="header">
+    <button class="back-btn" onclick="showPage('order')"><i class="fas fa-arrow-left"></i></button>
+    <h1>选择支付方式</h1>
+    <div></div>
+  </div>
+  <div class="order-content">
+    <div class="amount-display">
+      <div class="amount-label">需要支付</div>
+      <div class="amount-value">¥114.00</div>
+    </div>
+    <div class="payment-methods">
+      <div class="payment-method" onclick="selectPayment(this)">
+        <i class="fab fa-weixin payment-icon" style="color: #1AAD19;"></i>
+        <div class="payment-info">
+          <div class="payment-name">微信支付</div>
+          <div class="payment-desc">推荐使用微信支付，安全便捷</div>
+        </div>
+        <div class="payment-radio selected"></div>
+      </div>
+      <div class="payment-method" onclick="selectPayment(this)">
+        <i class="fab fa-alipay payment-icon" style="color: #1677FF;"></i>
+        <div class="payment-info">
+          <div class="payment-name">支付宝</div>
+          <div class="payment-desc">支持花呗分期付款</div>
+        </div>
+        <div class="payment-radio"></div>
+      </div>
+      <div class="payment-method" onclick="selectPayment(this)">
+        <i class="fas fa-credit-card payment-icon" style="color: #FF6B35;"></i>
+        <div class="payment-info">
+          <div class="payment-name">银行卡支付</div>
+          <div class="payment-desc">支持各大银行储蓄卡</div>
+        </div>
+        <div class="payment-radio"></div>
+      </div>
+    </div>
+    <button class="place-order-btn" onclick="processPayment()">确认支付 ¥114.00</button>
+  </div>
+</div> 

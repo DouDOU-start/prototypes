@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仓和餐厅 - 商家管理后台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="merchant/assets/merchant-styles.css">
+</head>
+<body>
+    <div class="merchant-app">
+        <!-- 侧边导航栏 -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <span>仓和餐厅</span>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span>营业中</span>
+                </div>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-item active" onclick="navigateToPage('dashboard', this)">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>仪表盘</span>
+                </div>
+                <div class="nav-item" onclick="navigateToPage('orders', this)">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>订单管理</span>
+                    <span class="badge" id="pending-orders">3</span>
+                </div>
+                <div class="nav-item" onclick="navigateToPage('menu-management', this)">
+                    <i class="fas fa-utensils"></i>
+                    <span>菜单管理</span>
+                </div>
+                <div class="nav-item" onclick="navigateToPage('inventory', this)">
+                    <i class="fas fa-boxes"></i>
+                    <span>库存管理</span>
+                    <span class="badge warning" id="low-stock">2</span>
+                </div>
+                <div class="nav-item" onclick="navigateToPage('customers', this)">
+                    <i class="fas fa-users"></i>
+                    <span>客户管理</span>
+                </div>
+                <div class="nav-item" onclick="navigateToPage('analytics', this)">
+                    <i class="fas fa-chart-line"></i>
+                    <span>数据分析</span>
+                </div>
+                <div class="nav-item" onclick="navigateToPage('settings', this)">
+                    <i class="fas fa-cog"></i>
+                    <span>设置</span>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-details">
+                        <div class="user-name">张经理</div>
+                        <div class="user-role">店长</div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 顶部工具栏 -->
+            <header class="toolbar">
+                <div class="toolbar-left">
+                    <h1 class="page-title">仪表盘</h1>
+                    <div class="breadcrumb">
+                        <span>首页</span>
+                        <i class="fas fa-chevron-right"></i>
+                        <span class="current">仪表盘</span>
+                    </div>
+                </div>
+                <div class="toolbar-right">
+                    <div class="time-display">
+                        <i class="fas fa-clock"></i>
+                        <span id="current-time">14:30:25</span>
+                    </div>
+                    <button class="btn-notification">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <button class="btn-refresh" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- 页面容器 -->
+            <div class="page-container">
+                <!-- 页面内容将在这里动态加载 -->
+            </div>
+        </main>
+    </div>
+
+    <!-- 模态框容器 -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content" id="modalContent">
+            <!-- 模态框内容将在这里动态加载 -->
+        </div>
+    </div>
+
+    <!-- 通知容器 -->
+    <div class="notification-container" id="notificationContainer">
+        <!-- 通知消息将在这里显示 -->
+    </div>
+
+    <script src="merchant/assets/merchant-app.js"></script>
+</body>
+</html>

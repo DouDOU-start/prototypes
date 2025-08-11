@@ -1,0 +1,31 @@
+<div class="page" id="wechat-pay">
+  <div class="header">
+    <button class="back-btn" onclick="showPage('payment')"><i class="fas fa-arrow-left"></i></button>
+    <h1>微信支付</h1>
+    <div></div>
+  </div>
+  <div class="wechat-pay-page">
+    <div class="pay-confirm-container">
+      <div class="pay-icon"><i class="fab fa-weixin"></i></div>
+      <div class="pay-amount">¥114.00</div>
+      <div class="pay-desc">确认使用微信支付<br>支付后将自动跳转订单状态页面</div>
+      <div class="pay-loading" id="payLoading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">正在调用微信支付...</div>
+      </div>
+    </div>
+    <div class="action-buttons">
+      <button class="pay-btn pay-btn-secondary" onclick="showPage('payment')">取消支付</button>
+      <button class="pay-btn" onclick="callWechatPay()" id="confirmPayBtn">确认支付 ¥114.00</button>
+    </div>
+    <div class="pay-notice" style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; text-align: left;">
+      <div style="font-size: 14px; color: #666; line-height: 1.6;">
+        <i class="fas fa-info-circle" style="color: #1AAD19; margin-right: 8px;"></i>
+        <strong>支付说明：</strong><br>
+        • 点击"确认支付"将调用微信支付接口<br>
+        • 请在微信支付界面完成付款<br>
+        • 支付成功后将自动返回小程序
+      </div>
+    </div>
+  </div>
+</div> 

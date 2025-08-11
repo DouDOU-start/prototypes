@@ -1,0 +1,25 @@
+<div class="page" id="auth-confirm">
+  <div class="auth-confirm">
+    <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 340px; margin: 0 auto;">
+      <div class="auth-header">
+        <div class="app-info">
+          <div class="app-logo"><i class="fas fa-utensils"></i></div>
+          <div class="app-details">
+            <h3>仓和餐厅</h3>
+            <p>小程序向你申请以下权限</p>
+          </div>
+        </div>
+        <div class="auth-message">该小程序申请获取你的公开信息（昵称、头像等），请确认</div>
+        <div class="permission-list">
+          <div class="permission-title">申请权限：</div>
+          <div class="permission-item"><i class="fas fa-check permission-icon"></i>获得你的公开信息（昵称、头像等）</div>
+          <div class="permission-item"><i class="fas fa-check permission-icon"></i>获取你的手机号（用于订单通知）</div>
+        </div>
+      </div>
+      <div class="auth-buttons">
+        <button class="auth-btn auth-btn-cancel" onclick="cancelAuth()">拒绝</button>
+        <button class="auth-btn auth-btn-confirm" onclick="confirmAuth()">允许</button>
+      </div>
+    </div>
+  </div>
+</div> 

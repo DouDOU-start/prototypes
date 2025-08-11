@@ -1,0 +1,464 @@
+<div class="page" id="dashboard">
+    <!-- 快速统计面板 -->
+    <div class="grid grid-4" style="margin-bottom: 32px;">
+        <div class="stat-card" onclick="navigateToPage('orders')">
+            <div class="stat-header">
+                <div class="stat-icon primary">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    +12%
+                </div>
+            </div>
+            <div class="stat-value" id="today-orders">28</div>
+            <div class="stat-label">今日订单</div>
+        </div>
+
+        <div class="stat-card" onclick="navigateToPage('analytics')">
+            <div class="stat-header">
+                <div class="stat-icon success">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    +8%
+                </div>
+            </div>
+            <div class="stat-value" id="today-revenue">¥2,485</div>
+            <div class="stat-label">今日营收</div>
+        </div>
+
+        <div class="stat-card" onclick="navigateToPage('customers')">
+            <div class="stat-header">
+                <div class="stat-icon warning">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    +5%
+                </div>
+            </div>
+            <div class="stat-value" id="today-customers">45</div>
+            <div class="stat-label">今日客户</div>
+        </div>
+
+        <div class="stat-card" onclick="navigateToPage('inventory')">
+            <div class="stat-header">
+                <div class="stat-icon danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-change negative">
+                    <i class="fas fa-arrow-down"></i>
+                    库存不足
+                </div>
+            </div>
+            <div class="stat-value" id="low-stock-items">2</div>
+            <div class="stat-label">低库存商品</div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div class="grid grid-3">
+        <!-- 实时订单流 -->
+        <div class="card" style="grid-column: span 2;">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-stream"></i>
+                    实时订单
+                </h3>
+                <div class="card-actions">
+                    <button class="btn btn-outline btn-sm" onclick="refreshOrders()">
+                        <i class="fas fa-sync-alt"></i>
+                        刷新
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="navigateToPage('orders')">
+                        <i class="fas fa-eye"></i>
+                        查看全部
+                    </button>
+                </div>
+            </div>
+            <div class="order-stream" id="orderStream">
+                <!-- 订单项将通过JavaScript动态生成 -->
+                <div class="loading">正在加载订单数据...</div>
+            </div>
+        </div>
+
+        <!-- 营业状态控制面板 -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-store"></i>
+                    营业状态
+                </h3>
+            </div>
+            <div class="business-status">
+                <div class="status-toggle">
+                    <div class="status-label">当前状态</div>
+                    <div class="status-indicator online">
+                        <span class="status-dot online"></span>
+                        营业中
+                    </div>
+                    <button class="btn btn-warning btn-sm" onclick="toggleBusinessStatus()">
+                        <i class="fas fa-power-off"></i>
+                        暂停营业
+                    </button>
+                </div>
+
+                <div class="quick-actions" style="margin-top: 24px;">
+                    <div class="action-label">快捷操作</div>
+                    <div class="action-grid">
+                        <button class="action-btn" onclick="showModal('new-menu-item')">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>添加菜品</span>
+                        </button>
+                        <button class="action-btn" onclick="showModal('inventory-alert')">
+                            <i class="fas fa-boxes"></i>
+                            <span>库存提醒</span>
+                        </button>
+                        <button class="action-btn" onclick="showModal('discount')">
+                            <i class="fas fa-percentage"></i>
+                            <span>设置优惠</span>
+                        </button>
+                        <button class="action-btn" onclick="navigateToPage('analytics')">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>数据报表</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息面板 -->
+    <div class="grid grid-2" style="margin-top: 32px;">
+        <!-- 热门菜品 -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-fire"></i>
+                    今日热门菜品
+                </h3>
+                <button class="btn btn-outline btn-sm" onclick="navigateToPage('menu-management')">
+                    <i class="fas fa-cog"></i>
+                    管理菜单
+                </button>
+            </div>
+            <div class="popular-items" id="popularItems">
+                <!-- 热门菜品列表将通过JavaScript生成 -->
+            </div>
+        </div>
+
+        <!-- 系统通知 -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-bell"></i>
+                    系统通知
+                </h3>
+                <button class="btn btn-outline btn-sm" onclick="markAllNotificationsRead()">
+                    <i class="fas fa-check-double"></i>
+                    全部已读
+                </button>
+            </div>
+            <div class="notification-list" id="systemNotifications">
+                <!-- 通知列表将通过JavaScript生成 -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* 仪表盘专用样式 */
+.order-stream {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.order-item {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #f1f3f4;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.order-item:hover {
+    background: #f8f9fa;
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+.order-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    margin-right: 16px;
+}
+
+.order-info {
+    flex: 1;
+}
+
+.order-number {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--dark-color);
+}
+
+.order-details {
+    font-size: 13px;
+    color: var(--gray-color);
+    margin-bottom: 8px;
+}
+
+.order-time {
+    font-size: 12px;
+    color: var(--gray-color);
+}
+
+.order-status {
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 12px;
+}
+
+.order-status.pending {
+    background: rgba(243, 156, 18, 0.1);
+    color: var(--warning-color);
+}
+
+.order-status.preparing {
+    background: rgba(52, 152, 219, 0.1);
+    color: var(--primary-color);
+}
+
+.order-status.ready {
+    background: rgba(39, 174, 96, 0.1);
+    color: var(--success-color);
+}
+
+.order-amount {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--dark-color);
+    margin-left: 16px;
+}
+
+.business-status {
+    text-align: center;
+}
+
+.status-toggle {
+    padding: 24px 0;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.status-label {
+    font-size: 14px;
+    color: var(--gray-color);
+    margin-bottom: 12px;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--success-color);
+}
+
+.action-label {
+    font-size: 14px;
+    color: var(--gray-color);
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.action-btn {
+    background: #f8f9fa;
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    padding: 16px 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--dark-color);
+    min-height: 72px;
+}
+
+.action-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.action-btn i {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.action-btn span {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.popular-items {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.popular-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.popular-item:last-child {
+    border-bottom: none;
+}
+
+.item-rank {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 16px;
+}
+
+.item-rank.gold {
+    background: #f39c12;
+}
+
+.item-rank.silver {
+    background: #95a5a6;
+}
+
+.item-rank.bronze {
+    background: #e67e22;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.item-name {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--dark-color);
+}
+
+.item-sales {
+    font-size: 12px;
+    color: var(--gray-color);
+}
+
+.item-price {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.notification-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item.unread {
+    background: rgba(52, 152, 219, 0.05);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+}
+
+.notification-item.unread::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    margin-right: 12px;
+    margin-top: 6px;
+    flex-shrink: 0;
+}
+
+.notification-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--dark-color);
+    font-size: 14px;
+}
+
+.notification-message {
+    font-size: 13px;
+    color: var(--gray-color);
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+.notification-time {
+    font-size: 11px;
+    color: var(--gray-color);
+}
+
+@media (max-width: 768px) {
+    .action-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>

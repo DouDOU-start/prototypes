@@ -1,0 +1,43 @@
+<div class="page" id="detail">
+  <div class="header">
+    <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+    <h1>菜品详情</h1>
+    <div class="header-cart-wrapper" style="position: relative; display: inline-block;">
+      <button class="cart-btn" onclick="showPage('cart')">
+        <i class="fas fa-shopping-cart"></i>
+      </button>
+      <span class="header-cart-badge" id="cartCountDetail" style="pointer-events: none;">0</span>
+    </div>
+  </div>
+  <div class="detail-image"><i class="fas fa-drumstick-bite"></i></div>
+  <div class="detail-content">
+    <div class="detail-name">宫保鸡丁</div>
+    <div class="detail-price">¥32</div>
+    <div class="detail-desc">经典川菜，选用优质鸡腿肉，配以花生米、胡萝卜丁、黄瓜丁等，调味独特，口感丰富，鸡肉鲜嫩，花生香脆，是一道老少皆宜的经典菜品。</div>
+    <div class="spec-section">
+      <div class="spec-title">辣度选择</div>
+      <div class="spec-options">
+        <div class="spec-option selected">微辣</div>
+        <div class="spec-option">中辣</div>
+        <div class="spec-option">重辣</div>
+        <div class="spec-option">不辣</div>
+      </div>
+    </div>
+    <div class="spec-section">
+      <div class="spec-title">份量选择</div>
+      <div class="spec-options">
+        <div class="spec-option selected">标准份</div>
+        <div class="spec-option">大份 (+¥8)</div>
+      </div>
+    </div>
+    <div class="quantity-control">
+      <span style="font-size: 16px; font-weight: 600;">数量</span>
+      <div class="quantity-btns">
+        <button class="qty-btn" onclick="decreaseQty()"><i class="fas fa-minus"></i></button>
+        <span class="quantity" id="quantity">1</span>
+        <button class="qty-btn" onclick="increaseQty()"><i class="fas fa-plus"></i></button>
+      </div>
+    </div>
+    <button class="add-to-cart" onclick="addToCartFromDetail()">加入购物车 ¥32</button>
+  </div>
+</div> 

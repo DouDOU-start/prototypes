@@ -1,0 +1,62 @@
+<div class="page" id="home">
+  <div class="header">
+    <h1>仓和餐厅</h1>
+    <div class="header-cart-wrapper" style="position: relative; display: inline-block;">
+      <button class="cart-btn" onclick="showPage('cart')">
+        <i class="fas fa-shopping-cart"></i>
+      </button>
+      <span class="header-cart-badge" id="cartCountHome" style="pointer-events: none;">0</span>
+    </div>
+  </div>
+  <div class="home-content">
+    <div class="search-bar">
+      <input type="text" class="search-input" placeholder="搜索菜品...">
+      <button class="search-btn"><i class="fas fa-search"></i></button>
+    </div>
+    <div class="banner">
+      <div>
+        <div>今日特推</div>
+        <div style="font-size: 14px; margin-top: 5px;">新品8折优惠</div>
+      </div>
+    </div>
+    <div class="category-grid">
+      <div class="category-item" onclick="showPage('menu')">
+        <div class="category-icon"><i class="fas fa-fire"></i></div>
+        <div class="category-name">热菜</div>
+      </div>
+      <div class="category-item" onclick="showPage('menu')">
+        <div class="category-icon"><i class="fas fa-leaf"></i></div>
+        <div class="category-name">凉菜</div>
+      </div>
+      <div class="category-item" onclick="showPage('menu')">
+        <div class="category-icon"><i class="fas fa-bread-slice"></i></div>
+        <div class="category-name">主食</div>
+      </div>
+      <div class="category-item" onclick="showPage('menu')">
+        <div class="category-icon"><i class="fas fa-coffee"></i></div>
+        <div class="category-name">饮品</div>
+      </div>
+    </div>
+    <div class="section-title">今日推荐</div>
+    <div class="menu-list">
+      <div class="menu-item" onclick="showPage('detail')">
+        <div class="menu-item-image"><i class="fas fa-drumstick-bite"></i></div>
+        <div class="menu-item-info">
+          <div class="menu-item-name">宫保鸡丁</div>
+          <div class="menu-item-desc">经典川菜，鸡肉鲜嫩，花生香脆</div>
+          <div class="menu-item-price">¥32</div>
+        </div>
+        <button class="add-btn" onclick="event.stopPropagation(); addToCart()"><i class="fas fa-plus"></i></button>
+      </div>
+      <div class="menu-item" onclick="showPage('detail')">
+        <div class="menu-item-image"><i class="fas fa-fish"></i></div>
+        <div class="menu-item-info">
+          <div class="menu-item-name">红烧鲈鱼</div>
+          <div class="menu-item-desc">鱼肉鲜美，汤汁浓郁，营养丰富</div>
+          <div class="menu-item-price">¥48</div>
+        </div>
+        <button class="add-btn" onclick="event.stopPropagation(); addToCart()"><i class="fas fa-plus"></i></button>
+      </div>
+    </div>
+  </div>
+</div> 
