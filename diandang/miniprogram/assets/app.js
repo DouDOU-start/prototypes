@@ -383,7 +383,7 @@ const pagesToLoad = [
 async function loadPages() {
   const container = document.querySelector('.app-container');
   for (const id of pagesToLoad) {
-    const res = await fetch(`miniprogram/pages/${id}.html`);
+    const res = await fetch(`./pages/${id}.html`);
     const html = await res.text();
     container.insertAdjacentHTML('beforeend', html);
   }

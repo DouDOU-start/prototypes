@@ -282,7 +282,7 @@ async function loadPages() {
     
     for (const pageId of pagesToLoad) {
         try {
-            const response = await fetch(`merchant/pages/${pageId}.html`);
+            const response = await fetch(`./pages/${pageId}.html`);
             if (response.ok) {
                 const html = await response.text();
                 container.insertAdjacentHTML('beforeend', html);
