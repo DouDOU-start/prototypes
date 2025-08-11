@@ -200,12 +200,12 @@ function showScreen(key) {
     home: '首页',
     category: '分类',
     cart: '购物车',
-    orders: '订单',
+    orders: '我的订单',
     profile: '我的',
     'product-detail': '商品详情',
     checkout: '结算',
     'order-detail': '订单详情',
-    favorites: '收藏',
+    favorites: '我的收藏',
     addresses: '地址管理',
     coupons: '优惠券',
     support: '在线客服',
@@ -793,7 +793,10 @@ function bindGlobal() {
     state.navStack = [key];
     showScreen(key);
     if (key === 'cart') renderCart();
-    if (key === 'orders') renderOrders('all');
+    if (key === 'category') {
+      renderCategoryChips();
+      renderCategoryProducts(currentCategoryKey);
+    }
     if (key === 'video-feed') { renderVideoFeed(); setupFeedObserver(); }
     if (key === 'profile') { /* nothing extra for now */ }
   }));
@@ -821,6 +824,11 @@ function bindGlobal() {
     if (key === 'favorites') renderFavorites();
     if (key === 'addresses') renderAddresses();
     if (key === 'coupons') renderCoupons();
+    if (key === 'orders') renderOrders('all');
+    if (key === 'category') {
+      renderCategoryChips();
+      renderCategoryProducts(currentCategoryKey);
+    }
   }));
 
   $('#mp-open-feed')?.addEventListener('click', () => { renderVideoFeed(); navigateTo('video-feed'); setupFeedObserver(); });
