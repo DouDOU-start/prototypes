@@ -22,14 +22,30 @@
 git clone <your-repo-url>
 cd prototypes
 
-# 启动服务器
+# 启动服务器（后台运行）
 ./start.sh
+
+# 停止服务器
+./stop.sh
+
+# 重启服务器
+./stop.sh && ./start.sh
 ```
 
-或者直接运行：
+**管理命令：**
 ```bash
+# 查看服务器日志
+tail -f server.log
+
+# 直接运行（前台，调试用）
 node serve.js
 ```
+
+**服务器管理：**
+- 服务器运行在后台，不会阻塞终端
+- PID文件：`server.pid`
+- 日志文件：`server.log`
+- 支持重复启动检测
 
 ## 📱 访问地址
 
