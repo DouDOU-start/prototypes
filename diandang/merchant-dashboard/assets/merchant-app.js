@@ -189,11 +189,90 @@ const mockData = {
         }
     ],
     customers: [
-        { id: 1, name: '张先生', phone: '138****8888', visitCount: 23, totalSpent: 1580.5, level: 'VIP', lastVisit: '2024-01-15', preference: '川菜' },
-        { id: 2, name: '李女士', phone: '139****6666', visitCount: 18, totalSpent: 980.0, level: '会员', lastVisit: '2024-01-15', preference: '清淡' },
-        { id: 3, name: '王先生', phone: '137****9999', visitCount: 12, totalSpent: 650.0, level: '会员', lastVisit: '2024-01-15', preference: '家常菜' },
-        { id: 4, name: '赵女士', phone: '136****5555', visitCount: 35, totalSpent: 2280.0, level: 'VIP', lastVisit: '2024-01-14', preference: '川菜' },
-        { id: 5, name: '陈先生', phone: '135****7777', visitCount: 8, totalSpent: 420.0, level: '普通', lastVisit: '2024-01-13', preference: '凉菜' }
+        { 
+            id: 1, 
+            name: '张先生', 
+            phone: '138****8888', 
+            visits: 23, 
+            totalSpent: 1580.5, 
+            avgSpent: 68.7,
+            level: 'VIP', 
+            lastVisit: '2024-01-15', 
+            preference: '川菜',
+            notes: 'VIP客户，喜欢微辣口味'
+        },
+        { 
+            id: 2, 
+            name: '李女士', 
+            phone: '139****6666', 
+            visits: 18, 
+            totalSpent: 980.0, 
+            avgSpent: 54.4,
+            level: '会员', 
+            lastVisit: '2024-01-15', 
+            preference: '清淡',
+            notes: '偏爱清淡口味，对辣椒过敏'
+        },
+        { 
+            id: 3, 
+            name: '王先生', 
+            phone: '137****9999', 
+            visits: 12, 
+            totalSpent: 650.0, 
+            avgSpent: 54.2,
+            level: '会员', 
+            lastVisit: '2024-01-15', 
+            preference: '家常菜',
+            notes: ''
+        },
+        { 
+            id: 4, 
+            name: '赵女士', 
+            phone: '136****5555', 
+            visits: 35, 
+            totalSpent: 2280.0, 
+            avgSpent: 65.1,
+            level: 'VIP', 
+            lastVisit: '2024-01-14', 
+            preference: '川菜',
+            notes: '老客户，经常带朋友聚餐'
+        },
+        { 
+            id: 5, 
+            name: '陈先生', 
+            phone: '135****7777', 
+            visits: 8, 
+            totalSpent: 420.0, 
+            avgSpent: 52.5,
+            level: '普通', 
+            lastVisit: '2024-01-13', 
+            preference: '凉菜',
+            notes: ''
+        },
+        { 
+            id: 6, 
+            name: '刘小姐', 
+            phone: '134****3333', 
+            visits: 15, 
+            totalSpent: 780.0, 
+            avgSpent: 52.0,
+            level: '会员', 
+            lastVisit: '2024-01-15', 
+            preference: '家常菜',
+            notes: '喜欢清爽口味，不吃太油腻的菜'
+        },
+        { 
+            id: 7, 
+            name: '孙女士', 
+            phone: '133****1111', 
+            visits: 6, 
+            totalSpent: 320.0, 
+            avgSpent: 53.3,
+            level: '普通', 
+            lastVisit: '2024-01-12', 
+            preference: '素食',
+            notes: '素食主义者，只点素菜'
+        }
     ],
     inventory: [
         { id: 1, name: '土豆', unit: '斤', stock: 8, minStock: 10, supplier: '新鲜蔬菜供应商', price: 3.5, status: 'low_stock' },
@@ -436,33 +515,53 @@ const mockData = {
     reviews: [
         {
             id: 1,
-            customer: '美食家小张',
+            customerName: '张先生',
             rating: 5,
-            comment: '宫保鸡丁做得特别正宗，鸡肉嫩滑，花生脆香，辣度刚好。服务态度也很好，会再来的！',
-            date: '2024-01-15',
-            dish: '宫保鸡丁',
+            content: '宫保鸡丁做得特别正宗，鸡肉嫩滑，花生脆香，辣度刚好。服务态度也很好，会再来的！',
+            time: '2024-01-15 13:30',
+            dishes: ['宫保鸡丁', '白米饭'],
             helpful: 12,
             images: 2
         },
         {
             id: 2,
-            customer: '吃货王女士',
+            customerName: '李女士',
             rating: 4,
-            comment: '回锅肉味道不错，就是稍微有点咸。整体环境干净整洁，服务员很热情。',
-            date: '2024-01-14',
-            dish: '回锅肉',
+            content: '回锅肉味道不错，就是稍微有点咸。整体环境干净整洁，服务员很热情。',
+            time: '2024-01-14 19:20',
+            dishes: ['回锅肉', '酸辣土豆丝'],
             helpful: 8,
             images: 1
         },
         {
             id: 3,
-            customer: '老饕李先生',
+            customerName: '王先生',
             rating: 5,
-            comment: '水煮鱼麻辣鲜香，鱼片嫩滑，汤底浓郁。配菜新鲜，分量足够。价格合理，性价比很高。',
-            date: '2024-01-14',
-            dish: '水煮鱼',
+            content: '水煮鱼麻辣鲜香，鱼片嫩滑，汤底浓郁。配菜新鲜，分量足够。价格合理，性价比很高。',
+            time: '2024-01-14 18:45',
+            dishes: ['水煮鱼', '时蔬小炒'],
             helpful: 15,
             images: 3
+        },
+        {
+            id: 4,
+            customerName: '赵女士',
+            rating: 4,
+            content: '口水鸡很正宗，麻辣适中，配菜丰富。就是等餐时间稍长，希望能改进。',
+            time: '2024-01-13 20:10',
+            dishes: ['口水鸡', '凉拌黄瓜'],
+            helpful: 6,
+            images: 1
+        },
+        {
+            id: 5,
+            customerName: '陈先生',
+            rating: 5,
+            content: '糖醋排骨酸甜可口，小孩很喜欢。服务员小李态度特别好，推荐菜品很用心。',
+            time: '2024-01-13 12:15',
+            dishes: ['糖醋排骨', '蛋花汤'],
+            helpful: 9,
+            images: 2
         },
         {
             id: 4,
@@ -577,9 +676,40 @@ const mockData = {
     ]
 };
 
+// 强制隐藏所有模态框
+function forceHideAllModals() {
+    // 隐藏主模态框
+    const mainModal = document.getElementById('modalOverlay');
+    if (mainModal) {
+        mainModal.classList.remove('active');
+        mainModal.style.display = 'none';
+    }
+    
+    // 隐藏库存模态框
+    const inventoryModal = document.getElementById('inventory-modal');
+    if (inventoryModal) {
+        inventoryModal.style.display = 'none';
+    }
+    
+    // 隐藏所有可能的模态框
+    document.querySelectorAll('.modal-overlay, .inventory-modal-overlay').forEach(modal => {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+    });
+}
+
 // 初始化应用
 document.addEventListener('DOMContentLoaded', async function() {
+    // 强制隐藏所有模态框
+    forceHideAllModals();
+    
     await loadPages();
+    
+    // 页面加载完成后再次确保模态框隐藏
+    setTimeout(() => {
+        forceHideAllModals();
+    }, 100);
+    
     initializeApp();
     startRealTimeUpdates();
     updateCurrentTime();
@@ -652,18 +782,22 @@ function showPage(pageId) {
     // 隐藏所有页面
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
+        page.style.display = 'none';
     });
     
     // 显示目标页面
     const targetPage = document.getElementById(pageId);
     if (targetPage) {
         targetPage.classList.add('active');
+        targetPage.style.display = 'block';
         
         // 添加页面历史
         if (currentPage !== pageId) {
             pageHistory.push(currentPage);
         }
         currentPage = pageId;
+        
+        console.log('显示页面:', pageId, '- 页面元素:', targetPage ? '已找到' : '未找到');
         
         // 页面特定的初始化
         initializePage(pageId);
@@ -672,6 +806,7 @@ function showPage(pageId) {
 
 // 页面特定初始化
 function initializePage(pageId) {
+    console.log('初始化页面:', pageId);
     switch (pageId) {
         case 'dashboard':
             updateDashboardStats();
@@ -692,9 +827,23 @@ function initializePage(pageId) {
                 initInventoryPage();
             }
             break;
+        case 'customers':
+            console.log('准备初始化客户管理页面');
+            if (typeof initCustomersPage === 'function') {
+                console.log('开始调用initCustomersPage函数');
+                initCustomersPage();
+            } else {
+                console.log('initCustomersPage函数不存在');
+            }
+            break;
         case 'analytics':
             if (typeof initAnalyticsPage === 'function') {
                 initAnalyticsPage();
+            }
+            break;
+        case 'settings':
+            if (typeof initSettingsPage === 'function') {
+                initSettingsPage();
             }
             break;
     }
@@ -2158,4 +2307,2109 @@ function enableDragForOrderItems() {
         item.classList.add('draggable');
         item.setAttribute('draggable', 'true');
     });
+}
+
+// 渲染订单页面
+function renderOrdersPage() {
+    const ordersGrid = document.getElementById('ordersGrid');
+    const emptyState = document.getElementById('emptyState');
+    
+    if (!ordersGrid) return;
+    
+    // 获取当前筛选状态
+    const activeFilter = document.querySelector('.filter-btn.active')?.getAttribute('data-status') || 'all';
+    const searchTerm = document.getElementById('orderSearch')?.value.toLowerCase() || '';
+    
+    // 筛选订单
+    let filteredOrders = mockData.orders;
+    
+    if (activeFilter !== 'all') {
+        filteredOrders = filteredOrders.filter(order => order.status === activeFilter);
+    }
+    
+    if (searchTerm) {
+        filteredOrders = filteredOrders.filter(order => 
+            order.id.toLowerCase().includes(searchTerm) ||
+            order.customer.toLowerCase().includes(searchTerm) ||
+            order.table.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    // 更新计数
+    updateOrderCounts();
+    
+    // 渲染订单卡片
+    if (filteredOrders.length === 0) {
+        ordersGrid.style.display = 'none';
+        emptyState.style.display = 'block';
+    } else {
+        ordersGrid.style.display = 'grid';
+        emptyState.style.display = 'none';
+        
+        ordersGrid.innerHTML = filteredOrders.map(order => createOrderCard(order)).join('');
+        
+        // 添加选择功能
+        setupOrderSelection();
+    }
+}
+
+// 创建订单卡片HTML
+function createOrderCard(order) {
+    const statusBadgeClass = `order-status-badge ${order.status}`;
+    const statusText = {
+        'pending': '待确认',
+        'preparing': '制作中', 
+        'ready': '已完成',
+        'completed': '已送达',
+        'cancelled': '已取消'
+    };
+    
+    const itemsDisplay = order.items.slice(0, 3).map(item => 
+        `<span class="order-item-tag">${item.name} ×${item.quantity}</span>`
+    ).join('');
+    
+    const moreItems = order.items.length > 3 ? `<span class="order-item-tag">+${order.items.length - 3}更多</span>` : '';
+    
+    return `
+        <div class="order-card" data-order-id="${order.id}" onclick="showOrderDetails('${order.id}')">
+            <div class="order-checkbox" onclick="event.stopPropagation(); toggleOrderSelection('${order.id}', this)">
+                <i class="fas fa-check" style="display: none;"></i>
+            </div>
+            
+            <div class="order-header">
+                <div class="order-info">
+                    <div class="order-id">${order.id}</div>
+                    <div class="order-customer">
+                        <i class="fas fa-user"></i>
+                        ${order.customer}
+                        <span class="order-table">${order.table}</span>
+                    </div>
+                </div>
+                <div class="${statusBadgeClass}">
+                    ${statusText[order.status]}
+                </div>
+            </div>
+            
+            <div class="order-items">
+                <div class="order-items-title">
+                    <i class="fas fa-utensils"></i>
+                    订单明细
+                </div>
+                <div class="order-items-list">
+                    ${itemsDisplay}
+                    ${moreItems}
+                </div>
+            </div>
+            
+            <div class="order-footer">
+                <div class="order-time">
+                    <div class="order-time-label">下单时间</div>
+                    <div class="order-time-value">${order.time}</div>
+                </div>
+                <div class="order-amount">
+                    <div class="order-amount-label">订单金额</div>
+                    <div class="order-amount-value">¥${order.amount.toFixed(2)}</div>
+                </div>
+            </div>
+            
+            <div class="order-actions">
+                ${getOrderActionButtons(order)}
+            </div>
+        </div>
+    `;
+}
+
+// 获取订单操作按钮
+function getOrderActionButtons(order) {
+    const buttons = [];
+    
+    if (order.status === 'pending') {
+        buttons.push(`<button class="btn btn-success" onclick="event.stopPropagation(); updateOrderStatus('${order.id}', 'preparing')">
+            <i class="fas fa-play"></i> 开始制作
+        </button>`);
+        buttons.push(`<button class="btn btn-danger" onclick="event.stopPropagation(); updateOrderStatus('${order.id}', 'cancelled')">
+            <i class="fas fa-times"></i> 取消
+        </button>`);
+    } else if (order.status === 'preparing') {
+        buttons.push(`<button class="btn btn-primary" onclick="event.stopPropagation(); updateOrderStatus('${order.id}', 'ready')">
+            <i class="fas fa-check"></i> 制作完成
+        </button>`);
+    } else if (order.status === 'ready') {
+        buttons.push(`<button class="btn btn-success" onclick="event.stopPropagation(); updateOrderStatus('${order.id}', 'completed')">
+            <i class="fas fa-utensils"></i> 已送达
+        </button>`);
+    }
+    
+    if (order.status !== 'completed' && order.status !== 'cancelled') {
+        buttons.push(`<button class="btn btn-outline" onclick="event.stopPropagation(); printOrder('${order.id}')">
+            <i class="fas fa-print"></i> 打印
+        </button>`);
+    }
+    
+    return buttons.join('');
+}
+
+// 更新订单计数
+function updateOrderCounts() {
+    const counts = {
+        all: mockData.orders.length,
+        pending: mockData.orders.filter(o => o.status === 'pending').length,
+        preparing: mockData.orders.filter(o => o.status === 'preparing').length,
+        ready: mockData.orders.filter(o => o.status === 'ready').length,
+        cancelled: mockData.orders.filter(o => o.status === 'cancelled').length
+    };
+    
+    Object.entries(counts).forEach(([status, count]) => {
+        const countElement = document.querySelector(`[data-status="${status}"] .count`);
+        if (countElement) {
+            countElement.textContent = count;
+        }
+    });
+}
+
+// 设置订单选择功能
+function setupOrderSelection() {
+    // 添加事件监听器已在createOrderCard中处理
+}
+
+// 切换订单选择状态
+function toggleOrderSelection(orderId, checkboxElement) {
+    const orderCard = checkboxElement.closest('.order-card');
+    const checkIcon = checkboxElement.querySelector('i');
+    
+    if (orderCard.classList.contains('selected')) {
+        // 取消选择
+        orderCard.classList.remove('selected');
+        checkboxElement.classList.remove('checked');
+        checkIcon.style.display = 'none';
+    } else {
+        // 选择
+        orderCard.classList.add('selected');
+        checkboxElement.classList.add('checked');
+        checkIcon.style.display = 'inline';
+    }
+    
+    updateBulkActionsVisibility();
+}
+
+// 更新批量操作栏可见性
+function updateBulkActionsVisibility() {
+    const selectedOrders = document.querySelectorAll('.order-card.selected');
+    const bulkActions = document.getElementById('bulkActions');
+    const selectedCount = document.getElementById('selectedCount');
+    
+    if (selectedOrders.length > 0) {
+        bulkActions.style.display = 'flex';
+        selectedCount.textContent = selectedOrders.length;
+    } else {
+        bulkActions.style.display = 'none';
+    }
+}
+
+// 批量更新订单状态
+function bulkUpdateStatus(newStatus) {
+    const selectedCards = document.querySelectorAll('.order-card.selected');
+    const orderIds = Array.from(selectedCards).map(card => card.getAttribute('data-order-id'));
+    
+    orderIds.forEach(orderId => {
+        updateOrderStatus(orderId, newStatus);
+    });
+    
+    clearSelection();
+    showNotification('批量操作', `已批量更新 ${orderIds.length} 个订单状态`, 'success');
+}
+
+// 批量取消订单
+function bulkCancel() {
+    const selectedCards = document.querySelectorAll('.order-card.selected');
+    const orderIds = Array.from(selectedCards).map(card => card.getAttribute('data-order-id'));
+    
+    if (confirm(`确定要取消选中的 ${orderIds.length} 个订单吗？`)) {
+        orderIds.forEach(orderId => {
+            updateOrderStatus(orderId, 'cancelled');
+        });
+        
+        clearSelection();
+        showNotification('批量操作', `已取消 ${orderIds.length} 个订单`, 'warning');
+    }
+}
+
+// 清除选择
+function clearSelection() {
+    document.querySelectorAll('.order-card.selected').forEach(card => {
+        const checkbox = card.querySelector('.order-checkbox');
+        const checkIcon = checkbox.querySelector('i');
+        
+        card.classList.remove('selected');
+        checkbox.classList.remove('checked');
+        checkIcon.style.display = 'none';
+    });
+    
+    updateBulkActionsVisibility();
+}
+
+// 筛选器事件监听
+document.addEventListener('DOMContentLoaded', function() {
+    // 添加筛选器按钮事件
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.filter-btn')) {
+            const filterBtn = e.target.closest('.filter-btn');
+            
+            // 移除所有活动状态
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // 添加当前活动状态
+            filterBtn.classList.add('active');
+            
+            // 重新渲染订单
+            if (typeof renderOrdersPage === 'function') {
+                renderOrdersPage();
+            }
+        }
+    });
+    
+    // 添加搜索功能
+    const searchInput = document.getElementById('orderSearch');
+    if (searchInput) {
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                if (typeof renderOrdersPage === 'function') {
+                    renderOrdersPage();
+                }
+            }, 300);
+        });
+    }
+});
+
+// 菜单管理页面初始化
+function initMenuManagement() {
+    setupMenuManagementEvents();
+    renderMenuItems();
+}
+
+// 设置菜单管理事件监听
+function setupMenuManagementEvents() {
+    // 分类标签切换
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.category-tab')) {
+            const categoryTab = e.target.closest('.category-tab');
+            const category = categoryTab.getAttribute('data-category');
+            
+            // 更新活动状态
+            document.querySelectorAll('.category-tab').forEach(tab => tab.classList.remove('active'));
+            categoryTab.classList.add('active');
+            
+            // 重新渲染菜品
+            renderMenuItems();
+        }
+    });
+    
+    // 视图切换
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.view-btn')) {
+            const viewBtn = e.target.closest('.view-btn');
+            const view = viewBtn.getAttribute('data-view');
+            
+            // 更新活动状态
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            viewBtn.classList.add('active');
+            
+            // 切换视图
+            switchMenuView(view);
+        }
+    });
+    
+    // 搜索功能
+    const menuSearchInput = document.getElementById('menuSearch');
+    if (menuSearchInput) {
+        let searchTimeout;
+        menuSearchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                renderMenuItems();
+            }, 300);
+        });
+    }
+}
+
+// 渲染菜品列表
+function renderMenuItems() {
+    const currentView = document.querySelector('.view-btn.active')?.getAttribute('data-view') || 'grid';
+    const activeCategory = document.querySelector('.category-tab.active')?.getAttribute('data-category') || 'all';
+    const searchTerm = document.getElementById('menuSearch')?.value.toLowerCase() || '';
+    
+    // 获取所有菜品
+    let allItems = [];
+    mockData.menuCategories.forEach(category => {
+        category.items.forEach(item => {
+            allItems.push({
+                ...item,
+                categoryId: category.id,
+                categoryName: category.name
+            });
+        });
+    });
+    
+    // 筛选菜品
+    let filteredItems = allItems;
+    
+    // 按分类筛选
+    if (activeCategory !== 'all') {
+        const categoryMap = {
+            'hot': ['signature', 'homestyle'],
+            'cold': ['cold'],
+            'soup': ['soup'],
+            'staple': ['soup'], // 包含主食类的汤品粥类
+            'drink': [] // 暂无饮品数据
+        };
+        
+        if (categoryMap[activeCategory]) {
+            filteredItems = filteredItems.filter(item => 
+                categoryMap[activeCategory].includes(item.categoryId)
+            );
+        }
+    }
+    
+    // 按搜索词筛选
+    if (searchTerm) {
+        filteredItems = filteredItems.filter(item =>
+            item.name.toLowerCase().includes(searchTerm) ||
+            item.description.toLowerCase().includes(searchTerm) ||
+            item.categoryName.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    // 根据视图模式渲染
+    if (currentView === 'grid') {
+        renderMenuGrid(filteredItems);
+    } else {
+        renderMenuList(filteredItems);
+    }
+}
+
+// 渲染网格视图
+function renderMenuGrid(items) {
+    const menuGrid = document.getElementById('menuGrid');
+    const menuList = document.getElementById('menuList');
+    
+    if (!menuGrid) return;
+    
+    menuGrid.style.display = 'grid';
+    menuList.style.display = 'none';
+    
+    if (items.length === 0) {
+        menuGrid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--gray-color);">
+                <i class="fas fa-utensils" style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;"></i>
+                <h3>暂无菜品</h3>
+                <p>当前筛选条件下没有找到菜品</p>
+            </div>
+        `;
+        return;
+    }
+    
+    menuGrid.innerHTML = items.map(item => createMenuItemCard(item)).join('');
+    setupMenuItemEvents();
+}
+
+// 渲染列表视图
+function renderMenuList(items) {
+    const menuGrid = document.getElementById('menuGrid');
+    const menuList = document.getElementById('menuList');
+    const menuTableBody = document.getElementById('menuTableBody');
+    
+    if (!menuTableBody) return;
+    
+    menuGrid.style.display = 'none';
+    menuList.style.display = 'block';
+    
+    if (items.length === 0) {
+        menuTableBody.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px; color: var(--gray-color);">
+                <i class="fas fa-utensils" style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;"></i>
+                <h3>暂无菜品</h3>
+                <p>当前筛选条件下没有找到菜品</p>
+            </div>
+        `;
+        return;
+    }
+    
+    menuTableBody.innerHTML = items.map(item => createMenuItemRow(item)).join('');
+    setupMenuItemEvents();
+}
+
+// 创建菜品卡片
+function createMenuItemCard(item) {
+    const statusClass = item.status === 'available' ? 'available' : 'unavailable';
+    const statusText = item.status === 'available' ? '在售' : '停售';
+    const stockStatus = item.stock <= 5 ? 'low-stock' : 'normal';
+    
+    // 获取销量数据
+    const salesData = mockData.popularItems.find(p => p.name === item.name);
+    const sales = salesData ? salesData.sales : Math.floor(Math.random() * 50) + 10;
+    
+    return `
+        <div class="menu-item-card ${item.status !== 'available' ? 'disabled' : ''}" data-item-id="${item.id}">
+            <div class="menu-item-image">
+                ${item.image ? 
+                    `<img src="${item.image}" alt="${item.name}">` : 
+                    `<i class="fas fa-utensils placeholder-icon"></i>`
+                }
+                <div class="menu-item-checkbox" onclick="event.stopPropagation(); toggleMenuItemSelection(${item.id}, this)">
+                    <i class="fas fa-check" style="display: none;"></i>
+                </div>
+                <div class="menu-item-status ${statusClass}">${statusText}</div>
+            </div>
+            
+            <div class="menu-item-info">
+                <div class="menu-item-name">${item.name}</div>
+                <div class="menu-item-description">${item.description}</div>
+                
+                <div class="menu-item-meta">
+                    <div class="menu-item-price">¥${item.price.toFixed(2)}</div>
+                    <div class="menu-item-category">${item.categoryName}</div>
+                </div>
+                
+                <div class="menu-item-stats">
+                    <div class="menu-item-sales">
+                        <i class="fas fa-chart-line"></i>
+                        销量 ${sales}
+                    </div>
+                    <div class="menu-item-stock ${stockStatus}">
+                        <i class="fas fa-box"></i>
+                        库存 ${item.stock}
+                    </div>
+                </div>
+                
+                <div class="menu-item-actions">
+                    <button class="btn btn-outline" onclick="event.stopPropagation(); editMenuItem(${item.id})">
+                        <i class="fas fa-edit"></i> 编辑
+                    </button>
+                    <button class="btn ${item.status === 'available' ? 'btn-warning' : 'btn-success'}" 
+                            onclick="event.stopPropagation(); toggleMenuItemStatus(${item.id})">
+                        <i class="fas ${item.status === 'available' ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                        ${item.status === 'available' ? '下架' : '上架'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// 创建菜品行（列表视图）
+function createMenuItemRow(item) {
+    const statusClass = item.status === 'available' ? 'available' : 'unavailable';
+    const statusText = item.status === 'available' ? '在售' : '停售';
+    const salesData = mockData.popularItems.find(p => p.name === item.name);
+    const sales = salesData ? salesData.sales : Math.floor(Math.random() * 50) + 10;
+    
+    return `
+        <div class="table-row" data-item-id="${item.id}" onclick="editMenuItem(${item.id})">
+            <div class="table-cell item-info" data-label="菜品信息">
+                <div class="table-item-image">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="table-item-details">
+                    <div class="table-item-name">${item.name}</div>
+                    <div class="table-item-desc">${item.description}</div>
+                </div>
+            </div>
+            <div class="table-cell" data-label="分类">${item.categoryName}</div>
+            <div class="table-cell" data-label="价格">¥${item.price.toFixed(2)}</div>
+            <div class="table-cell" data-label="状态">
+                <span class="menu-item-status ${statusClass}">${statusText}</span>
+            </div>
+            <div class="table-cell" data-label="销量">${sales}</div>
+            <div class="table-cell table-actions" data-label="操作">
+                <button class="btn btn-outline" onclick="event.stopPropagation(); editMenuItem(${item.id})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn ${item.status === 'available' ? 'btn-warning' : 'btn-success'}" 
+                        onclick="event.stopPropagation(); toggleMenuItemStatus(${item.id})">
+                    <i class="fas ${item.status === 'available' ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// 切换视图模式
+function switchMenuView(view) {
+    renderMenuItems();
+}
+
+// 设置菜品事件
+function setupMenuItemEvents() {
+    // 事件已在HTML中通过onclick设置
+}
+
+// 切换菜品选择状态
+function toggleMenuItemSelection(itemId, checkboxElement) {
+    const menuCard = checkboxElement.closest('.menu-item-card') || checkboxElement.closest('.table-row');
+    const checkIcon = checkboxElement.querySelector('i');
+    
+    if (menuCard.classList.contains('selected')) {
+        // 取消选择
+        menuCard.classList.remove('selected');
+        checkboxElement.classList.remove('checked');
+        checkIcon.style.display = 'none';
+    } else {
+        // 选择
+        menuCard.classList.add('selected');
+        checkboxElement.classList.add('checked');
+        checkIcon.style.display = 'inline';
+    }
+    
+    updateBulkMenuActionsVisibility();
+}
+
+// 更新批量操作栏可见性
+function updateBulkMenuActionsVisibility() {
+    const selectedItems = document.querySelectorAll('.menu-item-card.selected, .table-row.selected');
+    const bulkActions = document.getElementById('bulkMenuActions');
+    const selectedCount = document.getElementById('selectedMenuCount');
+    
+    if (selectedItems.length > 0) {
+        bulkActions.style.display = 'flex';
+        selectedCount.textContent = selectedItems.length;
+    } else {
+        bulkActions.style.display = 'none';
+    }
+}
+
+// 编辑菜品
+function editMenuItem(itemId) {
+    const item = findMenuItemById(itemId);
+    if (!item) return;
+    
+    const modalContent = `
+        <div style="padding: 24px; min-width: 500px; max-width: 600px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>编辑菜品 - ${item.name}</h2>
+                <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">菜品名称</label>
+                    <input type="text" id="editItemName" value="${item.name}" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">价格</label>
+                    <input type="number" id="editItemPrice" value="${item.price}" step="0.01" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600;">描述</label>
+                <textarea id="editItemDesc" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; height: 80px; resize: vertical;">${item.description}</textarea>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">成本价格</label>
+                    <input type="number" id="editItemCost" value="${item.cost}" step="0.01" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">库存数量</label>
+                    <input type="number" id="editItemStock" value="${item.stock}" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button class="btn btn-primary" onclick="saveMenuItem(${itemId})">
+                    <i class="fas fa-save"></i> 保存更改
+                </button>
+                <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                <button class="btn btn-danger" onclick="deleteMenuItem(${itemId})">
+                    <i class="fas fa-trash"></i> 删除菜品
+                </button>
+            </div>
+        </div>
+    `;
+    
+    showModal(null, modalContent);
+}
+
+// 保存菜品更改
+function saveMenuItem(itemId) {
+    const name = document.getElementById('editItemName').value;
+    const price = parseFloat(document.getElementById('editItemPrice').value);
+    const description = document.getElementById('editItemDesc').value;
+    const cost = parseFloat(document.getElementById('editItemCost').value);
+    const stock = parseInt(document.getElementById('editItemStock').value);
+    
+    if (!name || !price || !description) {
+        showNotification('输入错误', '请填写所有必填字段', 'error');
+        return;
+    }
+    
+    // 更新数据
+    const item = findMenuItemById(itemId);
+    if (item) {
+        item.name = name;
+        item.price = price;
+        item.description = description;
+        item.cost = cost;
+        item.stock = stock;
+        
+        // 更新库存状态
+        if (stock === 0) {
+            item.status = 'out_of_stock';
+        } else if (stock <= 5) {
+            item.status = 'low_stock';
+        } else if (item.status === 'out_of_stock') {
+            item.status = 'available';
+        }
+        
+        renderMenuItems();
+        closeModal();
+        showNotification('保存成功', '菜品信息已更新', 'success');
+    }
+}
+
+// 切换菜品状态
+function toggleMenuItemStatus(itemId) {
+    const item = findMenuItemById(itemId);
+    if (!item) return;
+    
+    const newStatus = item.status === 'available' ? 'unavailable' : 'available';
+    item.status = newStatus;
+    
+    renderMenuItems();
+    
+    const statusText = newStatus === 'available' ? '上架' : '下架';
+    showNotification('状态更新', `菜品 ${item.name} 已${statusText}`, 'success');
+}
+
+// 删除菜品
+function deleteMenuItem(itemId) {
+    const item = findMenuItemById(itemId);
+    if (!item) return;
+    
+    if (confirm(`确定要删除菜品 "${item.name}" 吗？此操作不可撤销。`)) {
+        // 从对应分类中删除
+        mockData.menuCategories.forEach(category => {
+            const index = category.items.findIndex(i => i.id === itemId);
+            if (index !== -1) {
+                category.items.splice(index, 1);
+            }
+        });
+        
+        renderMenuItems();
+        closeModal();
+        showNotification('删除成功', `菜品 ${item.name} 已删除`, 'warning');
+    }
+}
+
+// 批量操作
+function bulkMenuAction(action) {
+    const selectedItems = document.querySelectorAll('.menu-item-card.selected, .table-row.selected');
+    const itemIds = Array.from(selectedItems).map(item => parseInt(item.getAttribute('data-item-id')));
+    
+    if (action === 'enable') {
+        itemIds.forEach(id => {
+            const item = findMenuItemById(id);
+            if (item) item.status = 'available';
+        });
+        showNotification('批量操作', `已批量上架 ${itemIds.length} 个菜品`, 'success');
+    } else if (action === 'disable') {
+        itemIds.forEach(id => {
+            const item = findMenuItemById(id);
+            if (item) item.status = 'unavailable';
+        });
+        showNotification('批量操作', `已批量下架 ${itemIds.length} 个菜品`, 'warning');
+    } else if (action === 'delete') {
+        if (confirm(`确定要删除选中的 ${itemIds.length} 个菜品吗？此操作不可撤销。`)) {
+            itemIds.forEach(id => {
+                mockData.menuCategories.forEach(category => {
+                    const index = category.items.findIndex(i => i.id === id);
+                    if (index !== -1) {
+                        category.items.splice(index, 1);
+                    }
+                });
+            });
+            showNotification('批量操作', `已删除 ${itemIds.length} 个菜品`, 'warning');
+        } else {
+            return;
+        }
+    }
+    
+    clearMenuSelection();
+    renderMenuItems();
+}
+
+// 清除菜品选择
+function clearMenuSelection() {
+    document.querySelectorAll('.menu-item-card.selected, .table-row.selected').forEach(item => {
+        const checkbox = item.querySelector('.menu-item-checkbox');
+        const checkIcon = checkbox?.querySelector('i');
+        
+        item.classList.remove('selected');
+        if (checkbox) checkbox.classList.remove('checked');
+        if (checkIcon) checkIcon.style.display = 'none';
+    });
+    
+    updateBulkMenuActionsVisibility();
+}
+
+// 查找菜品
+function findMenuItemById(itemId) {
+    for (const category of mockData.menuCategories) {
+        const item = category.items.find(i => i.id === itemId);
+        if (item) {
+            return item;
+        }
+    }
+    return null;
+}
+
+// 库存管理页面初始化
+function initInventoryPage() {
+    setupInventoryEvents();
+    updateInventoryStats();
+    renderInventoryList();
+    loadSupplierOptions();
+}
+
+// 设置库存管理事件监听
+function setupInventoryEvents() {
+    // 筛选按钮事件
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.filter-btn') && e.target.closest('#inventory')) {
+            const filterBtn = e.target.closest('.filter-btn');
+            const filter = filterBtn.getAttribute('data-filter');
+            
+            // 更新活动状态
+            document.querySelectorAll('#inventory .filter-btn').forEach(btn => btn.classList.remove('active'));
+            filterBtn.classList.add('active');
+            
+            // 重新渲染库存列表
+            renderInventoryList();
+        }
+    });
+}
+
+// 更新库存统计
+function updateInventoryStats() {
+    const totalItems = mockData.inventory.length;
+    const lowStockItems = mockData.inventory.filter(item => item.status === 'low_stock' || item.stock <= item.minStock).length;
+    const outOfStockItems = mockData.inventory.filter(item => item.status === 'out_of_stock' || item.stock === 0).length;
+    
+    // 更新统计数字
+    const totalStockEl = document.getElementById('total-stock-items');
+    const lowStockEl = document.getElementById('low-stock-count');
+    const pendingDeliveriesEl = document.getElementById('pending-deliveries');
+    
+    if (totalStockEl) totalStockEl.textContent = totalItems;
+    if (lowStockEl) lowStockEl.textContent = lowStockItems + outOfStockItems;
+    if (pendingDeliveriesEl) pendingDeliveriesEl.textContent = '3'; // 模拟待到货数量
+    
+    console.log('库存统计已更新:', {
+        总库存项: totalItems,
+        库存不足: lowStockItems,
+        缺货项: outOfStockItems,
+        库存数据: mockData.inventory
+    });
+}
+
+// 渲染库存列表
+function renderInventoryList() {
+    const inventoryList = document.getElementById('inventory-list');
+    if (!inventoryList) return;
+    
+    const activeFilter = document.querySelector('#inventory .filter-btn.active')?.getAttribute('data-filter') || 'all';
+    
+    // 筛选库存项
+    let filteredItems = mockData.inventory;
+    if (activeFilter !== 'all') {
+        filteredItems = mockData.inventory.filter(item => {
+            if (activeFilter === 'low_stock') {
+                return item.status === 'low_stock' || item.stock <= item.minStock;
+            }
+            if (activeFilter === 'out_of_stock') {
+                return item.status === 'out_of_stock' || item.stock === 0;
+            }
+            if (activeFilter === 'available') {
+                return item.status === 'available' && item.stock > item.minStock;
+            }
+            return item.status === activeFilter;
+        });
+    }
+    
+    if (filteredItems.length === 0) {
+        inventoryList.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px; color: var(--gray-color);">
+                <i class="fas fa-boxes" style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;"></i>
+                <h3>暂无库存项</h3>
+                <p>当前筛选条件下没有找到库存项目</p>
+            </div>
+        `;
+        return;
+    }
+    
+    inventoryList.innerHTML = filteredItems.map(item => createInventoryCard(item)).join('');
+    
+    console.log('库存列表已渲染:', {
+        筛选条件: activeFilter,
+        筛选结果: filteredItems.length,
+        原始数据: mockData.inventory.length
+    });
+}
+
+// 创建库存卡片
+function createInventoryCard(item) {
+    const statusClass = getInventoryStatusClass(item);
+    const statusText = getInventoryStatusText(item);
+    const stockPercentage = Math.min((item.stock / (item.minStock * 2)) * 100, 100);
+    const isLowStock = item.stock <= item.minStock;
+    const isOutOfStock = item.stock === 0;
+    
+    return `
+        <div class="inventory-card ${statusClass}" data-item-id="${item.id}">
+            <div class="inventory-header">
+                <div class="inventory-info">
+                    <h4 class="inventory-name">${item.name}</h4>
+                    <div class="inventory-supplier">
+                        <i class="fas fa-truck"></i>
+                        ${item.supplier}
+                    </div>
+                </div>
+                <div class="inventory-status ${statusClass}">
+                    ${statusText}
+                </div>
+            </div>
+            
+            <div class="inventory-stats">
+                <div class="stat-item">
+                    <div class="stat-label">当前库存</div>
+                    <div class="stat-value ${isOutOfStock ? 'danger' : isLowStock ? 'warning' : ''}"">
+                        ${item.stock} ${item.unit}
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">最低库存</div>
+                    <div class="stat-value">${item.minStock} ${item.unit}</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">采购价格</div>
+                    <div class="stat-value">¥${item.price.toFixed(2)}/${item.unit}</div>
+                </div>
+            </div>
+            
+            <div class="inventory-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill ${isLowStock ? 'low' : ''}" style="width: ${stockPercentage}%"></div>
+                </div>
+                <div class="progress-text">
+                    ${isOutOfStock ? '缺货' : isLowStock ? '库存不足' : '库存充足'}
+                </div>
+            </div>
+            
+            <div class="inventory-actions">
+                <button class="btn btn-outline btn-sm" onclick="editInventoryItem(${item.id})">
+                    <i class="fas fa-edit"></i> 编辑
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="addInventoryStock(${item.id})">
+                    <i class="fas fa-plus"></i> 补货
+                </button>
+                ${isLowStock ? `
+                <button class="btn btn-warning btn-sm" onclick="createPurchaseOrder(${item.id})">
+                    <i class="fas fa-shopping-cart"></i> 采购
+                </button>
+                ` : ''}
+            </div>
+        </div>
+    `;
+}
+
+// 获取库存状态样式类
+function getInventoryStatusClass(item) {
+    if (item.stock === 0) return 'out-of-stock';
+    if (item.stock <= item.minStock) return 'low-stock';
+    return 'normal';
+}
+
+// 获取库存状态文本
+function getInventoryStatusText(item) {
+    if (item.stock === 0) return '缺货';
+    if (item.stock <= item.minStock) return '库存不足';
+    return '库存充足';
+}
+
+// 打开添加库存模态框
+function openAddInventoryModal() {
+    const modal = document.getElementById('inventory-modal');
+    if (modal) {
+        // 清空表单
+        const form = document.getElementById('inventory-form');
+        if (form) form.reset();
+        modal.style.display = 'flex';
+    }
+}
+
+// 关闭库存模态框
+function closeInventoryModal() {
+    const modal = document.getElementById('inventory-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// 加载供应商选项
+function loadSupplierOptions() {
+    const supplierSelect = document.getElementById('item-supplier');
+    if (!supplierSelect) return;
+    
+    supplierSelect.innerHTML = '<option value="">选择供应商</option>' + 
+        mockData.suppliers.map(supplier => 
+            `<option value="${supplier.name}">${supplier.name}</option>`
+        ).join('');
+}
+
+// 保存库存项
+function saveInventoryItem() {
+    const name = document.getElementById('item-name').value;
+    const unit = document.getElementById('item-unit').value;
+    const stock = parseInt(document.getElementById('item-stock').value);
+    const minStock = parseInt(document.getElementById('item-min-stock').value);
+    const price = parseFloat(document.getElementById('item-price').value);
+    const supplier = document.getElementById('item-supplier').value;
+    
+    if (!name || !stock || !minStock || !price || !supplier) {
+        showNotification('输入错误', '请填写所有必填字段', 'error');
+        return;
+    }
+    
+    // 创建新库存项
+    const newItem = {
+        id: mockData.inventory.length + 1,
+        name: name,
+        unit: unit,
+        stock: stock,
+        minStock: minStock,
+        supplier: supplier,
+        price: price,
+        status: stock <= minStock ? 'low_stock' : 'available'
+    };
+    
+    mockData.inventory.push(newItem);
+    
+    closeInventoryModal();
+    updateInventoryStats();
+    renderInventoryList();
+    showNotification('添加成功', '库存项已添加', 'success');
+}
+
+// 编辑库存项
+function editInventoryItem(itemId) {
+    const item = mockData.inventory.find(i => i.id === itemId);
+    if (!item) return;
+    
+    const modalContent = `
+        <div style="padding: 24px; min-width: 500px; max-width: 600px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>编辑库存 - ${item.name}</h2>
+                <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">物品名称</label>
+                    <input type="text" id="editInventoryName" value="${item.name}" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">单位</label>
+                    <select id="editInventoryUnit" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                        <option value="斤" ${item.unit === '斤' ? 'selected' : ''}>斤</option>
+                        <option value="袋" ${item.unit === '袋' ? 'selected' : ''}>袋</option>
+                        <option value="箱" ${item.unit === '箱' ? 'selected' : ''}>箱</option>
+                        <option value="桶" ${item.unit === '桶' ? 'selected' : ''}>桶</option>
+                        <option value="块" ${item.unit === '块' ? 'selected' : ''}>块</option>
+                        <option value="条" ${item.unit === '条' ? 'selected' : ''}>条</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">当前库存</label>
+                    <input type="number" id="editInventoryStock" value="${item.stock}" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">最低库存</label>
+                    <input type="number" id="editInventoryMinStock" value="${item.minStock}" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">采购价格</label>
+                    <input type="number" id="editInventoryPrice" value="${item.price}" step="0.01" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">供应商</label>
+                    <select id="editInventorySupplier" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                        ${mockData.suppliers.map(supplier => 
+                            `<option value="${supplier.name}" ${supplier.name === item.supplier ? 'selected' : ''}>${supplier.name}</option>`
+                        ).join('')}
+                    </select>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button class="btn btn-primary" onclick="saveInventoryChanges(${itemId})">
+                    <i class="fas fa-save"></i> 保存更改
+                </button>
+                <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                <button class="btn btn-danger" onclick="deleteInventoryItem(${itemId})">
+                    <i class="fas fa-trash"></i> 删除
+                </button>
+            </div>
+        </div>
+    `;
+    
+    showModal(null, modalContent);
+}
+
+// 保存库存更改
+function saveInventoryChanges(itemId) {
+    const name = document.getElementById('editInventoryName').value;
+    const unit = document.getElementById('editInventoryUnit').value;
+    const stock = parseInt(document.getElementById('editInventoryStock').value);
+    const minStock = parseInt(document.getElementById('editInventoryMinStock').value);
+    const price = parseFloat(document.getElementById('editInventoryPrice').value);
+    const supplier = document.getElementById('editInventorySupplier').value;
+    
+    if (!name || isNaN(stock) || isNaN(minStock) || isNaN(price)) {
+        showNotification('输入错误', '请填写所有必填字段', 'error');
+        return;
+    }
+    
+    const item = mockData.inventory.find(i => i.id === itemId);
+    if (item) {
+        item.name = name;
+        item.unit = unit;
+        item.stock = stock;
+        item.minStock = minStock;
+        item.price = price;
+        item.supplier = supplier;
+        item.status = stock <= minStock ? 'low_stock' : 'available';
+        
+        closeModal();
+        updateInventoryStats();
+        renderInventoryList();
+        showNotification('保存成功', '库存信息已更新', 'success');
+    }
+}
+
+// 添加库存
+function addInventoryStock(itemId) {
+    const item = mockData.inventory.find(i => i.id === itemId);
+    if (!item) return;
+    
+    const addAmount = prompt(`请输入要添加的${item.name}数量（${item.unit}）：`, '10');
+    if (addAmount && !isNaN(addAmount) && parseInt(addAmount) > 0) {
+        item.stock += parseInt(addAmount);
+        item.status = item.stock <= item.minStock ? 'low_stock' : 'available';
+        
+        updateInventoryStats();
+        renderInventoryList();
+        showNotification('补货成功', `${item.name} 已补货 ${addAmount} ${item.unit}`, 'success');
+    }
+}
+
+// 创建采购订单
+function createPurchaseOrder(itemId) {
+    const item = mockData.inventory.find(i => i.id === itemId);
+    if (!item) return;
+    
+    const orderAmount = Math.max(item.minStock * 2 - item.stock, item.minStock);
+    const totalCost = (orderAmount * item.price).toFixed(2);
+    
+    const confirmed = confirm(
+        `创建采购订单：\n\n` +
+        `物品：${item.name}\n` +
+        `数量：${orderAmount} ${item.unit}\n` +
+        `单价：¥${item.price.toFixed(2)}\n` +
+        `总价：¥${totalCost}\n` +
+        `供应商：${item.supplier}\n\n` +
+        `确认创建采购订单吗？`
+    );
+    
+    if (confirmed) {
+        // 模拟创建采购订单
+        showNotification('采购订单', `已向 ${item.supplier} 发送采购订单`, 'success');
+        
+        // 更新待到货数量
+        const pendingEl = document.getElementById('pending-deliveries');
+        if (pendingEl) {
+            const currentPending = parseInt(pendingEl.textContent) || 0;
+            pendingEl.textContent = currentPending + 1;
+        }
+    }
+}
+
+// 删除库存项
+function deleteInventoryItem(itemId) {
+    const item = mockData.inventory.find(i => i.id === itemId);
+    if (!item) return;
+    
+    if (confirm(`确定要删除库存项 "${item.name}" 吗？此操作不可撤销。`)) {
+        const index = mockData.inventory.findIndex(i => i.id === itemId);
+        if (index !== -1) {
+            mockData.inventory.splice(index, 1);
+            
+            closeModal();
+            updateInventoryStats();
+            renderInventoryList();
+            showNotification('删除成功', `库存项 ${item.name} 已删除`, 'warning');
+        }
+    }
+}
+
+// 显示供应商管理
+function showSupplierManager() {
+    const suppliersSection = document.getElementById('suppliers-section');
+    const inventoryContainer = document.querySelector('.inventory-container');
+    
+    if (suppliersSection && inventoryContainer) {
+        if (suppliersSection.style.display === 'none') {
+            suppliersSection.style.display = 'block';
+            inventoryContainer.style.display = 'none';
+            renderSuppliersList();
+        } else {
+            suppliersSection.style.display = 'none';
+            inventoryContainer.style.display = 'block';
+        }
+    }
+}
+
+// 渲染供应商列表
+function renderSuppliersList() {
+    const suppliersList = document.getElementById('suppliers-list');
+    if (!suppliersList) return;
+    
+    suppliersList.innerHTML = mockData.suppliers.map(supplier => `
+        <div class="supplier-card" data-supplier-id="${supplier.id}">
+            <div class="supplier-header">
+                <div class="supplier-info">
+                    <h4 class="supplier-name">${supplier.name}</h4>
+                    <div class="supplier-contact">
+                        <i class="fas fa-user"></i> ${supplier.contact}
+                        <i class="fas fa-phone"></i> ${supplier.phone}
+                    </div>
+                </div>
+                <div class="supplier-rating">
+                    <div class="rating-stars">
+                        ${generateStarRating(supplier.rating)}
+                    </div>
+                    <span class="rating-text">${supplier.rating}</span>
+                </div>
+            </div>
+            
+            <div class="supplier-details">
+                <div class="detail-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>${supplier.address}</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-handshake"></i>
+                    <span>合作时间：${supplier.cooperation}</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-truck"></i>
+                    <span>最后配送：${supplier.lastDelivery}</span>
+                </div>
+            </div>
+            
+            <div class="supplier-products">
+                <div class="products-label">供应产品：</div>
+                <div class="products-tags">
+                    ${supplier.products.map(product => 
+                        `<span class="product-tag">${product}</span>`
+                    ).join('')}
+                </div>
+            </div>
+            
+            <div class="supplier-actions">
+                <button class="btn btn-outline btn-sm" onclick="editSupplier(${supplier.id})">
+                    <i class="fas fa-edit"></i> 编辑
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="contactSupplier(${supplier.id})">
+                    <i class="fas fa-phone"></i> 联系
+                </button>
+                <button class="btn btn-success btn-sm" onclick="createSupplierOrder(${supplier.id})">
+                    <i class="fas fa-shopping-cart"></i> 下单
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// 生成星级评分
+function generateStarRating(rating) {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    
+    return '★'.repeat(fullStars) + 
+           (hasHalfStar ? '☆' : '') + 
+           '☆'.repeat(emptyStars);
+}
+
+// 编辑供应商
+function editSupplier(supplierId) {
+    showNotification('功能开发中', '供应商编辑功能正在开发中', 'info');
+}
+
+// 联系供应商
+function contactSupplier(supplierId) {
+    const supplier = mockData.suppliers.find(s => s.id === supplierId);
+    if (supplier) {
+        showNotification('联系供应商', `正在联系 ${supplier.name} - ${supplier.contact}`, 'info');
+    }
+}
+
+// 创建供应商订单
+function createSupplierOrder(supplierId) {
+    const supplier = mockData.suppliers.find(s => s.id === supplierId);
+    if (supplier) {
+        showNotification('创建订单', `正在为 ${supplier.name} 创建采购订单`, 'info');
+    }
+}
+
+// 添加新供应商
+function addNewSupplier() {
+    showNotification('功能开发中', '添加供应商功能正在开发中', 'info');
+}
+
+// 生成库存报表
+function generateInventoryReport() {
+    const reportData = {
+        totalItems: mockData.inventory.length,
+        lowStockItems: mockData.inventory.filter(item => item.stock <= item.minStock).length,
+        totalValue: mockData.inventory.reduce((sum, item) => sum + (item.stock * item.price), 0),
+        avgStock: mockData.inventory.reduce((sum, item) => sum + item.stock, 0) / mockData.inventory.length
+    };
+    
+    const modalContent = `
+        <div style="padding: 24px; min-width: 500px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>库存报表</h2>
+                <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: 600; color: var(--primary-color);">${reportData.totalItems}</div>
+                    <div style="color: var(--gray-color);">库存品类</div>
+                </div>
+                <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: 600; color: var(--warning-color);">${reportData.lowStockItems}</div>
+                    <div style="color: var(--gray-color);">库存不足</div>
+                </div>
+                <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: 600; color: var(--success-color);">¥${reportData.totalValue.toFixed(2)}</div>
+                    <div style="color: var(--gray-color);">库存总价值</div>
+                </div>
+                <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: 600; color: var(--info-color);">${reportData.avgStock.toFixed(1)}</div>
+                    <div style="color: var(--gray-color);">平均库存</div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <h4>库存详情</h4>
+                <div style="max-height: 300px; overflow-y: auto; border: 1px solid #e1e8ed; border-radius: 8px;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead style="background: #f8f9fa; position: sticky; top: 0;">
+                            <tr>
+                                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e1e8ed;">物品</th>
+                                <th style="padding: 12px; text-align: center; border-bottom: 1px solid #e1e8ed;">库存</th>
+                                <th style="padding: 12px; text-align: center; border-bottom: 1px solid #e1e8ed;">状态</th>
+                                <th style="padding: 12px; text-align: right; border-bottom: 1px solid #e1e8ed;">价值</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${mockData.inventory.map(item => `
+                                <tr>
+                                    <td style="padding: 8px 12px; border-bottom: 1px solid #f1f3f4;">${item.name}</td>
+                                    <td style="padding: 8px 12px; text-align: center; border-bottom: 1px solid #f1f3f4;">${item.stock} ${item.unit}</td>
+                                    <td style="padding: 8px 12px; text-align: center; border-bottom: 1px solid #f1f3f4;">
+                                        <span style="color: ${item.stock <= item.minStock ? 'var(--warning-color)' : 'var(--success-color)'};">
+                                            ${getInventoryStatusText(item)}
+                                        </span>
+                                    </td>
+                                    <td style="padding: 8px 12px; text-align: right; border-bottom: 1px solid #f1f3f4;">¥${(item.stock * item.price).toFixed(2)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button class="btn btn-primary" onclick="downloadInventoryReport()">
+                    <i class="fas fa-download"></i> 下载报表
+                </button>
+                <button class="btn btn-outline" onclick="closeModal()">关闭</button>
+            </div>
+        </div>
+    `;
+    
+    showModal(null, modalContent);
+}
+
+// 下载库存报表
+function downloadInventoryReport() {
+    showNotification('报表下载', '库存报表下载功能正在开发中', 'info');
+    closeModal();
+}
+
+// ================== 客户管理页面 ==================
+
+// 初始化客户管理页面
+function initCustomersPage() {
+    console.log('执行initCustomersPage函数');
+    updateCustomersStats();
+    renderCustomersList();
+    renderRecentReviews();
+    setupCustomerFilters();
+    console.log('客户管理页面初始化完成');
+}
+
+// 更新客户统计数据
+function updateCustomersStats() {
+    const totalCustomers = document.getElementById('total-customers');
+    const vipCustomers = document.getElementById('vip-customers');
+    
+    const customersCount = mockData.customers.length;
+    const vipCount = mockData.customers.filter(c => c.level === 'VIP').length;
+    
+    console.log('更新客户统计:', {
+        总客户数: customersCount,
+        VIP客户数: vipCount,
+        客户数据: mockData.customers
+    });
+    
+    if (totalCustomers) {
+        totalCustomers.textContent = customersCount;
+        console.log('已更新总客户数元素');
+    } else {
+        console.log('未找到total-customers元素');
+    }
+    
+    if (vipCustomers) {
+        vipCustomers.textContent = vipCount;
+        console.log('已更新VIP客户数元素');
+    } else {
+        console.log('未找到vip-customers元素');
+    }
+}
+
+// 渲染客户列表
+function renderCustomersList() {
+    const customersList = document.getElementById('customers-list');
+    if (!customersList) {
+        console.log('未找到customers-list元素');
+        return;
+    }
+    
+    console.log('开始渲染客户列表, 客户数据:', mockData.customers);
+    
+    customersList.innerHTML = mockData.customers.map(customer => {
+        const levelClass = customer.level === 'VIP' ? 'vip' : customer.level === '会员' ? 'member' : 'normal';
+        const levelColor = customer.level === 'VIP' ? '#ffd700' : customer.level === '会员' ? '#3498db' : '#7f8c8d';
+        
+        return `
+            <div class="customer-card" data-customer-id="${customer.id}" onclick="showCustomerDetail(${customer.id})">
+                <div class="customer-header">
+                    <div class="customer-info">
+                        <div class="customer-name">
+                            ${customer.name}
+                            <span class="customer-badge ${levelClass}" style="background-color: ${levelColor};">${customer.level}</span>
+                        </div>
+                        <div class="customer-contact">
+                            <i class="fas fa-phone"></i> ${customer.phone}
+                        </div>
+                    </div>
+                    <div class="customer-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">消费总额</span>
+                            <span class="stat-value">¥${customer.totalSpent.toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="customer-details">
+                    <div class="detail-row">
+                        <div class="detail-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>到店次数：${customer.visits}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-utensils"></i>
+                            <span>口味偏好：${customer.preference}</span>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-item">
+                            <i class="fas fa-clock"></i>
+                            <span>最近到店：${customer.lastVisit}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-calculator"></i>
+                            <span>平均消费：¥${customer.avgSpent.toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="customer-actions">
+                    <button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); editCustomer(${customer.id})">
+                        <i class="fas fa-edit"></i> 编辑
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); contactCustomer(${customer.id})">
+                        <i class="fas fa-comment"></i> 联系
+                    </button>
+                    <button class="btn btn-success btn-sm" onclick="event.stopPropagation(); sendCoupon(${customer.id})">
+                        <i class="fas fa-gift"></i> 发券
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 渲染最近评价
+function renderRecentReviews() {
+    const reviewsList = document.getElementById('reviews-list');
+    if (!reviewsList) return;
+    
+    const recentReviews = mockData.reviews.slice(0, 5);
+    
+    reviewsList.innerHTML = recentReviews.map(review => {
+        const starsHtml = generateStarRating(review.rating);
+        
+        return `
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-customer">
+                        <div class="customer-avatar">${review.customerName.charAt(0)}</div>
+                        <div class="customer-info">
+                            <div class="customer-name">${review.customerName}</div>
+                            <div class="review-time">${review.time}</div>
+                        </div>
+                    </div>
+                    <div class="review-rating">
+                        <div class="stars">${starsHtml}</div>
+                        <span class="rating-text">${review.rating}分</span>
+                    </div>
+                </div>
+                <div class="review-content">${review.content}</div>
+                <div class="review-dishes">
+                    <strong>点评菜品：</strong>${review.dishes.join('、')}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 设置客户筛选器
+function setupCustomerFilters() {
+    const filterButtons = document.querySelectorAll('.filter-btn[data-filter]');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // 移除其他按钮的active状态
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            // 添加当前按钮的active状态
+            button.classList.add('active');
+            
+            const filter = button.dataset.filter;
+            filterCustomers(filter);
+        });
+    });
+}
+
+// 筛选客户
+function filterCustomers(filter) {
+    const customerCards = document.querySelectorAll('.customer-card');
+    
+    customerCards.forEach(card => {
+        const customerId = parseInt(card.dataset.customerId);
+        const customer = mockData.customers.find(c => c.id === customerId);
+        
+        if (!customer) return;
+        
+        let shouldShow = true;
+        
+        if (filter === 'VIP') {
+            shouldShow = customer.level === 'VIP';
+        } else if (filter === '会员') {
+            shouldShow = customer.level === '会员';
+        } else if (filter === '普通') {
+            shouldShow = customer.level === '普通';
+        }
+        
+        card.style.display = shouldShow ? 'block' : 'none';
+    });
+}
+
+// 显示客户详情
+function showCustomerDetail(customerId) {
+    const customer = mockData.customers.find(c => c.id === customerId);
+    if (!customer) return;
+    
+    // 填充客户信息到模态框
+    document.getElementById('customer-name').value = customer.name;
+    document.getElementById('customer-phone').value = customer.phone;
+    document.getElementById('customer-level').value = customer.level;
+    document.getElementById('customer-preference').value = customer.preference;
+    document.getElementById('customer-notes').value = customer.notes || '';
+    
+    // 更新统计信息
+    document.getElementById('customer-visits').textContent = customer.visits;
+    document.getElementById('customer-spent').textContent = `¥${customer.totalSpent.toFixed(2)}`;
+    document.getElementById('customer-avg').textContent = `¥${customer.avgSpent.toFixed(2)}`;
+    document.getElementById('customer-last-visit').textContent = customer.lastVisit;
+    
+    // 渲染消费历史
+    renderCustomerHistory(customer);
+    
+    // 显示模态框
+    document.getElementById('customer-modal').style.display = 'flex';
+}
+
+// 渲染客户消费历史
+function renderCustomerHistory(customer) {
+    const historyContainer = document.getElementById('customer-history');
+    if (!historyContainer) return;
+    
+    // 获取该客户的订单历史
+    const customerOrders = mockData.orders.filter(order => 
+        order.customer === customer.name
+    ).slice(0, 10);
+    
+    historyContainer.innerHTML = customerOrders.map(order => `
+        <div class="history-item">
+            <div class="history-date">${order.time}</div>
+            <div class="history-details">
+                <div class="history-items">
+                    ${order.items.map(item => `${item.name} x${item.quantity}`).join('、')}
+                </div>
+                <div class="history-total">¥${order.total.toFixed(2)}</div>
+            </div>
+        </div>
+    `).join('');
+    
+    if (customerOrders.length === 0) {
+        historyContainer.innerHTML = '<div class="no-history">暂无消费记录</div>';
+    }
+}
+
+// 关闭客户模态框
+function closeCustomerModal() {
+    document.getElementById('customer-modal').style.display = 'none';
+}
+
+// 保存客户信息
+function saveCustomerInfo() {
+    const name = document.getElementById('customer-name').value;
+    const phone = document.getElementById('customer-phone').value;
+    const level = document.getElementById('customer-level').value;
+    const preference = document.getElementById('customer-preference').value;
+    const notes = document.getElementById('customer-notes').value;
+    
+    if (!name || !phone) {
+        showNotification('输入错误', '请填写客户姓名和手机号', 'error');
+        return;
+    }
+    
+    showNotification('保存成功', '客户信息已更新', 'success');
+    closeCustomerModal();
+}
+
+// 搜索客户
+function searchCustomers() {
+    const searchInput = document.getElementById('customer-search');
+    const keyword = searchInput.value.toLowerCase().trim();
+    
+    if (!keyword) {
+        renderCustomersList();
+        return;
+    }
+    
+    const filteredCustomers = mockData.customers.filter(customer => 
+        customer.name.toLowerCase().includes(keyword) ||
+        customer.phone.includes(keyword)
+    );
+    
+    const customersList = document.getElementById('customers-list');
+    if (!customersList) return;
+    
+    if (filteredCustomers.length === 0) {
+        customersList.innerHTML = '<div class="no-results">未找到匹配的客户</div>';
+        return;
+    }
+    
+    // 重新渲染搜索结果
+    customersList.innerHTML = filteredCustomers.map(customer => {
+        const levelClass = customer.level === 'VIP' ? 'vip' : customer.level === '会员' ? 'member' : 'normal';
+        const levelColor = customer.level === 'VIP' ? '#ffd700' : customer.level === '会员' ? '#3498db' : '#7f8c8d';
+        
+        return `
+            <div class="customer-card" data-customer-id="${customer.id}" onclick="showCustomerDetail(${customer.id})">
+                <div class="customer-header">
+                    <div class="customer-info">
+                        <div class="customer-name">
+                            ${customer.name}
+                            <span class="customer-badge ${levelClass}" style="background-color: ${levelColor};">${customer.level}</span>
+                        </div>
+                        <div class="customer-contact">
+                            <i class="fas fa-phone"></i> ${customer.phone}
+                        </div>
+                    </div>
+                    <div class="customer-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">消费总额</span>
+                            <span class="stat-value">¥${customer.totalSpent.toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="customer-details">
+                    <div class="detail-row">
+                        <div class="detail-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>到店次数：${customer.visits}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-utensils"></i>
+                            <span>口味偏好：${customer.preference}</span>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-item">
+                            <i class="fas fa-clock"></i>
+                            <span>最近到店：${customer.lastVisit}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-calculator"></i>
+                            <span>平均消费：¥${customer.avgSpent.toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="customer-actions">
+                    <button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); editCustomer(${customer.id})">
+                        <i class="fas fa-edit"></i> 编辑
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); contactCustomer(${customer.id})">
+                        <i class="fas fa-comment"></i> 联系
+                    </button>
+                    <button class="btn btn-success btn-sm" onclick="event.stopPropagation(); sendCoupon(${customer.id})">
+                        <i class="fas fa-gift"></i> 发券
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 编辑客户
+function editCustomer(customerId) {
+    showCustomerDetail(customerId);
+}
+
+// 联系客户
+function contactCustomer(customerId) {
+    const customer = mockData.customers.find(c => c.id === customerId);
+    if (customer) {
+        showNotification('联系客户', `正在联系 ${customer.name} - ${customer.phone}`, 'info');
+    }
+}
+
+// 发送优惠券
+function sendCoupon(customerId) {
+    const customer = mockData.customers.find(c => c.id === customerId);
+    if (customer) {
+        showNotification('优惠券发送', `已向 ${customer.name} 发送优惠券`, 'success');
+    }
+}
+
+// 添加新客户
+function addNewCustomer() {
+    // 清空模态框表单
+    document.getElementById('customer-name').value = '';
+    document.getElementById('customer-phone').value = '';
+    document.getElementById('customer-level').value = '普通';
+    document.getElementById('customer-preference').value = '家常菜';
+    document.getElementById('customer-notes').value = '';
+    
+    // 清空统计和历史
+    document.getElementById('customer-visits').textContent = '0';
+    document.getElementById('customer-spent').textContent = '¥0';
+    document.getElementById('customer-avg').textContent = '¥0';
+    document.getElementById('customer-last-visit').textContent = '-';
+    document.getElementById('customer-history').innerHTML = '<div class="no-history">新客户暂无消费记录</div>';
+    
+    // 显示模态框
+    document.getElementById('customer-modal').style.display = 'flex';
+}
+
+// 导出客户数据
+function exportCustomerData() {
+    showNotification('导出数据', '客户数据导出功能正在开发中', 'info');
+}
+
+// 查看所有评价
+function viewAllReviews() {
+    showNotification('查看评价', '查看所有评价功能正在开发中', 'info');
+}
+
+// ================== 数据分析页面 ==================
+
+// 初始化数据分析页面
+function initAnalyticsPage() {
+    renderSalesChart();
+    renderPopularItemsChart();
+    renderRevenueStats();
+    renderCustomerAnalytics();
+}
+
+// 渲染营收图表
+function renderSalesChart() {
+    // 这里应该集成真实的图表库，比如 Chart.js 或 ECharts
+    // 目前用简单的模拟数据展示
+    showNotification('图表加载', '营收图表功能正在开发中，将集成专业图表库', 'info');
+}
+
+// 渲染热销商品图表
+function renderPopularItemsChart() {
+    showNotification('图表加载', '热销商品图表功能正在开发中', 'info');
+}
+
+// 渲染营收统计
+function renderRevenueStats() {
+    // 更新营收相关的统计数据
+    const todayRevenue = mockData.orders
+        .filter(order => order.date === new Date().toISOString().split('T')[0])
+        .reduce((sum, order) => sum + order.total, 0);
+    
+    const monthRevenue = mockData.orders
+        .reduce((sum, order) => sum + order.total, 0);
+    
+    // 模拟更新页面元素（实际页面可能没有这些元素ID）
+    console.log('今日营收:', todayRevenue);
+    console.log('月度营收:', monthRevenue);
+}
+
+// 渲染客户分析
+function renderCustomerAnalytics() {
+    const totalCustomers = mockData.customers.length;
+    const vipCustomers = mockData.customers.filter(c => c.level === 'VIP').length;
+    const memberCustomers = mockData.customers.filter(c => c.level === '会员').length;
+    
+    console.log('客户分析:', {
+        总客户数: totalCustomers,
+        VIP客户: vipCustomers,
+        会员客户: memberCustomers
+    });
+}
+
+// ================== 设置页面 ==================
+
+// 初始化设置页面
+function initSettingsPage() {
+    loadStoreSettings();
+    loadStaffList();
+    setupSettingsListeners();
+}
+
+// 加载店铺设置
+function loadStoreSettings() {
+    // 模拟加载店铺设置数据
+    const settings = {
+        storeName: '点当餐厅',
+        address: '北京市朝阳区xxx街道xxx号',
+        phone: '010-12345678',
+        businessHours: '09:00-22:00',
+        autoAcceptOrders: true,
+        notifications: true,
+        loyaltyProgram: true
+    };
+    
+    // 填充设置表单（如果存在相应元素）
+    console.log('店铺设置已加载:', settings);
+}
+
+// 加载员工列表
+function loadStaffList() {
+    console.log('员工列表:', mockData.staff);
+}
+
+// 设置事件监听器
+function setupSettingsListeners() {
+    // 设置各种开关和表单的事件监听器
+    console.log('设置页面事件监听器已初始化');
+}
+
+// 保存店铺设置
+function saveStoreSettings() {
+    showNotification('保存设置', '店铺设置已保存', 'success');
+}
+
+// 添加员工
+function addStaff() {
+    showNotification('添加员工', '添加员工功能正在开发中', 'info');
+}
+
+// 编辑员工
+function editStaff(staffId) {
+    const staff = mockData.staff.find(s => s.id === staffId);
+    if (staff) {
+        showNotification('编辑员工', `正在编辑员工：${staff.name}`, 'info');
+    }
+}
+
+// 删除员工
+function deleteStaff(staffId) {
+    const staff = mockData.staff.find(s => s.id === staffId);
+    if (staff && confirm(`确定要删除员工 ${staff.name} 吗？`)) {
+        showNotification('删除员工', `员工 ${staff.name} 已删除`, 'warning');
+    }
+}
+
+// 添加客户管理页面所需的CSS样式
+const customerPageStyles = `
+<style>
+.customer-card {
+    background: white;
+    border: 1px solid #e1e8ed;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.customer-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.customer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.customer-info .customer-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 8px;
+}
+
+.customer-badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.customer-contact {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--gray-color);
+}
+
+.customer-stats .stat-item {
+    text-align: right;
+}
+
+.customer-stats .stat-label {
+    font-size: 12px;
+    color: var(--gray-color);
+    margin-bottom: 4px;
+}
+
+.customer-stats .stat-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--success-color);
+}
+
+.customer-details {
+    margin-bottom: 16px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--gray-color);
+}
+
+.detail-item i {
+    width: 16px;
+    color: var(--primary-color);
+}
+
+.customer-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.customer-actions .btn {
+    flex: 1;
+    font-size: 12px;
+    padding: 8px 12px;
+    min-height: 36px;
+}
+
+.review-card {
+    background: #f8f9fa;
+    border: 1px solid #e1e8ed;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.review-customer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.customer-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.customer-info .customer-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 4px;
+}
+
+.review-time {
+    font-size: 12px;
+    color: var(--gray-color);
+}
+
+.review-rating {
+    text-align: right;
+}
+
+.stars {
+    color: #ffc107;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.rating-text {
+    font-size: 12px;
+    color: var(--gray-color);
+}
+
+.review-content {
+    font-size: 14px;
+    color: var(--dark-color);
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.review-dishes {
+    font-size: 12px;
+    color: var(--gray-color);
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}
+
+.history-date {
+    font-size: 13px;
+    color: var(--gray-color);
+    min-width: 80px;
+}
+
+.history-details {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 16px;
+}
+
+.history-items {
+    font-size: 13px;
+    color: var(--dark-color);
+}
+
+.history-total {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--success-color);
+}
+
+.no-history, .no-results {
+    text-align: center;
+    padding: 40px;
+    color: var(--gray-color);
+    font-style: italic;
+}
+</style>
+`;
+
+// 将样式注入到页面头部
+if (!document.getElementById('customer-page-styles')) {
+    const styleElement = document.createElement('style');
+    styleElement.id = 'customer-page-styles';
+    styleElement.innerHTML = customerPageStyles.replace('<style>', '').replace('</style>', '');
+    document.head.appendChild(styleElement);
 }
