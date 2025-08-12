@@ -55,7 +55,16 @@ nav {
     z-index: 40;
 }
 
-/* 隐藏元素 */
+/* 隐藏元素 - 确保优先级高于TailwindCSS */
+section[data-screen].hidden {
+    display: none !important;
+}
+
+section[data-screen].block {
+    display: block !important;
+}
+
+/* 通用隐藏类 */
 .hidden {
     display: none !important;
 }

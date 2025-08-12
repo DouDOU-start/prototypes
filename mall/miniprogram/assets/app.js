@@ -186,14 +186,29 @@ function setHeader(title) {
 }
 
 function showScreen(key) {
+  console.log('showScreen called with key:', key); // 调试日志
   state.current = key;
-  $all('section[data-screen]').forEach(s => s.classList.add('hidden'));
+  $all('section[data-screen]').forEach(s => {
+    s.classList.add('hidden');
+    s.classList.remove('block');
+  });
   const el = document.querySelector(`section[data-screen="${key}"]`);
-  if (el) el.classList.remove('hidden');
+  if (el) {
+    el.classList.remove('hidden');
+    el.classList.add('block');
+    console.log('Screen shown:', key); // 调试日志
+  } else {
+    console.warn('Screen not found:', key); // 调试日志
+  }
 
   $all('nav [data-nav]').forEach(btn => {
-    btn.classList.toggle('text-primary', btn.dataset.nav === key);
-    btn.classList.toggle('text-gray-600', btn.dataset.nav !== key);
+    if (btn.dataset.nav === key) {
+      btn.classList.remove('text-gray-600');
+      btn.classList.add('text-primary');
+    } else {
+      btn.classList.remove('text-primary');
+      btn.classList.add('text-gray-600');
+    }
   });
 
   const titleMap = {
@@ -788,18 +803,35 @@ function renderSupport() {
 }
 
 function bindGlobal() {
-  $all('nav [data-nav]').forEach(btn => btn.addEventListener('click', () => {
-    const key = btn.dataset.nav;
-    state.navStack = [key];
-    showScreen(key);
-    if (key === 'cart') renderCart();
-    if (key === 'category') {
-      renderCategoryChips();
-      renderCategoryProducts(currentCategoryKey);
-    }
-    if (key === 'video-feed') { renderVideoFeed(); setupFeedObserver(); }
-    if (key === 'profile') { /* nothing extra for now */ }
-  }));
+  // 确保选择器正确工作
+  console.log('Binding nav buttons, found:', $all('nav [data-nav]').length);
+  
+  $all('nav [data-nav]').forEach(btn => {
+    console.log('Binding button:', btn.dataset.nav);
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.nav;
+      console.log('Tab clicked:', key); // 调试日志
+      state.navStack = [key];
+      showScreen(key);
+      if (key === 'cart') {
+        console.log('Rendering cart...');
+        renderCart();
+      }
+      if (key === 'category') {
+        console.log('Rendering category...');
+        renderCategoryChips();
+        renderCategoryProducts(currentCategoryKey);
+      }
+      if (key === 'video-feed') { 
+        console.log('Rendering video-feed...');
+        renderVideoFeed(); 
+        setupFeedObserver(); 
+      }
+      if (key === 'profile') { 
+        console.log('Profile tab clicked - no extra rendering needed');
+      }
+    });
+  });
 
   $('#mp-search-btn').onclick = () => { navigateTo('category'); };
   $('#mp-msg-btn').onclick = () => { alert('示例原型：消息中心暂未接入'); };
@@ -836,7 +868,12 @@ function bindGlobal() {
 
 // 竖刷渲染
 function renderVideoFeed() {
+  console.log('renderVideoFeed called, videos count:', state.videos.length);
   const wrap = $('#mp-feed');
+  if (!wrap) {
+    console.error('mp-feed element not found!');
+    return;
+  }
   wrap.innerHTML = state.videos.map(v => `
     <div class="h-full min-h-[calc(100vh-3.5rem-4rem)] snap-start relative">
       <video src="${v.url}" class="absolute inset-0 h-full w-full object-cover" preload="metadata" muted playsinline webkit-playsinline></video>
@@ -892,6 +929,8 @@ function firstRender() {
   renderCategoryProducts(currentCategoryKey);
   updateCartBadge();
   state.navStack = ['home'];
+  // 确保初始状态正确
+  console.log('Setting initial screen to home');
   showScreen('home');
 }
 
