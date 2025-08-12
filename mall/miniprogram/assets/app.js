@@ -186,7 +186,6 @@ function setHeader(title) {
 }
 
 function showScreen(key) {
-  console.log('showScreen called with key:', key); // 调试日志
   state.current = key;
   $all('section[data-screen]').forEach(s => {
     s.classList.add('hidden');
@@ -196,9 +195,6 @@ function showScreen(key) {
   if (el) {
     el.classList.remove('hidden');
     el.classList.add('block');
-    console.log('Screen shown:', key); // 调试日志
-  } else {
-    console.warn('Screen not found:', key); // 调试日志
   }
 
   $all('nav [data-nav]').forEach(btn => {
@@ -803,32 +799,21 @@ function renderSupport() {
 }
 
 function bindGlobal() {
-  // 确保选择器正确工作
-  console.log('Binding nav buttons, found:', $all('nav [data-nav]').length);
-  
   $all('nav [data-nav]').forEach(btn => {
-    console.log('Binding button:', btn.dataset.nav);
     btn.addEventListener('click', () => {
       const key = btn.dataset.nav;
-      console.log('Tab clicked:', key); // 调试日志
       state.navStack = [key];
       showScreen(key);
       if (key === 'cart') {
-        console.log('Rendering cart...');
         renderCart();
       }
       if (key === 'category') {
-        console.log('Rendering category...');
         renderCategoryChips();
         renderCategoryProducts(currentCategoryKey);
       }
       if (key === 'video-feed') { 
-        console.log('Rendering video-feed...');
         renderVideoFeed(); 
         setupFeedObserver(); 
-      }
-      if (key === 'profile') { 
-        console.log('Profile tab clicked - no extra rendering needed');
       }
     });
   });
@@ -868,12 +853,8 @@ function bindGlobal() {
 
 // 竖刷渲染
 function renderVideoFeed() {
-  console.log('renderVideoFeed called, videos count:', state.videos.length);
   const wrap = $('#mp-feed');
-  if (!wrap) {
-    console.error('mp-feed element not found!');
-    return;
-  }
+  if (!wrap) return;
   wrap.innerHTML = state.videos.map(v => `
     <div class="h-full min-h-[calc(100vh-3.5rem-4rem)] snap-start relative">
       <video src="${v.url}" class="absolute inset-0 h-full w-full object-cover" preload="metadata" muted playsinline webkit-playsinline></video>
@@ -929,8 +910,6 @@ function firstRender() {
   renderCategoryProducts(currentCategoryKey);
   updateCartBadge();
   state.navStack = ['home'];
-  // 确保初始状态正确
-  console.log('Setting initial screen to home');
   showScreen('home');
 }
 
