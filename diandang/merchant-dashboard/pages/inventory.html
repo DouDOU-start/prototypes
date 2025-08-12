@@ -1,0 +1,139 @@
+<!-- 库存管理页面 -->
+<div class="page" id="inventory" style="display: none;">
+    <div class="page-content">
+        <!-- 库存概览卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon stock-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value" id="total-stock-items">0</div>
+                    <div class="stat-label">库存品类</div>
+                </div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value" id="low-stock-count">0</div>
+                    <div class="stat-label">库存不足</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value" id="pending-deliveries">3</div>
+                    <div class="stat-label">待到货</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 操作按钮组 -->
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="openAddInventoryModal()">
+                <i class="fas fa-plus"></i>
+                添加库存
+            </button>
+            <button class="btn btn-secondary" onclick="showSupplierManager()">
+                <i class="fas fa-truck"></i>
+                供应商管理
+            </button>
+            <button class="btn btn-info" onclick="generateInventoryReport()">
+                <i class="fas fa-chart-bar"></i>
+                库存报表
+            </button>
+        </div>
+
+        <!-- 库存列表 -->
+        <div class="inventory-container">
+            <div class="section-header">
+                <h3><i class="fas fa-warehouse"></i> 库存明细</h3>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">全部</button>
+                    <button class="filter-btn" data-filter="low_stock">库存不足</button>
+                    <button class="filter-btn" data-filter="available">正常</button>
+                    <button class="filter-btn" data-filter="out_of_stock">缺货</button>
+                </div>
+            </div>
+            
+            <div class="inventory-list" id="inventory-list">
+                <!-- JavaScript 动态生成库存项 -->
+            </div>
+        </div>
+
+        <!-- 供应商信息区域 -->
+        <div class="suppliers-section" id="suppliers-section" style="display: none;">
+            <div class="section-header">
+                <h3><i class="fas fa-truck"></i> 供应商管理</h3>
+                <button class="btn btn-primary" onclick="addNewSupplier()">
+                    <i class="fas fa-plus"></i>
+                    添加供应商
+                </button>
+            </div>
+            <div class="suppliers-list" id="suppliers-list">
+                <!-- JavaScript 动态生成供应商列表 -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 添加库存模态框 -->
+<div class="modal-overlay" id="inventory-modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>添加/编辑库存</h3>
+            <button class="close-btn" onclick="closeInventoryModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="inventory-form">
+                <div class="form-group">
+                    <label>库存名称</label>
+                    <input type="text" id="item-name" placeholder="输入库存物品名称" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>单位</label>
+                        <select id="item-unit">
+                            <option value="斤">斤</option>
+                            <option value="袋">袋</option>
+                            <option value="箱">箱</option>
+                            <option value="桶">桶</option>
+                            <option value="块">块</option>
+                            <option value="条">条</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>当前库存</label>
+                        <input type="number" id="item-stock" placeholder="库存数量" min="0" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>最低库存</label>
+                        <input type="number" id="item-min-stock" placeholder="最低库存警戒线" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>采购价格</label>
+                        <input type="number" id="item-price" placeholder="单价" min="0" step="0.01" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>供应商</label>
+                    <select id="item-supplier">
+                        <!-- JavaScript 动态填充供应商选项 -->
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeInventoryModal()">取消</button>
+            <button class="btn btn-primary" onclick="saveInventoryItem()">保存</button>
+        </div>
+    </div>
+</div>

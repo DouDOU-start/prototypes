@@ -1,0 +1,187 @@
+<!-- 客户管理页面 -->
+<div class="page" id="customers" style="display: none;">
+    <div class="page-content">
+        <!-- 客户统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon customer-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value" id="total-customers">0</div>
+                    <div class="stat-label">总客户数</div>
+                </div>
+            </div>
+            <div class="stat-card vip">
+                <div class="stat-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value" id="vip-customers">0</div>
+                    <div class="stat-label">VIP客户</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value" id="today-visits">8</div>
+                    <div class="stat-label">今日到店</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">4.7</div>
+                    <div class="stat-label">平均满意度</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 搜索和筛选 -->
+        <div class="search-filter-section">
+            <div class="search-box">
+                <input type="text" id="customer-search" placeholder="搜索客户姓名或手机号">
+                <button onclick="searchCustomers()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">全部</button>
+                <button class="filter-btn" data-filter="VIP">VIP</button>
+                <button class="filter-btn" data-filter="会员">会员</button>
+                <button class="filter-btn" data-filter="普通">普通</button>
+            </div>
+        </div>
+
+        <!-- 客户列表 -->
+        <div class="customers-container">
+            <div class="section-header">
+                <h3><i class="fas fa-address-book"></i> 客户档案</h3>
+                <div class="action-buttons-inline">
+                    <button class="btn btn-primary btn-sm" onclick="addNewCustomer()">
+                        <i class="fas fa-plus"></i>
+                        添加客户
+                    </button>
+                    <button class="btn btn-info btn-sm" onclick="exportCustomerData()">
+                        <i class="fas fa-download"></i>
+                        导出数据
+                    </button>
+                </div>
+            </div>
+            
+            <div class="customers-list" id="customers-list">
+                <!-- JavaScript 动态生成客户列表 -->
+            </div>
+        </div>
+
+        <!-- 客户评价区域 -->
+        <div class="reviews-section">
+            <div class="section-header">
+                <h3><i class="fas fa-star"></i> 最新评价</h3>
+                <button class="btn btn-secondary btn-sm" onclick="viewAllReviews()">
+                    查看全部
+                </button>
+            </div>
+            <div class="reviews-list" id="reviews-list">
+                <!-- JavaScript 动态生成评价列表 -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 客户详情模态框 -->
+<div class="modal-overlay" id="customer-modal" style="display: none;">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h3>客户详情</h3>
+            <button class="close-btn" onclick="closeCustomerModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="customer-detail-grid">
+                <div class="customer-info-section">
+                    <h4>基本信息</h4>
+                    <form id="customer-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>姓名</label>
+                                <input type="text" id="customer-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>手机号</label>
+                                <input type="tel" id="customer-phone" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>客户等级</label>
+                                <select id="customer-level">
+                                    <option value="普通">普通</option>
+                                    <option value="会员">会员</option>
+                                    <option value="VIP">VIP</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>口味偏好</label>
+                                <select id="customer-preference">
+                                    <option value="川菜">川菜</option>
+                                    <option value="清淡">清淡</option>
+                                    <option value="家常菜">家常菜</option>
+                                    <option value="凉菜">凉菜</option>
+                                    <option value="素食">素食</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>备注</label>
+                            <textarea id="customer-notes" placeholder="客户备注信息"></textarea>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="customer-stats-section">
+                    <h4>消费统计</h4>
+                    <div class="stats-mini-grid">
+                        <div class="mini-stat">
+                            <div class="mini-stat-value" id="customer-visits">0</div>
+                            <div class="mini-stat-label">到店次数</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-value" id="customer-spent">¥0</div>
+                            <div class="mini-stat-label">累计消费</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-value" id="customer-avg">¥0</div>
+                            <div class="mini-stat-label">平均消费</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-value" id="customer-last-visit">-</div>
+                            <div class="mini-stat-label">最近到店</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 消费历史 -->
+            <div class="customer-history-section">
+                <h4>消费历史</h4>
+                <div class="history-list" id="customer-history">
+                    <!-- JavaScript 动态生成消费历史 -->
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeCustomerModal()">关闭</button>
+            <button class="btn btn-primary" onclick="saveCustomerInfo()">保存</button>
+            <button class="btn btn-success" onclick="sendCoupon()" title="发送优惠券">
+                <i class="fas fa-gift"></i>
+                发券
+            </button>
+        </div>
+    </div>
+</div>

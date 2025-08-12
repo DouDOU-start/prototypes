@@ -210,7 +210,31 @@ const mockData = {
         customers: 45,
         avgOrderValue: 88.75,
         peakHour: '12:00-13:00',
-        topDish: '宫保鸡丁'
+        topDish: '宫保鸡丁',
+        tablesOccupied: 8,
+        totalTables: 15,
+        waitingQueue: 3,
+        avgWaitTime: 15,
+        completionRate: 95,
+        customerSatisfaction: 4.7
+    },
+    weeklyStats: {
+        totalRevenue: 16580.0,
+        totalOrders: 186,
+        avgDailyRevenue: 2368.57,
+        avgDailyOrders: 26.57,
+        bestDay: '周六',
+        worstDay: '周二',
+        growthRate: 8.5,
+        repeatCustomerRate: 65
+    },
+    monthlyStats: {
+        totalRevenue: 68420.0,
+        totalOrders: 742,
+        newCustomers: 89,
+        returningCustomers: 156,
+        avgMonthlyGrowth: 12.3,
+        profitMargin: 35.8
     },
     notifications: [
         {
@@ -260,6 +284,296 @@ const mockData = {
         { time: '14:25', action: '库存预警', detail: '土豆库存不足10斤，请补充' },
         { time: '14:20', action: '客户到店', detail: '赵女士（VIP）到店用餐' },
         { time: '14:15', action: '订单完成', detail: 'A01桌赵女士订单制作完成' }
+    ],
+    tables: [
+        { id: 'A01', capacity: 4, status: 'available', customer: null, orderTime: null, waitTime: 0 },
+        { id: 'A02', capacity: 4, status: 'available', customer: null, orderTime: null, waitTime: 0 },
+        { id: 'A03', capacity: 4, status: 'occupied', customer: '张先生', orderTime: '14:25', waitTime: 8, orderId: 'ORD001' },
+        { id: 'A04', capacity: 6, status: 'available', customer: null, orderTime: null, waitTime: 0 },
+        { id: 'A05', capacity: 2, status: 'occupied', customer: '孙女士', orderTime: '14:20', waitTime: 13, orderId: 'ORD007' },
+        { id: 'B01', capacity: 4, status: 'reserved', customer: '预订-周先生', orderTime: '15:00', waitTime: 0 },
+        { id: 'B02', capacity: 4, status: 'available', customer: null, orderTime: null, waitTime: 0 },
+        { id: 'B03', capacity: 4, status: 'cleaning', customer: null, orderTime: null, waitTime: 0 },
+        { id: 'B04', capacity: 6, status: 'occupied', customer: '林先生', orderTime: '13:45', waitTime: 48, orderId: 'ORD008' },
+        { id: 'B05', capacity: 4, status: 'available', customer: null, orderTime: null, waitTime: 0 },
+        { id: 'B06', capacity: 4, status: 'occupied', customer: '李女士', orderTime: '14:18', waitTime: 15, orderId: 'ORD002' },
+        { id: 'B07', capacity: 2, status: 'available', customer: null, orderTime: null, waitTime: 0 },
+        { id: 'B08', capacity: 4, status: 'occupied', customer: '陈先生', orderTime: '14:30', waitTime: 3, orderId: 'ORD005' },
+        { id: 'C01', capacity: 8, status: 'available', customer: null, orderTime: null, waitTime: 0 },
+        { id: 'C02', capacity: 4, status: 'occupied', customer: '王先生', orderTime: '14:10', waitTime: 23, orderId: 'ORD003' },
+        { id: 'C03', capacity: 4, status: 'available', customer: null, orderTime: null, waitTime: 0 },
+        { id: 'C04', capacity: 6, status: 'reserved', customer: '预订-郑女士', orderTime: '15:30', waitTime: 0 },
+        { id: 'C05', capacity: 4, status: 'occupied', customer: '刘小姐', orderTime: '14:33', waitTime: 0, orderId: 'ORD006' }
+    ],
+    staff: [
+        { 
+            id: 1, 
+            name: '张经理', 
+            role: '店长', 
+            shift: 'all_day', 
+            status: 'active',
+            phone: '138****1234',
+            joinDate: '2023-03-15',
+            performance: 96,
+            todayTasks: ['巡店检查', '处理客诉', '营收分析'],
+            avatar: 'fas fa-user-tie'
+        },
+        { 
+            id: 2, 
+            name: '小李', 
+            role: '服务员', 
+            shift: 'morning', 
+            status: 'active',
+            phone: '139****5678',
+            joinDate: '2023-08-20',
+            performance: 88,
+            todayTasks: ['A区域服务', '收银台值班'],
+            avatar: 'fas fa-user'
+        },
+        { 
+            id: 3, 
+            name: '小王', 
+            role: '服务员', 
+            shift: 'afternoon', 
+            status: 'active',
+            phone: '137****9876',
+            joinDate: '2023-09-10',
+            performance: 92,
+            todayTasks: ['B区域服务', '清洁维护'],
+            avatar: 'fas fa-user'
+        },
+        { 
+            id: 4, 
+            name: '大厨老陈', 
+            role: '主厨', 
+            shift: 'all_day', 
+            status: 'active',
+            phone: '136****4321',
+            joinDate: '2022-12-01',
+            performance: 94,
+            todayTasks: ['菜品质控', '厨房管理', '新品开发'],
+            avatar: 'fas fa-utensils'
+        },
+        { 
+            id: 5, 
+            name: '小刘', 
+            role: '后厨', 
+            shift: 'morning', 
+            status: 'active',
+            phone: '135****8765',
+            joinDate: '2023-10-05',
+            performance: 85,
+            todayTasks: ['食材准备', '协助主厨'],
+            avatar: 'fas fa-user-chef'
+        },
+        { 
+            id: 6, 
+            name: '小赵', 
+            role: '收银员', 
+            shift: 'afternoon', 
+            status: 'break',
+            phone: '134****2468',
+            joinDate: '2023-07-15',
+            performance: 91,
+            todayTasks: ['收银服务', '会员管理'],
+            avatar: 'fas fa-cash-register'
+        }
+    ],
+    suppliers: [
+        {
+            id: 1,
+            name: '新鲜蔬菜供应商',
+            contact: '王总',
+            phone: '138****0001',
+            address: '成都市双流区蔬菜批发市场',
+            products: ['土豆', '黄瓜', '娃娃菜', '四季豆'],
+            rating: 4.5,
+            cooperation: '2年',
+            lastDelivery: '2024-01-14',
+            creditLevel: 'A',
+            paymentTerms: '货到付款'
+        },
+        {
+            id: 2,
+            name: '优质肉类供应商',
+            contact: '李经理',
+            phone: '139****0002',
+            address: '成都市新都区食品工业园',
+            products: ['鸡胸肉', '排骨', '牛肉', '猪肉'],
+            rating: 4.8,
+            cooperation: '3年',
+            lastDelivery: '2024-01-15',
+            creditLevel: 'A+',
+            paymentTerms: '月结30天'
+        },
+        {
+            id: 3,
+            name: '鲜活水产',
+            contact: '张老板',
+            phone: '137****0003',
+            address: '成都市彭州市水产市场',
+            products: ['草鱼', '鲤鱼', '虾类', '蟹类'],
+            rating: 4.3,
+            cooperation: '1年',
+            lastDelivery: '2024-01-13',
+            creditLevel: 'B+',
+            paymentTerms: '现金交易'
+        },
+        {
+            id: 4,
+            name: '老豆腐坊',
+            contact: '老陈',
+            phone: '136****0004',
+            address: '成都市武侯区传统豆制品工坊',
+            products: ['豆腐', '豆皮', '豆干', '豆浆'],
+            rating: 4.7,
+            cooperation: '4年',
+            lastDelivery: '2024-01-15',
+            creditLevel: 'A',
+            paymentTerms: '周结账'
+        }
+    ],
+    reviews: [
+        {
+            id: 1,
+            customer: '美食家小张',
+            rating: 5,
+            comment: '宫保鸡丁做得特别正宗，鸡肉嫩滑，花生脆香，辣度刚好。服务态度也很好，会再来的！',
+            date: '2024-01-15',
+            dish: '宫保鸡丁',
+            helpful: 12,
+            images: 2
+        },
+        {
+            id: 2,
+            customer: '吃货王女士',
+            rating: 4,
+            comment: '回锅肉味道不错，就是稍微有点咸。整体环境干净整洁，服务员很热情。',
+            date: '2024-01-14',
+            dish: '回锅肉',
+            helpful: 8,
+            images: 1
+        },
+        {
+            id: 3,
+            customer: '老饕李先生',
+            rating: 5,
+            comment: '水煮鱼麻辣鲜香，鱼片嫩滑，汤底浓郁。配菜新鲜，分量足够。价格合理，性价比很高。',
+            date: '2024-01-14',
+            dish: '水煮鱼',
+            helpful: 15,
+            images: 3
+        },
+        {
+            id: 4,
+            customer: '本地人老王',
+            rating: 4,
+            comment: '家常菜做得很地道，麻婆豆腐麻辣适中，豆腐嫩滑。就是上菜速度可以再快一点。',
+            date: '2024-01-13',
+            dish: '麻婆豆腐',
+            helpful: 6,
+            images: 0
+        },
+        {
+            id: 5,
+            customer: '游客小陈',
+            rating: 3,
+            comment: '口水鸡味道一般，花生不够脆，调料偏淡。不过服务还可以，环境也算干净。',
+            date: '2024-01-13',
+            dish: '口水鸡',
+            helpful: 4,
+            images: 1
+        }
+    ],
+    promotions: [
+        {
+            id: 1,
+            name: '工作日午餐特惠',
+            type: 'discount',
+            description: '周一至周五11:30-14:00，主菜+汤+米饭套餐8.5折',
+            discount: 15,
+            startDate: '2024-01-01',
+            endDate: '2024-01-31',
+            status: 'active',
+            usageCount: 156,
+            targetRevenue: 5000
+        },
+        {
+            id: 2,
+            name: '会员专享菜品',
+            type: 'member_only',
+            description: 'VIP会员专享精品菜单，包含招牌水煮鱼等',
+            discount: 20,
+            startDate: '2024-01-10',
+            endDate: '2024-02-10',
+            status: 'active',
+            usageCount: 23,
+            targetRevenue: 3000
+        },
+        {
+            id: 3,
+            name: '满额赠饮',
+            type: 'gift',
+            description: '单桌消费满128元赠送银耳莲子汤一份',
+            discount: 0,
+            startDate: '2024-01-15',
+            endDate: '2024-01-25',
+            status: 'active',
+            usageCount: 8,
+            targetRevenue: 1200
+        }
+    ],
+    expenses: [
+        {
+            id: 1,
+            category: '食材采购',
+            amount: 1250.00,
+            description: '本周蔬菜、肉类采购',
+            date: '2024-01-15',
+            supplier: '新鲜蔬菜供应商',
+            receipt: 'RECEIPT_001.jpg',
+            status: 'paid'
+        },
+        {
+            id: 2,
+            category: '水电费',
+            amount: 680.00,
+            description: '12月份水电费账单',
+            date: '2024-01-10',
+            supplier: '国家电网',
+            receipt: 'BILL_002.pdf',
+            status: 'paid'
+        },
+        {
+            id: 3,
+            category: '设备维护',
+            amount: 350.00,
+            description: '空调清洗保养费用',
+            date: '2024-01-08',
+            supplier: '家电维修服务中心',
+            receipt: 'RECEIPT_003.jpg',
+            status: 'paid'
+        },
+        {
+            id: 4,
+            category: '员工工资',
+            amount: 15800.00,
+            description: '12月份员工薪资发放',
+            date: '2024-01-05',
+            supplier: '内部',
+            receipt: 'PAYROLL_004.xlsx',
+            status: 'paid'
+        },
+        {
+            id: 5,
+            category: '房租',
+            amount: 8000.00,
+            description: '1月份店铺租金',
+            date: '2024-01-01',
+            supplier: '物业管理公司',
+            receipt: 'RENT_005.pdf',
+            status: 'pending'
+        }
     ]
 };
 

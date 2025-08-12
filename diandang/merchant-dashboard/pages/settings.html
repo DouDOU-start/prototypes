@@ -1,0 +1,234 @@
+<!-- 设置页面 -->
+<div class="page" id="settings" style="display: none;">
+    <div class="page-content">
+        <!-- 店铺基本信息 -->
+        <div class="settings-section">
+            <div class="section-header">
+                <h3><i class="fas fa-store"></i> 店铺信息</h3>
+                <button class="btn btn-primary btn-sm" onclick="editStoreInfo()">
+                    <i class="fas fa-edit"></i>
+                    编辑
+                </button>
+            </div>
+            <div class="store-info-grid">
+                <div class="info-item">
+                    <div class="info-label">店铺名称</div>
+                    <div class="info-value" id="store-name">仓和餐厅</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">联系电话</div>
+                    <div class="info-value" id="store-phone">028-8888-6666</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">店铺地址</div>
+                    <div class="info-value" id="store-address">成都市锦江区春熙路123号</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">营业时间</div>
+                    <div class="info-value" id="store-hours">10:00-22:00</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">店铺状态</div>
+                    <div class="info-value">
+                        <span class="status-badge online">营业中</span>
+                        <button class="btn btn-sm btn-toggle" onclick="toggleStoreStatus()">
+                            <i class="fas fa-power-off"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 桌位管理 -->
+        <div class="settings-section">
+            <div class="section-header">
+                <h3><i class="fas fa-chair"></i> 桌位管理</h3>
+                <button class="btn btn-success btn-sm" onclick="addNewTable()">
+                    <i class="fas fa-plus"></i>
+                    添加桌位
+                </button>
+            </div>
+            <div class="table-layout-container">
+                <div class="table-layout-grid" id="table-layout">
+                    <!-- JavaScript 动态生成桌位布局 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 员工管理 -->
+        <div class="settings-section">
+            <div class="section-header">
+                <h3><i class="fas fa-users-cog"></i> 员工管理</h3>
+                <button class="btn btn-primary btn-sm" onclick="addNewStaff()">
+                    <i class="fas fa-user-plus"></i>
+                    添加员工
+                </button>
+            </div>
+            <div class="staff-list" id="staff-list">
+                <!-- JavaScript 动态生成员工列表 -->
+            </div>
+        </div>
+
+        <!-- 系统设置 -->
+        <div class="settings-section">
+            <div class="section-header">
+                <h3><i class="fas fa-cog"></i> 系统设置</h3>
+            </div>
+            <div class="system-settings">
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <i class="fas fa-bell"></i>
+                        消息通知
+                    </div>
+                    <div class="setting-control">
+                        <label class="switch">
+                            <input type="checkbox" id="notifications-enabled" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <i class="fas fa-volume-up"></i>
+                        语音提醒
+                    </div>
+                    <div class="setting-control">
+                        <label class="switch">
+                            <input type="checkbox" id="voice-alerts" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <i class="fas fa-print"></i>
+                        自动打印
+                    </div>
+                    <div class="setting-control">
+                        <label class="switch">
+                            <input type="checkbox" id="auto-print" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        库存预警
+                    </div>
+                    <div class="setting-control">
+                        <input type="number" id="stock-warning-threshold" value="10" min="1" max="100">
+                        <span class="unit">件以下</span>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <i class="fas fa-clock"></i>
+                        超时提醒
+                    </div>
+                    <div class="setting-control">
+                        <input type="number" id="timeout-warning" value="30" min="5" max="60">
+                        <span class="unit">分钟</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据备份 -->
+        <div class="settings-section">
+            <div class="section-header">
+                <h3><i class="fas fa-database"></i> 数据管理</h3>
+            </div>
+            <div class="data-management">
+                <div class="data-item">
+                    <div class="data-info">
+                        <div class="data-title">数据备份</div>
+                        <div class="data-desc">上次备份：2024-01-15 02:00</div>
+                    </div>
+                    <button class="btn btn-info" onclick="backupData()">
+                        <i class="fas fa-download"></i>
+                        立即备份
+                    </button>
+                </div>
+                <div class="data-item">
+                    <div class="data-info">
+                        <div class="data-title">数据导出</div>
+                        <div class="data-desc">导出营业数据报表</div>
+                    </div>
+                    <button class="btn btn-success" onclick="exportData()">
+                        <i class="fas fa-file-export"></i>
+                        导出数据
+                    </button>
+                </div>
+                <div class="data-item">
+                    <div class="data-info">
+                        <div class="data-title">系统更新</div>
+                        <div class="data-desc">当前版本：v2.1.3</div>
+                    </div>
+                    <button class="btn btn-warning" onclick="checkUpdates()">
+                        <i class="fas fa-sync-alt"></i>
+                        检查更新
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 帮助与支持 -->
+        <div class="settings-section">
+            <div class="section-header">
+                <h3><i class="fas fa-question-circle"></i> 帮助与支持</h3>
+            </div>
+            <div class="help-support">
+                <div class="help-item">
+                    <div class="help-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="help-info">
+                        <div class="help-title">使用手册</div>
+                        <div class="help-desc">查看详细使用说明</div>
+                    </div>
+                    <button class="btn btn-outline">查看</button>
+                </div>
+                <div class="help-item">
+                    <div class="help-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="help-info">
+                        <div class="help-title">在线客服</div>
+                        <div class="help-desc">7×24小时技术支持</div>
+                    </div>
+                    <button class="btn btn-outline" onclick="contactSupport()">联系</button>
+                </div>
+                <div class="help-item">
+                    <div class="help-icon">
+                        <i class="fas fa-bug"></i>
+                    </div>
+                    <div class="help-info">
+                        <div class="help-title">问题反馈</div>
+                        <div class="help-desc">报告系统问题或建议</div>
+                    </div>
+                    <button class="btn btn-outline" onclick="reportIssue()">反馈</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑模态框 -->
+<div class="modal-overlay" id="edit-modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modal-title">编辑信息</h3>
+            <button class="close-btn" onclick="closeEditModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body" id="modal-body">
+            <!-- 动态内容 -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeEditModal()">取消</button>
+            <button class="btn btn-primary" onclick="saveChanges()">保存</button>
+        </div>
+    </div>
+</div>
