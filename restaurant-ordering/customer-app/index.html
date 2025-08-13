@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Noir Dining">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    <title>Noir Dining - 精致点餐</title>
+    <link rel="apple-touch-icon" href="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=180&h=180&fit=crop&crop=center">
+    <link rel="shortcut icon" href="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=32&h=32&fit=crop&crop=center">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/styles/main.css" rel="stylesheet">
+</head>
+<body class="bg-white min-h-screen">
+    <!-- Loading Screen -->
+    <div id="loading" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
+        <div class="text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+            <p class="text-gray-400 font-light">Loading...</p>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div id="app" class="max-w-md mx-auto bg-white min-h-screen" style="display: none;">
+        <!-- Header -->
+        <header id="header" class="bg-white text-black sticky top-0 z-40 border-b border-gray-100">
+            <div class="flex items-center justify-between p-4">
+                <button id="backBtn" class="text-black hidden">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </button>
+                <h1 id="headerTitle" class="text-xl font-bold tracking-wide">NOIR DINING</h1>
+                <div class="flex items-center space-x-4">
+                    <button id="searchBtn" class="text-black">
+                        <i class="fas fa-search text-lg"></i>
+                    </button>
+                    <button id="cartBtn" class="relative text-black">
+                        <i class="fas fa-shopping-cart text-lg"></i>
+                        <span id="cartCount" class="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search Bar -->
+        <div id="searchBar" class="bg-white border-b border-gray-100 hidden">
+            <div class="p-4">
+                <div class="relative">
+                    <input type="text" id="searchInput" placeholder="Search dishes..." 
+                           class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-full bg-gray-50 focus:bg-white focus:ring-1 focus:ring-black focus:border-black transition-all">
+                    <i class="fas fa-search absolute left-4 top-4 text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main id="mainContent" class="pb-20">
+            <!-- Home Page -->
+            <div id="homePage" class="page active">
+                <!-- Restaurant Hero -->
+                <div class="relative h-64 bg-black">
+                    <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=400&fit=crop" 
+                         alt="Restaurant" class="w-full h-full object-cover opacity-60">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <h2 class="text-3xl font-light mb-2 tracking-widest">NOIR</h2>
+                            <p class="text-sm font-light opacity-90 tracking-wide">CONTEMPORARY DINING</p>
+                            <div class="flex items-center justify-center mt-4 space-x-6 text-xs font-light">
+                                <span class="flex items-center"><i class="fas fa-star mr-1"></i> 4.8</span>
+                                <span>1K+ Orders</span>
+                                <span>30min Delivery</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="p-6">
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <button class="quick-action text-center p-6 border border-gray-200 hover:border-black hover:bg-gray-50 transition-all">
+                            <i class="fas fa-fire text-black text-2xl mb-3"></i>
+                            <p class="text-sm text-black font-light">TODAY'S SPECIAL</p>
+                        </button>
+                        <button class="quick-action text-center p-6 border border-gray-200 hover:border-black hover:bg-gray-50 transition-all">
+                            <i class="fas fa-utensils text-black text-2xl mb-3"></i>
+                            <p class="text-sm text-black font-light">SIGNATURE</p>
+                        </button>
+                        <button class="quick-action text-center p-6 border border-gray-200 hover:border-black hover:bg-gray-50 transition-all">
+                            <i class="fas fa-leaf text-black text-2xl mb-3"></i>
+                            <p class="text-sm text-black font-light">FRESH & LIGHT</p>
+                        </button>
+                        <button class="quick-action text-center p-6 border border-gray-200 hover:border-black hover:bg-gray-50 transition-all">
+                            <i class="fas fa-cocktail text-black text-2xl mb-3"></i>
+                            <p class="text-sm text-black font-light">BEVERAGES</p>
+                        </button>
+                    </div>
+
+                    <!-- Featured Dishes -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-light tracking-wide mb-4 text-black">FEATURED TODAY</h3>
+                        <div class="space-y-4" id="featuredDishes">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Categories -->
+                    <div>
+                        <h3 class="text-lg font-light tracking-wide mb-4 text-black">EXPLORE MENU</h3>
+                        <div class="grid grid-cols-2 gap-4" id="categories">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Page -->
+            <div id="menuPage" class="page hidden">
+                <!-- Category Tabs -->
+                <div class="sticky top-16 bg-white border-b border-gray-100 z-30">
+                    <div class="flex overflow-x-auto scrollbar-hide px-4" id="categoryTabs">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Menu Items -->
+                <div class="p-6 space-y-6" id="menuItems">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Cart Page -->
+            <div id="cartPage" class="page hidden">
+                <div class="p-6">
+                    <!-- Cart Items -->
+                    <div class="mb-8" id="cartItems">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+
+                    <!-- Delivery Info -->
+                    <div class="border border-gray-200 p-6 mb-6">
+                        <h3 class="font-light tracking-wide mb-4 text-black">DELIVERY INFORMATION</h3>
+                        <div class="space-y-4">
+                            <input type="text" placeholder="Full Name" class="w-full p-3 border border-gray-200 focus:border-black transition-colors">
+                            <input type="tel" placeholder="Phone Number" class="w-full p-3 border border-gray-200 focus:border-black transition-colors">
+                            <textarea placeholder="Delivery Address" rows="3" class="w-full p-3 border border-gray-200 focus:border-black transition-colors resize-none"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="border border-gray-200 p-6 mb-6">
+                        <div class="flex justify-between mb-3 text-gray-600">
+                            <span class="font-light">Subtotal</span>
+                            <span id="subtotal">$0.00</span>
+                        </div>
+                        <div class="flex justify-between mb-3 text-gray-600">
+                            <span class="font-light">Delivery Fee</span>
+                            <span>$5.00</span>
+                        </div>
+                        <div class="border-t border-gray-200 pt-3">
+                            <div class="flex justify-between font-medium text-lg">
+                                <span>Total</span>
+                                <span id="total" class="text-black">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Page -->
+            <div id="ordersPage" class="page hidden">
+                <div class="p-6">
+                    <!-- Order Tabs -->
+                    <div class="flex border-b border-gray-200 mb-6">
+                        <button class="flex-1 py-3 text-center border-b-2 border-black text-black font-light tracking-wide">ACTIVE</button>
+                        <button class="flex-1 py-3 text-center text-gray-400 font-light tracking-wide">COMPLETED</button>
+                    </div>
+
+                    <!-- Order List -->
+                    <div class="space-y-6" id="ordersList">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-100">
+            <div class="flex">
+                <button class="nav-item flex-1 py-4 text-center" data-page="home">
+                    <i class="fas fa-home text-lg mb-1"></i>
+                    <p class="text-xs font-light tracking-wide">HOME</p>
+                </button>
+                <button class="nav-item flex-1 py-4 text-center" data-page="menu">
+                    <i class="fas fa-utensils text-lg mb-1"></i>
+                    <p class="text-xs font-light tracking-wide">MENU</p>
+                </button>
+                <button class="nav-item flex-1 py-4 text-center" data-page="cart">
+                    <i class="fas fa-shopping-cart text-lg mb-1"></i>
+                    <p class="text-xs font-light tracking-wide">CART</p>
+                </button>
+                <button class="nav-item flex-1 py-4 text-center" data-page="orders">
+                    <i class="fas fa-receipt text-lg mb-1"></i>
+                    <p class="text-xs font-light tracking-wide">ORDERS</p>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Order Button (For Cart Page) -->
+        <div id="orderButton" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 w-full max-w-md px-6 hidden">
+            <button class="w-full bg-black text-white py-4 font-light tracking-widest hover:bg-gray-800 transition-colors">
+                PLACE ORDER
+            </button>
+        </div>
+    </div>
+
+    <!-- Dish Detail Modal -->
+    <div id="dishModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden">
+        <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white">
+            <div id="dishModalContent">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/scripts/app.js"></script>
+    <script src="assets/scripts/router.js"></script>
+    <script src="assets/scripts/state.js"></script>
+    <script src="assets/scripts/utils.js"></script>
+    <script src="assets/data/mock-data.js"></script>
+</body>
+</html>

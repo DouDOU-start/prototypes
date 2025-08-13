@@ -1,0 +1,751 @@
+/* Instagram-Style Black/White/Gray Theme */
+
+/* Global Typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Hide scrollbar for horizontal scroll */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Page transitions */
+.page {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page.hidden {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+.page.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Navigation active state */
+.nav-item {
+    color: #9ca3af;
+    transition: all 0.3s ease;
+}
+
+.nav-item.active {
+    color: #000000;
+}
+
+.nav-item:hover {
+    color: #374151;
+}
+
+/* Quick action hover effects */
+.quick-action {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.quick-action::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.05), transparent);
+    transition: left 0.5s;
+}
+
+.quick-action:hover::before {
+    left: 100%;
+}
+
+.quick-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Instagram-style card designs */
+.dish-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #f3f4f6;
+    background: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+
+.dish-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.dish-card:hover::before {
+    transform: translateX(100%);
+}
+
+.dish-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-color: #d1d5db;
+}
+
+/* Category tab styles */
+.category-tab {
+    padding: 16px 24px;
+    white-space: nowrap;
+    color: #9ca3af;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+    font-weight: 300;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.category-tab.active {
+    color: #000000;
+    border-bottom-color: #000000;
+    font-weight: 400;
+}
+
+.category-tab:hover {
+    color: #374151;
+}
+
+/* Cart item animations */
+.cart-item {
+    animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #f3f4f6;
+    border-radius: 0;
+    background: #ffffff;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}
+
+.loading-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Modal animations */
+#dishModal {
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#dishModal > div {
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translate(-50%, 100%); }
+    to { transform: translate(-50%, 0); }
+}
+
+/* Button hover effects */
+.btn-primary {
+    background: #000000;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    font-weight: 300;
+    letter-spacing: 2px;
+}
+
+.btn-primary:hover {
+    background: #1f2937;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Quantity controls */
+.quantity-control {
+    display: inline-flex;
+    align-items: center;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0;
+    padding: 2px;
+}
+
+.quantity-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #000000;
+    font-weight: 300;
+    transition: all 0.2s ease;
+    background: #ffffff;
+}
+
+.quantity-btn:hover {
+    background: #000000;
+    color: #ffffff;
+}
+
+.quantity-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.quantity-display {
+    min-width: 40px;
+    text-align: center;
+    font-weight: 400;
+    color: #000000;
+    font-size: 14px;
+    padding: 0 8px;
+}
+
+/* Order status badges */
+.status-badge {
+    padding: 6px 16px;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 0;
+}
+
+.status-pending {
+    background: #f3f4f6;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+}
+
+.status-preparing {
+    background: #f9fafb;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.status-delivering {
+    background: #f3f4f6;
+    color: #111827;
+    border: 1px solid #9ca3af;
+}
+
+.status-completed {
+    background: #000000;
+    color: #ffffff;
+}
+
+/* Custom toast notifications */
+.toast {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 16px 32px;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    z-index: 1000;
+    animation: toastSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+}
+
+@keyframes toastSlide {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+/* Image loading placeholder */
+.img-placeholder {
+    background: linear-gradient(90deg, #f8fafc 25%, #f1f5f9 50%, #f8fafc 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Instagram-style image filters */
+.img-filter {
+    filter: contrast(1.1) saturate(0.8) brightness(1.05);
+    transition: filter 0.3s ease;
+}
+
+.img-filter:hover {
+    filter: contrast(1.2) saturate(1) brightness(1.1);
+}
+
+/* Glassmorphism effects */
+.glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Subtle animations for page elements */
+.fade-in-up {
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile and Tablet Responsive Design */
+
+/* Small phones (320px - 480px) */
+@media (max-width: 480px) {
+    .grid-cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+    
+    .quick-action {
+        padding: 20px 12px;
+    }
+    
+    .quick-action p {
+        font-size: 10px;
+        letter-spacing: 1px;
+    }
+    
+    .quick-action i {
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+    
+    /* Header adjustments */
+    #headerTitle {
+        font-size: 16px;
+        letter-spacing: 2px;
+    }
+    
+    /* Card adjustments */
+    .dish-card {
+        padding: 16px;
+    }
+    
+    /* Modal adjustments */
+    #dishModal > div {
+        margin: 0;
+        border-radius: 0;
+    }
+    
+    /* Bottom navigation */
+    .nav-item {
+        padding: 12px 0;
+    }
+    
+    .nav-item i {
+        font-size: 16px;
+    }
+    
+    .nav-item p {
+        font-size: 9px;
+        letter-spacing: 0.5px;
+    }
+}
+
+/* Medium phones (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+    .grid-cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+    
+    .grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+    
+    .quick-action {
+        padding: 24px 16px;
+    }
+    
+    .dish-card {
+        padding: 20px;
+    }
+    
+    /* Larger touch targets */
+    .quantity-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+}
+
+/* Tablets (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    #app {
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+        box-shadow: none;
+        border-radius: 0;
+        min-height: 100vh;
+    }
+    
+    /* Two-column layout for larger content */
+    .grid-cols-2 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    
+    .grid-cols-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    
+    /* Larger cards for better tablet experience */
+    .dish-card {
+        padding: 24px;
+    }
+    
+    /* Modal adjustments for tablets */
+    #dishModal > div {
+        max-width: 600px;
+        margin: 40px auto;
+    }
+    
+    /* Bottom navigation for tablets */
+    nav {
+        max-width: 100%;
+        position: fixed;
+        left: 0;
+        transform: none;
+    }
+    
+    .nav-item {
+        padding: 20px 0;
+    }
+    
+    .nav-item i {
+        font-size: 20px;
+        margin-bottom: 6px;
+    }
+    
+    .nav-item p {
+        font-size: 11px;
+    }
+}
+
+/* Large tablets and small desktops (1025px+) */
+@media (min-width: 1025px) {
+    #app {
+        max-width: 768px;
+        margin: 0 auto;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+        min-height: 100vh;
+    }
+    
+    /* Multi-column layouts */
+    .grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .grid-cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    /* Sidebar navigation option for large screens */
+    main {
+        padding-bottom: 100px;
+    }
+}
+
+/* Touch-friendly improvements */
+@media (pointer: coarse) {
+    /* Larger touch targets */
+    .quick-action {
+        min-height: 80px;
+    }
+    
+    .nav-item {
+        min-height: 70px;
+    }
+    
+    .quantity-btn {
+        min-width: 40px;
+        min-height: 40px;
+    }
+    
+    /* Improved spacing for touch */
+    .category-tab {
+        padding: 20px 28px;
+        margin: 0 4px;
+    }
+    
+    /* Better button spacing */
+    #orderButton button {
+        padding: 20px 32px;
+        font-size: 14px;
+        letter-spacing: 2px;
+    }
+}
+
+/* Landscape phone optimizations */
+@media (max-height: 500px) and (orientation: landscape) {
+    .restaurant-banner {
+        height: 160px;
+    }
+    
+    .quick-action {
+        padding: 12px 8px;
+    }
+    
+    .quick-action i {
+        font-size: 18px;
+        margin-bottom: 4px;
+    }
+    
+    .quick-action p {
+        font-size: 9px;
+    }
+    
+    /* Compact navigation */
+    .nav-item {
+        padding: 8px 0;
+    }
+    
+    .nav-item i {
+        font-size: 14px;
+        margin-bottom: 2px;
+    }
+    
+    .nav-item p {
+        font-size: 8px;
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Crisp borders and shadows */
+    .dish-card {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    }
+    
+    .quick-action {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    #app {
+        box-shadow: none;
+        max-width: 100%;
+    }
+    
+    nav,
+    #orderButton {
+        display: none !important;
+    }
+    
+    main {
+        padding-bottom: 0 !important;
+    }
+}
+
+/* Safe area support for notched devices */
+@supports (padding: max(0px)) {
+    body {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .app-header {
+        padding-left: calc(16px + env(safe-area-inset-left));
+        padding-right: calc(16px + env(safe-area-inset-right));
+        padding-top: calc(16px + env(safe-area-inset-top));
+    }
+    
+    .bottom-nav {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+}
+
+/* Additional Instagram-style enhancements */
+
+/* Subtle hover states */
+.hover-lift:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+/* Minimal borders */
+.border-minimal {
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Text selection styling */
+::selection {
+    background: rgba(0, 0, 0, 0.1);
+    color: #000000;
+}
+
+/* Focus states for accessibility */
+button:focus,
+input:focus,
+textarea:focus {
+    outline: 2px solid rgba(0, 0, 0, 0.1);
+    outline-offset: 2px;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f8fafc;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* Subtle loading states */
+.loading-shimmer {
+    background: linear-gradient(90deg, #f8fafc 25%, #f1f5f9 50%, #f8fafc 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Instagram-style story circles */
+.story-circle {
+    background: linear-gradient(45deg, #f3f4f6, #e5e7eb);
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Minimal form styling */
+input[type="text"],
+input[type="tel"],
+textarea {
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    font-weight: 300;
+    letter-spacing: 0.5px;
+}
+
+input[type="text"]:focus,
+input[type="tel"]:focus,
+textarea:focus {
+    background: #ffffff;
+    border-color: #000000;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Elegant dividers */
+.divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+    margin: 24px 0;
+}
+
+/* Instagram-style image aspect ratios */
+.aspect-square {
+    aspect-ratio: 1 / 1;
+}
+
+.aspect-story {
+    aspect-ratio: 9 / 16;
+}
+
+/* Typography hierarchy */
+.text-hero {
+    font-size: 2.5rem;
+    font-weight: 100;
+    letter-spacing: 4px;
+    line-height: 1.2;
+}
+
+.text-subtitle {
+    font-size: 0.875rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.text-caption {
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    color: #6b7280;
+}

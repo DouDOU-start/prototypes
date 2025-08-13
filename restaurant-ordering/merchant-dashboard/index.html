@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="美味餐厅管理">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f97316">
+    <title>美味餐厅 - 商家管理后台</title>
+    <link rel="apple-touch-icon" href="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=180&h=180&fit=crop&crop=center">
+    <link rel="shortcut icon" href="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=32&h=32&fit=crop&crop=center">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/styles/main.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Loading Screen -->
+    <div id="loading" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
+        <div class="text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+            <p class="text-gray-600">加载中...</p>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div id="app" class="flex h-screen" style="display: none;">
+        <!-- Mobile Header (Hidden on desktop) -->
+        <div class="mobile-header lg:hidden">
+            <button class="mobile-menu-btn" onclick="dashboardApp.toggleMobileSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="flex items-center space-x-2">
+                <div class="w-6 h-6 bg-orange-500 rounded flex items-center justify-center">
+                    <i class="fas fa-utensils text-white text-xs"></i>
+                </div>
+                <h1 class="font-semibold text-gray-900">美味餐厅</h1>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button id="mobileNotificationBtn" class="relative p-2 text-gray-600 hover:text-gray-900" onclick="dashboardApp.toggleNotificationPanel()">
+                    <i class="fas fa-bell"></i>
+                    <span id="mobileNotificationBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div id="sidebar" class="w-64 bg-white shadow-lg flex flex-col">
+            <!-- Logo -->
+            <div class="p-6 border-b">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-utensils text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-gray-800">美味餐厅</h1>
+                        <p class="text-xs text-gray-500">商家管理后台</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <button class="nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left hover:bg-gray-100 transition-colors active" data-page="dashboard">
+                            <i class="fas fa-chart-line text-gray-600"></i>
+                            <span class="text-gray-700">数据概览</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left hover:bg-gray-100 transition-colors" data-page="orders">
+                            <i class="fas fa-receipt text-gray-600"></i>
+                            <span class="text-gray-700">订单管理</span>
+                            <span id="newOrdersBadge" class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full hidden">0</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left hover:bg-gray-100 transition-colors" data-page="menu">
+                            <i class="fas fa-utensils text-gray-600"></i>
+                            <span class="text-gray-700">菜单管理</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left hover:bg-gray-100 transition-colors" data-page="analytics">
+                            <i class="fas fa-chart-bar text-gray-600"></i>
+                            <span class="text-gray-700">数据分析</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left hover:bg-gray-100 transition-colors" data-page="settings">
+                            <i class="fas fa-cog text-gray-600"></i>
+                            <span class="text-gray-700">店铺设置</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- User Info -->
+            <div class="p-4 border-t">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-gray-600 text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-700">店长</p>
+                        <p class="text-xs text-gray-500">美味餐厅</p>
+                    </div>
+                    <button class="text-gray-400 hover:text-gray-600" title="退出登录">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="main-content" class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white shadow-sm border-b px-6 py-4 hidden lg:block">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 id="pageTitle" class="text-2xl font-bold text-gray-800">数据概览</h2>
+                        <p id="pageSubtitle" class="text-sm text-gray-500">实时查看餐厅运营数据</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- Notifications -->
+                        <button id="notificationBtn" class="relative p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span id="notificationBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                        </button>
+                        
+                        <!-- Quick Actions -->
+                        <div class="flex items-center space-x-2">
+                            <button id="refreshBtn" class="px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg text-sm">
+                                <i class="fas fa-sync-alt mr-1"></i>
+                                刷新
+                            </button>
+                            <div class="flex items-center space-x-2 text-sm text-gray-500">
+                                <i class="fas fa-wifi text-green-500"></i>
+                                <span>已连接</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="flex-1 overflow-auto p-6">
+                <!-- Dashboard Page -->
+                <div id="dashboardPage" class="page active">
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex items-center">
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-600">今日订单</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="todayOrders">0</p>
+                                    <p class="text-xs text-green-600 mt-1">
+                                        <i class="fas fa-arrow-up"></i> +12.5%
+                                    </p>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-shopping-cart text-blue-600"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex items-center">
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-600">今日营收</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="todayRevenue">¥0</p>
+                                    <p class="text-xs text-green-600 mt-1">
+                                        <i class="fas fa-arrow-up"></i> +8.2%
+                                    </p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-dollar-sign text-green-600"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex items-center">
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-600">待处理订单</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="pendingOrders">0</p>
+                                    <p class="text-xs text-orange-600 mt-1">
+                                        <i class="fas fa-clock"></i> 需关注
+                                    </p>
+                                </div>
+                                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-clock text-orange-600"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex items-center">
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-600">客户满意度</p>
+                                    <p class="text-2xl font-bold text-gray-900">4.8</p>
+                                    <p class="text-xs text-yellow-600 mt-1">
+                                        <i class="fas fa-star"></i> 优秀
+                                    </p>
+                                </div>
+                                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-star text-yellow-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts and Recent Orders -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Recent Orders -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold">最近订单</h3>
+                                <button class="text-sm text-orange-600 hover:text-orange-700">查看全部</button>
+                            </div>
+                            <div id="recentOrdersList" class="space-y-3">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- Popular Dishes -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold">热销菜品</h3>
+                                <button class="text-sm text-orange-600 hover:text-orange-700">查看详情</button>
+                            </div>
+                            <div id="popularDishesList" class="space-y-3">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Page -->
+                <div id="ordersPage" class="page hidden">
+                    <!-- Order Filters -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+                        <div class="flex flex-wrap items-center gap-4">
+                            <div class="flex items-center space-x-2">
+                                <label class="text-sm font-medium text-gray-700">状态筛选:</label>
+                                <select id="orderStatusFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                    <option value="all">全部订单</option>
+                                    <option value="pending">待处理</option>
+                                    <option value="preparing">准备中</option>
+                                    <option value="delivering">配送中</option>
+                                    <option value="completed">已完成</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <label class="text-sm font-medium text-gray-700">日期:</label>
+                                <input type="date" id="orderDateFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            </div>
+                            <button id="resetFiltersBtn" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg">
+                                重置筛选
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Orders List -->
+                    <div class="bg-white rounded-lg shadow-sm">
+                        <div class="p-4 border-b">
+                            <h3 class="text-lg font-semibold">订单列表</h3>
+                        </div>
+                        <div id="ordersListContainer" class="divide-y divide-gray-200">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Menu Management Page -->
+                <div id="menuPage" class="page hidden">
+                    <!-- Menu Actions -->
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center space-x-4">
+                            <h3 class="text-lg font-semibold">菜品管理</h3>
+                            <div class="flex items-center space-x-2">
+                                <select id="categoryFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                    <option value="">全部分类</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button id="addDishBtn" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 text-sm font-medium">
+                            <i class="fas fa-plus mr-2"></i>
+                            添加菜品
+                        </button>
+                    </div>
+
+                    <!-- Menu Grid -->
+                    <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Analytics Page -->
+                <div id="analyticsPage" class="page hidden">
+                    <div class="space-y-6">
+                        <!-- Time Range Selector -->
+                        <div class="bg-white rounded-lg shadow-sm p-4">
+                            <div class="flex items-center space-x-4">
+                                <label class="text-sm font-medium text-gray-700">时间范围:</label>
+                                <div class="flex space-x-2">
+                                    <button class="time-range-btn px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 active" data-range="7">
+                                        最近7天
+                                    </button>
+                                    <button class="time-range-btn px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50" data-range="30">
+                                        最近30天
+                                    </button>
+                                    <button class="time-range-btn px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50" data-range="90">
+                                        最近3个月
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analytics Content -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="bg-white rounded-lg shadow-sm p-6">
+                                <h3 class="text-lg font-semibold mb-4">销售趋势</h3>
+                                <div id="salesChart" class="h-64 flex items-center justify-center text-gray-500">
+                                    <div class="text-center">
+                                        <i class="fas fa-chart-line text-4xl mb-2"></i>
+                                        <p>销售趋势图表</p>
+                                        <p class="text-sm">(Demo演示)</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-lg shadow-sm p-6">
+                                <h3 class="text-lg font-semibold mb-4">订单分布</h3>
+                                <div id="orderChart" class="h-64 flex items-center justify-center text-gray-500">
+                                    <div class="text-center">
+                                        <i class="fas fa-chart-pie text-4xl mb-2"></i>
+                                        <p>订单分布图表</p>
+                                        <p class="text-sm">(Demo演示)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analytics Tables -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <h3 class="text-lg font-semibold mb-4">菜品销量排行</h3>
+                            <div id="dishRankingTable">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Page -->
+                <div id="settingsPage" class="page hidden">
+                    <div class="max-w-4xl space-y-6">
+                        <!-- Restaurant Info -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <h3 class="text-lg font-semibold mb-4">基本信息</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">餐厅名称</label>
+                                    <input type="text" value="美味餐厅" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">联系电话</label>
+                                    <input type="tel" value="010-12345678" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">餐厅地址</label>
+                                    <input type="text" value="北京市朝阳区美食街123号" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">餐厅简介</label>
+                                    <textarea rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2">正宗川菜，新鲜食材，快速配送</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Business Hours -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <h3 class="text-lg font-semibold mb-4">营业时间</h3>
+                            <div class="space-y-3" id="businessHours">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- Delivery Settings -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <h3 class="text-lg font-semibold mb-4">配送设置</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">配送费</label>
+                                    <input type="number" value="5" step="0.5" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">起送金额</label>
+                                    <input type="number" value="20" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">配送范围(km)</label>
+                                    <input type="number" value="5" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">预计配送时间(分钟)</label>
+                                    <input type="number" value="30" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Save Button -->
+                        <div class="flex justify-end">
+                            <button class="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 font-medium">
+                                保存设置
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div id="orderDetailModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-screen overflow-y-auto">
+                <div id="orderDetailContent">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dish Edit Modal -->
+    <div id="dishEditModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-lg w-full">
+                <div id="dishEditContent">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../shared/data/shared-data.js"></script>
+    <script src="assets/data/mock-data.js"></script>
+    <script src="assets/scripts/state.js"></script>
+    <script src="assets/scripts/router.js"></script>
+    <script src="assets/scripts/utils.js"></script>
+    <script src="assets/scripts/app.js"></script>
+</body>
+</html>

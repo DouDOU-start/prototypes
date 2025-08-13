@@ -52,8 +52,15 @@ function generateIndexPage() {
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="原型展示">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#667eea">
     <title>原型展示 - Prototype Showcase</title>
+    <link rel="apple-touch-icon" href="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=180&h=180&fit=crop&crop=center">
+    <link rel="shortcut icon" href="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=32&h=32&fit=crop&crop=center">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -219,6 +226,49 @@ function generateIndexPage() {
             opacity: 0.6;
         }
 
+        /* Fullscreen support for all devices */
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: env(safe-area-inset-left);
+                padding-right: env(safe-area-inset-right);
+                padding-top: env(safe-area-inset-top);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+            
+            .container {
+                margin-left: calc(0px - env(safe-area-inset-left));
+                margin-right: calc(0px - env(safe-area-inset-right));
+                margin-top: calc(0px - env(safe-area-inset-top));
+                margin-bottom: calc(0px - env(safe-area-inset-bottom));
+                padding-left: calc(32px + env(safe-area-inset-left));
+                padding-right: calc(32px + env(safe-area-inset-right));
+                padding-top: calc(32px + env(safe-area-inset-top));
+                padding-bottom: calc(32px + env(safe-area-inset-bottom));
+            }
+        }
+
+        /* iPad Pro fullscreen optimization */
+        @media screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) {
+            body {
+                background-attachment: fixed;
+            }
+            
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 48px;
+            }
+            
+            .projects {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 32px;
+            }
+            
+            .project {
+                padding: 32px;
+            }
+        }
+
         @media (max-width: 768px) {
             .projects {
                 grid-template-columns: 1fr;
@@ -296,6 +346,37 @@ function generateIndexPage() {
                             <div class="endpoint-details">
                                 <h3>管理员后台</h3>
                                 <p>商城管理系统</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-arrow-right endpoint-arrow"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 餐厅点单系统 -->
+            <div class="project">
+                <div class="project-header">
+                    <div class="project-icon">🍽️</div>
+                    <div class="project-name">餐厅点单</div>
+                </div>
+                <p class="project-description">全新的餐厅在线点餐系统，包含用户点餐端和商家管理后台</p>
+                <div class="endpoints">
+                    <a href="/restaurant-ordering/customer-app/" class="endpoint">
+                        <div class="endpoint-info">
+                            <i class="fas fa-mobile-alt endpoint-icon"></i>
+                            <div class="endpoint-details">
+                                <h3>用户点餐端</h3>
+                                <p>在线点餐小程序</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-arrow-right endpoint-arrow"></i>
+                    </a>
+                    <a href="/restaurant-ordering/merchant-dashboard/login.html" class="endpoint">
+                        <div class="endpoint-info">
+                            <i class="fas fa-chart-line endpoint-icon"></i>
+                            <div class="endpoint-details">
+                                <h3>商家管理后台</h3>
+                                <p>订单管理系统（需要登录）</p>
                             </div>
                         </div>
                         <i class="fas fa-arrow-right endpoint-arrow"></i>
@@ -492,6 +573,70 @@ const server = http.createServer(async (req, res) => {
                 `);
             }
             
+        } else if (pathname.startsWith('/restaurant-ordering/')) {
+            // 餐厅点单系统路由
+            let filePath;
+            
+            if (pathname === '/restaurant-ordering/' || pathname === '/restaurant-ordering') {
+                // 重定向到首页，让用户选择具体端点
+                res.writeHead(302, { 'Location': '/' });
+                res.end();
+                return;
+            } else if (pathname === '/restaurant-ordering/customer-app') {
+                // 重定向到以斜杠结尾的URL，确保相对路径正确解析
+                res.writeHead(301, { 'Location': '/restaurant-ordering/customer-app/' });
+                res.end();
+                return;
+            } else if (pathname === '/restaurant-ordering/customer-app/') {
+                filePath = path.join(__dirname, 'restaurant-ordering', 'customer-app', 'index.html');
+            } else if (pathname === '/restaurant-ordering/merchant-dashboard') {
+                // 重定向到以斜杠结尾的URL，确保相对路径正确解析
+                res.writeHead(301, { 'Location': '/restaurant-ordering/merchant-dashboard/' });
+                res.end();
+                return;
+            } else if (pathname === '/restaurant-ordering/merchant-dashboard/') {
+                filePath = path.join(__dirname, 'restaurant-ordering', 'merchant-dashboard', 'index.html');
+            } else if (pathname.startsWith('/restaurant-ordering/customer-app/')) {
+                const subPath = pathname.replace('/restaurant-ordering/customer-app/', '');
+                filePath = path.join(__dirname, 'restaurant-ordering', 'customer-app', subPath);
+            } else if (pathname.startsWith('/restaurant-ordering/merchant-dashboard/')) {
+                const subPath = pathname.replace('/restaurant-ordering/merchant-dashboard/', '');
+                filePath = path.join(__dirname, 'restaurant-ordering', 'merchant-dashboard', subPath);
+            } else if (pathname.startsWith('/restaurant-ordering/shared/')) {
+                const subPath = pathname.replace('/restaurant-ordering/shared/', '');
+                filePath = path.join(__dirname, 'restaurant-ordering', 'shared', subPath);
+            } else {
+                // 其他 restaurant-ordering 路径
+                const relativePath = pathname.replace('/restaurant-ordering/', '');
+                filePath = path.join(__dirname, 'restaurant-ordering', relativePath);
+            }
+            
+            console.log(`餐厅点单请求: ${pathname} -> ${filePath}`);
+            
+            if (fileExists(filePath)) {
+                const data = await readFile(filePath);
+                const mimeType = getMimeType(filePath);
+                
+                let contentType = mimeType;
+                if (mimeType === 'text/css' || mimeType === 'application/javascript' || mimeType === 'text/html') {
+                    contentType += '; charset=utf-8';
+                }
+                
+                res.writeHead(200, { 'Content-Type': contentType });
+                res.end(data);
+                console.log(`✅ 成功加载: ${pathname}`);
+            } else {
+                console.log(`❌ 文件不存在: ${filePath}`);
+                res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+                res.end(`
+                    <div style="text-align: center; padding: 50px; font-family: Arial;">
+                        <h2>404 - 页面未找到</h2>
+                        <p>餐厅点单文件不存在: ${pathname}</p>
+                        <a href="/">返回首页</a>
+                    </div>
+                `);
+            }
+            
         } else {
             // 404 页面
             res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
@@ -535,6 +680,8 @@ server.listen(PORT, HOST, () => {
     console.log(`     点当餐厅 - 商家后台:     http://localhost:${PORT}/diandang/merchant/`);
     console.log(`     Mall商城 - 小程序端:     http://localhost:${PORT}/mall/miniprogram/`);
     console.log(`     Mall商城 - 管理员后台:   http://localhost:${PORT}/mall/admin/`);
+    console.log(`     餐厅点单 - 用户端:       http://localhost:${PORT}/restaurant-ordering/customer-app/`);
+    console.log(`     餐厅点单 - 商家端:       http://localhost:${PORT}/restaurant-ordering/merchant-dashboard/`);
     console.log('');
     console.log(`   公网访问:`);
     console.log(`     首页:                    http://106.12.5.203:${PORT}`);
@@ -542,6 +689,8 @@ server.listen(PORT, HOST, () => {
     console.log(`     点当餐厅 - 商家后台:     http://106.12.5.203:${PORT}/diandang/merchant/`);
     console.log(`     Mall商城 - 小程序端:     http://106.12.5.203:${PORT}/mall/miniprogram/`);
     console.log(`     Mall商城 - 管理员后台:   http://106.12.5.203:${PORT}/mall/admin/`);
+    console.log(`     餐厅点单 - 用户端:       http://106.12.5.203:${PORT}/restaurant-ordering/customer-app/`);
+    console.log(`     餐厅点单 - 商家端:       http://106.12.5.203:${PORT}/restaurant-ordering/merchant-dashboard/`);
     console.log('');
     console.log('💡 使用提示:');
     console.log('   - 所有原型都已整合到统一平台');

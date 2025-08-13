@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="美味餐厅登录">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#667eea">
+    <title>美味餐厅 - 商家登录</title>
+    <link rel="apple-touch-icon" href="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=180&h=180&fit=crop&crop=center">
+    <link rel="shortcut icon" href="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=32&h=32&fit=crop&crop=center">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles for login page */
+        .login-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .input-focus:focus {
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+            border-color: #f97316;
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #ea580c, #dc2626);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(249, 115, 22, 0.3);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .slide-up {
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile responsive adjustments */
+        @media (max-width: 640px) {
+            .login-container {
+                margin: 16px;
+                padding: 24px;
+            }
+            
+            .login-title {
+                font-size: 24px;
+            }
+            
+            .input-field {
+                padding: 14px 16px;
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+        }
+
+        /* Tablet adjustments */
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .login-container {
+                max-width: 400px;
+                padding: 32px;
+            }
+        }
+
+        /* Error shake animation */
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* iPad fullscreen support */
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: env(safe-area-inset-left);
+                padding-right: env(safe-area-inset-right);
+                padding-top: env(safe-area-inset-top);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+            
+            .login-container {
+                margin-left: calc(16px + env(safe-area-inset-left));
+                margin-right: calc(16px + env(safe-area-inset-right));
+                margin-top: calc(16px + env(safe-area-inset-top));
+                margin-bottom: calc(16px + env(safe-area-inset-bottom));
+            }
+        }
+
+        /* iPad Pro fullscreen optimization */
+        @media screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) {
+            .login-bg {
+                background-attachment: fixed;
+            }
+            
+            .login-container {
+                max-width: 500px;
+                padding: 48px;
+            }
+            
+            .login-title {
+                font-size: 36px;
+            }
+            
+            .input-field {
+                padding: 16px 20px;
+                font-size: 18px;
+            }
+            
+            .btn-gradient {
+                padding: 16px 24px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body class="login-bg">
+    <!-- Login Container -->
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="login-container w-full max-w-md glass-effect rounded-2xl shadow-2xl p-8 fade-in">
+            <!-- Logo and Title -->
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center shadow-lg">
+                    <i class="fas fa-utensils text-white text-2xl"></i>
+                </div>
+                <h1 class="login-title text-3xl font-bold text-white mb-2">美味餐厅</h1>
+                <p class="text-blue-100 text-sm">商家管理后台登录</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="space-y-6 slide-up">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-blue-100 mb-2">
+                        <i class="fas fa-user mr-2"></i>
+                        用户名
+                    </label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username"
+                        class="input-field input-focus w-full px-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:bg-opacity-30 transition-all"
+                        placeholder="请输入用户名"
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-blue-100 mb-2">
+                        <i class="fas fa-lock mr-2"></i>
+                        密码
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password"
+                            class="input-field input-focus w-full px-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:bg-opacity-30 transition-all pr-12"
+                            placeholder="请输入密码"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button 
+                            type="button" 
+                            id="togglePassword"
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-200 hover:text-white transition-colors"
+                        >
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember Me and Forgot Password -->
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center text-blue-100">
+                        <input 
+                            type="checkbox" 
+                            id="remember" 
+                            class="mr-2 rounded border-white border-opacity-30 bg-white bg-opacity-20 text-orange-500 focus:ring-orange-500 focus:ring-opacity-50"
+                        >
+                        记住登录状态
+                    </label>
+                    <a href="#" class="text-blue-200 hover:text-white transition-colors">
+                        忘记密码？
+                    </a>
+                </div>
+
+                <!-- Login Button -->
+                <button 
+                    type="submit" 
+                    id="loginBtn"
+                    class="w-full btn-gradient text-white font-semibold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+                >
+                    <span id="loginBtnText">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        登录
+                    </span>
+                    <span id="loginBtnLoading" class="hidden">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>
+                        登录中...
+                    </span>
+                </button>
+
+                <!-- Error Message -->
+                <div id="errorMessage" class="hidden bg-red-500 bg-opacity-20 border border-red-500 border-opacity-30 rounded-lg p-3 text-red-100 text-sm">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span id="errorText">用户名或密码错误</span>
+                </div>
+            </form>
+
+            <!-- Demo Credentials -->
+            <div class="mt-8 p-4 bg-white bg-opacity-10 rounded-lg border border-white border-opacity-20">
+                <div class="text-center text-blue-100">
+                    <p class="text-sm mb-2">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        演示账户信息
+                    </p>
+                    <div class="space-y-1 text-xs">
+                        <p>用户名: <span class="font-mono bg-white bg-opacity-20 px-2 py-1 rounded">admin</span></p>
+                        <p>密码: <span class="font-mono bg-white bg-opacity-20 px-2 py-1 rounded">admin</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-8 text-center text-blue-200 text-xs">
+                <p>© 2024 美味餐厅管理系统</p>
+                <p class="mt-1">安全登录 · 数据加密</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        class LoginManager {
+            constructor() {
+                this.form = document.getElementById('loginForm');
+                this.usernameInput = document.getElementById('username');
+                this.passwordInput = document.getElementById('password');
+                this.togglePasswordBtn = document.getElementById('togglePassword');
+                this.loginBtn = document.getElementById('loginBtn');
+                this.errorMessage = document.getElementById('errorMessage');
+                this.loginBtnText = document.getElementById('loginBtnText');
+                this.loginBtnLoading = document.getElementById('loginBtnLoading');
+                
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.checkAutoLogin();
+                
+                // Auto-fill demo credentials for development
+                if (window.location.hostname === 'localhost' || window.location.hostname.includes('192.168')) {
+                    this.usernameInput.value = 'admin';
+                    this.passwordInput.value = 'admin';
+                }
+            }
+
+            bindEvents() {
+                // Form submission
+                this.form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleLogin();
+                });
+
+                // Password visibility toggle
+                this.togglePasswordBtn.addEventListener('click', () => {
+                    this.togglePasswordVisibility();
+                });
+
+                // Clear error on input
+                this.usernameInput.addEventListener('input', () => this.clearError());
+                this.passwordInput.addEventListener('input', () => this.clearError());
+
+                // Enter key support
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !this.isLoading) {
+                        this.handleLogin();
+                    }
+                });
+
+                // Demo credential click handlers
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.font-mono')) {
+                        const text = e.target.textContent.trim();
+                        navigator.clipboard?.writeText(text);
+                        this.showToast('已复制到剪贴板');
+                    }
+                });
+            }
+
+            togglePasswordVisibility() {
+                const isPassword = this.passwordInput.type === 'password';
+                this.passwordInput.type = isPassword ? 'text' : 'password';
+                
+                const icon = this.togglePasswordBtn.querySelector('i');
+                icon.className = isPassword ? 'fas fa-eye-slash' : 'fas fa-eye';
+            }
+
+            async handleLogin() {
+                if (this.isLoading) return;
+                
+                const username = this.usernameInput.value.trim();
+                const password = this.passwordInput.value.trim();
+
+                // Basic validation
+                if (!username || !password) {
+                    this.showError('请输入用户名和密码');
+                    this.shakeForm();
+                    return;
+                }
+
+                this.setLoading(true);
+                this.clearError();
+
+                try {
+                    // Simulate API call
+                    await this.simulateLogin(username, password);
+                    
+                    // Validate credentials
+                    if (username === 'admin' && password === 'admin') {
+                        this.handleLoginSuccess();
+                    } else {
+                        this.showError('用户名或密码错误');
+                        this.shakeForm();
+                    }
+                } catch (error) {
+                    this.showError('登录失败，请稍后重试');
+                    console.error('Login error:', error);
+                } finally {
+                    this.setLoading(false);
+                }
+            }
+
+            async simulateLogin(username, password) {
+                // Simulate network delay
+                return new Promise((resolve) => {
+                    setTimeout(resolve, 1000 + Math.random() * 1000);
+                });
+            }
+
+            handleLoginSuccess() {
+                // Store login state
+                const rememberMe = document.getElementById('remember').checked;
+                const loginData = {
+                    username: 'admin',
+                    loginTime: Date.now(),
+                    remember: rememberMe
+                };
+
+                if (rememberMe) {
+                    localStorage.setItem('merchantLogin', JSON.stringify(loginData));
+                } else {
+                    sessionStorage.setItem('merchantLogin', JSON.stringify(loginData));
+                }
+
+                // Show success message
+                this.showSuccess();
+
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
+
+            checkAutoLogin() {
+                const savedLogin = localStorage.getItem('merchantLogin') || 
+                                   sessionStorage.getItem('merchantLogin');
+                
+                if (savedLogin) {
+                    try {
+                        const loginData = JSON.parse(savedLogin);
+                        const hoursPassed = (Date.now() - loginData.loginTime) / (1000 * 60 * 60);
+                        
+                        // Auto-login if within 24 hours (or 2 hours for session)
+                        const maxHours = loginData.remember ? 24 : 2;
+                        if (hoursPassed < maxHours) {
+                            this.showToast('自动登录中...');
+                            setTimeout(() => {
+                                window.location.href = 'index.html';
+                            }, 1000);
+                            return;
+                        }
+                    } catch (error) {
+                        console.error('Auto-login error:', error);
+                    }
+                    
+                    // Clear expired login data
+                    localStorage.removeItem('merchantLogin');
+                    sessionStorage.removeItem('merchantLogin');
+                }
+            }
+
+            setLoading(isLoading) {
+                this.isLoading = isLoading;
+                this.loginBtn.disabled = isLoading;
+                
+                if (isLoading) {
+                    this.loginBtnText.classList.add('hidden');
+                    this.loginBtnLoading.classList.remove('hidden');
+                    this.loginBtn.classList.add('opacity-75');
+                } else {
+                    this.loginBtnText.classList.remove('hidden');
+                    this.loginBtnLoading.classList.add('hidden');
+                    this.loginBtn.classList.remove('opacity-75');
+                }
+            }
+
+            showError(message) {
+                document.getElementById('errorText').textContent = message;
+                this.errorMessage.classList.remove('hidden');
+            }
+
+            clearError() {
+                this.errorMessage.classList.add('hidden');
+            }
+
+            shakeForm() {
+                this.form.classList.add('shake');
+                setTimeout(() => {
+                    this.form.classList.remove('shake');
+                }, 500);
+            }
+
+            showSuccess() {
+                // Replace error div with success message
+                this.errorMessage.className = 'bg-green-500 bg-opacity-20 border border-green-500 border-opacity-30 rounded-lg p-3 text-green-100 text-sm';
+                document.getElementById('errorText').innerHTML = '<i class="fas fa-check-circle mr-2"></i>登录成功，正在跳转...';
+                this.errorMessage.classList.remove('hidden');
+            }
+
+            showToast(message) {
+                // Create toast notification
+                const toast = document.createElement('div');
+                toast.className = 'fixed top-4 right-4 bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm border border-white border-opacity-30 rounded-lg p-3 text-white text-sm z-50 animate-pulse';
+                toast.innerHTML = `<i class="fas fa-info-circle mr-2"></i>${message}`;
+                
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            }
+        }
+
+        // Initialize login manager when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new LoginManager();
+        });
+
+        // Handle back button for security
+        window.addEventListener('pageshow', (e) => {
+            if (e.persisted) {
+                window.location.reload();
+            }
+        });
+    </script>
+</body>
+</html>
