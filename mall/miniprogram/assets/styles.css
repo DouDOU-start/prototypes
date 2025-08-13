@@ -90,3 +90,76 @@ section[data-screen].block {
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+/* Fullscreen support for all devices */
+@supports (padding: max(0px)) {
+    body {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .app-container {
+        margin-left: calc(0px - env(safe-area-inset-left));
+        margin-right: calc(0px - env(safe-area-inset-right));
+        margin-top: calc(0px - env(safe-area-inset-top));
+        margin-bottom: calc(0px - env(safe-area-inset-bottom));
+    }
+    
+    nav {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        padding-bottom: env(safe-area-inset-bottom);
+        bottom: env(safe-area-inset-bottom);
+    }
+    
+    main {
+        padding-bottom: calc(80px + env(safe-area-inset-bottom));
+    }
+}
+
+/* iPad Pro fullscreen optimization */
+@media screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) {
+    body {
+        background-attachment: fixed;
+    }
+    
+    .app-container {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    
+    /* Landscape mode */
+    @media (orientation: landscape) {
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Product grid adjustments for landscape */
+        .grid-cols-2 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        
+        .grid-cols-3 {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+    }
+    
+    /* Portrait mode */
+    @media (orientation: portrait) {
+        .app-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .grid-cols-2 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        
+        .grid-cols-3 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+}

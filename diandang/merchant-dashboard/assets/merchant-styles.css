@@ -1048,6 +1048,92 @@ body {
     animation: slidePageInLeft 0.3s ease;
 }
 
+/* Fullscreen support for all devices */
+@supports (padding: max(0px)) {
+    body {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .merchant-app {
+        margin-left: calc(0px - env(safe-area-inset-left));
+        margin-right: calc(0px - env(safe-area-inset-right));
+        margin-top: calc(0px - env(safe-area-inset-top));
+        margin-bottom: calc(0px - env(safe-area-inset-bottom));
+    }
+    
+    .sidebar {
+        padding-left: env(safe-area-inset-left);
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .main-content {
+        padding-left: calc(280px + env(safe-area-inset-left));
+        padding-right: env(safe-area-inset-right);
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .modal {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .modal-content {
+        margin-left: calc(20px + env(safe-area-inset-left));
+        margin-right: calc(20px + env(safe-area-inset-right));
+        margin-top: calc(20px + env(safe-area-inset-top));
+        margin-bottom: calc(20px + env(safe-area-inset-bottom));
+        max-width: calc(100vw - 40px - env(safe-area-inset-left) - env(safe-area-inset-right));
+        max-height: calc(100vh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    }
+}
+
+/* iPad Pro fullscreen optimization */
+@media screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) {
+    .merchant-app {
+        max-width: none;
+        border-radius: 0;
+    }
+    
+    /* Landscape mode */
+    @media (orientation: landscape) {
+        .sidebar {
+            width: 320px;
+        }
+        
+        .main-content {
+            padding-left: 320px;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .modal-content {
+            max-width: 900px;
+            margin: 40px auto;
+        }
+    }
+    
+    /* Portrait mode */
+    @media (orientation: portrait) {
+        .merchant-app {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+}
+
 .page.slide-in-right {
     animation: slidePageInRight 0.3s ease;
 }
