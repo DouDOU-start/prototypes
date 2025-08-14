@@ -294,27 +294,37 @@ function generateIndexPage() {
             <!-- 点当餐厅管理系统 -->
             <div class="project">
                 <div class="project-header">
-                    <div class="project-icon">🏪</div>
-                    <div class="project-name">点当餐厅</div>
+                    <div class="project-icon">🚀</div>
+                    <div class="project-name">点当外卖平台</div>
                 </div>
-                <p class="project-description">完整的餐厅管理系统，包含顾客端小程序和商家管理后台</p>
+                <p class="project-description">完整的多商家聚合外卖平台，支持智能派单、配送管理和平台运营</p>
                 <div class="endpoints">
                     <a href="/diandang/miniprogram/" class="endpoint">
                         <div class="endpoint-info">
                             <i class="fas fa-mobile-alt endpoint-icon"></i>
                             <div class="endpoint-details">
-                                <h3>小程序端</h3>
-                                <p>顾客点餐系统</p>
+                                <h3>用户端</h3>
+                                <p>多商家下单系统</p>
                             </div>
                         </div>
                         <i class="fas fa-arrow-right endpoint-arrow"></i>
                     </a>
                     <a href="/diandang/merchant/" class="endpoint">
                         <div class="endpoint-info">
-                            <i class="fas fa-chart-line endpoint-icon"></i>
+                            <i class="fas fa-store endpoint-icon"></i>
                             <div class="endpoint-details">
-                                <h3>商家后台</h3>
-                                <p>店铺管理系统</p>
+                                <h3>商家端</h3>
+                                <p>接单管理系统</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-arrow-right endpoint-arrow"></i>
+                    </a>
+                    <a href="/diandang/platform-admin/" class="endpoint">
+                        <div class="endpoint-info">
+                            <i class="fas fa-layer-group endpoint-icon"></i>
+                            <div class="endpoint-details">
+                                <h3>平台管理</h3>
+                                <p>订单派发与运营</p>
                             </div>
                         </div>
                         <i class="fas fa-arrow-right endpoint-arrow"></i>
@@ -472,6 +482,13 @@ const server = http.createServer(async (req, res) => {
                 return;
             } else if (pathname === '/diandang/merchant/') {
                 filePath = path.join(__dirname, 'diandang', 'merchant-dashboard', 'index.html');
+            } else if (pathname === '/diandang/platform-admin') {
+                // 重定向到以斜杠结尾的URL，确保相对路径正确解析
+                res.writeHead(301, { 'Location': '/diandang/platform-admin/' });
+                res.end();
+                return;
+            } else if (pathname === '/diandang/platform-admin/') {
+                filePath = path.join(__dirname, 'diandang', 'platform-admin', 'index.html');
             } else if (pathname.startsWith('/diandang/miniprogram/')) {
                 const subPath = pathname.replace('/diandang/miniprogram/', '');
                 filePath = path.join(__dirname, 'diandang', 'miniprogram', subPath);
@@ -481,6 +498,12 @@ const server = http.createServer(async (req, res) => {
             } else if (pathname.startsWith('/diandang/merchant/')) {
                 const subPath = pathname.replace('/diandang/merchant/', '');
                 filePath = path.join(__dirname, 'diandang', 'merchant-dashboard', subPath);
+            } else if (pathname.startsWith('/diandang/platform-admin/')) {
+                const subPath = pathname.replace('/diandang/platform-admin/', '');
+                filePath = path.join(__dirname, 'diandang', 'platform-admin', subPath);
+            } else if (pathname.startsWith('/diandang/shared/')) {
+                const subPath = pathname.replace('/diandang/shared/', '');
+                filePath = path.join(__dirname, 'diandang', 'shared', subPath);
             } else {
                 // 其他 diandang 路径，如 clear-cache
                 filePath = path.join(__dirname, 'diandang', relativePath);
@@ -676,8 +699,9 @@ server.listen(PORT, HOST, () => {
     console.log('📱 访问地址:');
     console.log(`   本地访问:`);
     console.log(`     首页:                    http://localhost:${PORT}`);
-    console.log(`     点当餐厅 - 小程序端:     http://localhost:${PORT}/diandang/miniprogram/`);
-    console.log(`     点当餐厅 - 商家后台:     http://localhost:${PORT}/diandang/merchant/`);
+    console.log(`     点当外卖 - 用户端:       http://localhost:${PORT}/diandang/miniprogram/`);
+    console.log(`     点当外卖 - 商家端:       http://localhost:${PORT}/diandang/merchant/`);
+    console.log(`     点当外卖 - 平台管理:     http://localhost:${PORT}/diandang/platform-admin/`);
     console.log(`     Mall商城 - 小程序端:     http://localhost:${PORT}/mall/miniprogram/`);
     console.log(`     Mall商城 - 管理员后台:   http://localhost:${PORT}/mall/admin/`);
     console.log(`     餐厅点单 - 用户端:       http://localhost:${PORT}/restaurant-ordering/customer-app/`);
@@ -685,8 +709,9 @@ server.listen(PORT, HOST, () => {
     console.log('');
     console.log(`   公网访问:`);
     console.log(`     首页:                    http://106.12.5.203:${PORT}`);
-    console.log(`     点当餐厅 - 小程序端:     http://106.12.5.203:${PORT}/diandang/miniprogram/`);
-    console.log(`     点当餐厅 - 商家后台:     http://106.12.5.203:${PORT}/diandang/merchant/`);
+    console.log(`     点当外卖 - 用户端:       http://106.12.5.203:${PORT}/diandang/miniprogram/`);
+    console.log(`     点当外卖 - 商家端:       http://106.12.5.203:${PORT}/diandang/merchant/`);
+    console.log(`     点当外卖 - 平台管理:     http://106.12.5.203:${PORT}/diandang/platform-admin/`);
     console.log(`     Mall商城 - 小程序端:     http://106.12.5.203:${PORT}/mall/miniprogram/`);
     console.log(`     Mall商城 - 管理员后台:   http://106.12.5.203:${PORT}/mall/admin/`);
     console.log(`     餐厅点单 - 用户端:       http://106.12.5.203:${PORT}/restaurant-ordering/customer-app/`);

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>点当外卖 - 平台管理后台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./assets/platform-admin-styles.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-layer-group"></i> 点当平台</h2>
+                <div class="platform-version">v2.0.0</div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-item active" onclick="showAdminPage('dashboard', this)">
+                    <i class="fas fa-chart-line"></i>
+                    <span>平台概览</span>
+                </div>
+                <div class="nav-item" onclick="showAdminPage('orders', this)">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>订单调度</span>
+                    <span class="badge" id="pendingOrdersCount">0</span>
+                </div>
+                <div class="nav-item" onclick="showAdminPage('merchants', this)">
+                    <i class="fas fa-store"></i>
+                    <span>商家管理</span>
+                </div>
+                <div class="nav-item" onclick="showAdminPage('dispatch', this)">
+                    <i class="fas fa-route"></i>
+                    <span>派单系统</span>
+                </div>
+                <div class="nav-item" onclick="showAdminPage('analytics', this)">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>数据分析</span>
+                </div>
+                <div class="nav-item" onclick="showAdminPage('settings', this)">
+                    <i class="fas fa-cogs"></i>
+                    <span>平台配置</span>
+                </div>
+            </nav>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 顶部栏 -->
+            <div class="top-bar">
+                <div class="page-title" id="pageTitle">平台概览</div>
+                <div class="top-bar-actions">
+                    <div class="system-status">
+                        <span class="status-indicator online"></span>
+                        <span>系统正常</span>
+                    </div>
+                    <div class="notification-center">
+                        <button class="notification-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-count">3</span>
+                        </button>
+                    </div>
+                    <div class="admin-profile">
+                        <span>平台管理员</span>
+                        <div class="admin-avatar">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面内容容器 -->
+            <div class="page-container"></div>
+        </div>
+    </div>
+
+    <script src="../shared/data/platform-data.js"></script>
+    <script src="../shared/data/platform-admin-data.js"></script>
+    <script src="../shared/utils/common-utils.js"></script>
+    <script src="../shared/services/order-assignment-service.js"></script>
+    <script src="./assets/platform-admin-app.js"></script>
+</body>
+</html>
