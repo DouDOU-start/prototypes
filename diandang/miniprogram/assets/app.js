@@ -1,1050 +1,739 @@
+// ============================================
+// 点当小程序 - 主应用文件
+// ============================================
+
+// 全局状态变量
 let currentPage = 'splash';
 let cartItems = 0;
 let pageHistory = [];
+let selectedMerchant = null;
+let currentUserLocation = { lat: 30.6598, lng: 104.0656 }; // 默认春熙路位置
 
-// 小程序模拟数据
-const miniprogramData = {
-    user: {
-        name: '小程序用户',
-        avatar: '',
-        phone: '138****8888',
-        points: 258,
-        level: '黄金会员',
-        visitCount: 12,
-        favoriteTable: 'A03'
-    },
-    menuCategories: [
-        {
-            id: 'signature',
-            name: '招牌川菜',
-            icon: '🌶️',
-            items: [
-                { 
-                    id: 1, 
-                    name: '宫保鸡丁', 
-                    price: 32.0, 
-                    originalPrice: 36.0,
-                    description: '传统宫保鸡丁，选用优质鸡胸肉，配以花生米，口感鲜嫩爽口', 
-                    image: '', 
-                    rating: 4.8,
-                    salesCount: 156,
-                    tags: ['招牌', '微辣', '下饭'],
-                    spicyLevel: 2,
-                    preparationTime: '15分钟'
-                },
-                { 
-                    id: 2, 
-                    name: '麻婆豆腐', 
-                    price: 26.0, 
-                    originalPrice: 28.0,
-                    description: '正宗川味麻婆豆腐，嫩滑豆腐配麻辣汤汁，开胃下饭', 
-                    image: '', 
-                    rating: 4.7,
-                    salesCount: 134,
-                    tags: ['经典', '麻辣', '素食'],
-                    spicyLevel: 3,
-                    preparationTime: '12分钟'
-                },
-                { 
-                    id: 3, 
-                    name: '回锅肉', 
-                    price: 38.0, 
-                    originalPrice: 42.0,
-                    description: '家常回锅肉，五花肉片配青椒豆瓣酱，肥而不腻香辣开胃', 
-                    image: '', 
-                    rating: 4.9,
-                    salesCount: 128,
-                    tags: ['家常', '香辣', '下饭'],
-                    spicyLevel: 2,
-                    preparationTime: '18分钟'
-                },
-                { 
-                    id: 4, 
-                    name: '水煮鱼', 
-                    price: 68.0, 
-                    originalPrice: 78.0,
-                    description: '麻辣鲜香水煮鱼，选用新鲜草鱼，配豆芽菜，汤鲜肉嫩', 
-                    image: '', 
-                    rating: 4.8,
-                    salesCount: 95,
-                    tags: ['招牌', '重辣', '鲜美'],
-                    spicyLevel: 4,
-                    preparationTime: '25分钟'
-                }
-            ]
-        },
-        {
-            id: 'homestyle',
-            name: '经典家常',
-            icon: '🏠',
-            items: [
-                { 
-                    id: 5, 
-                    name: '糖醋排骨', 
-                    price: 42.0, 
-                    originalPrice: 48.0,
-                    description: '酸甜可口糖醋排骨，精选新鲜排骨，色泽红亮，酸甜适中', 
-                    image: '', 
-                    rating: 4.7,
-                    salesCount: 76,
-                    tags: ['酸甜', '家常', '老少皆宜'],
-                    spicyLevel: 0,
-                    preparationTime: '30分钟'
-                },
-                { 
-                    id: 6, 
-                    name: '红烧肉', 
-                    price: 45.0, 
-                    originalPrice: 52.0,
-                    description: '经典红烧肉，肥瘦相间，色泽红润，入口即化', 
-                    image: '', 
-                    rating: 4.6,
-                    salesCount: 62,
-                    tags: ['经典', '软糯', '营养'],
-                    spicyLevel: 0,
-                    preparationTime: '35分钟'
-                }
-            ]
-        },
-        {
-            id: 'cold',
-            name: '凉菜系列',
-            icon: '🥒',
-            items: [
-                { 
-                    id: 7, 
-                    name: '口水鸡', 
-                    price: 35.0, 
-                    originalPrice: 38.0,
-                    description: '麻辣口水鸡，选用三黄鸡，配特制口水鸡汁，麻辣鲜香', 
-                    image: '', 
-                    rating: 4.5,
-                    salesCount: 65,
-                    tags: ['凉菜', '麻辣', '开胃'],
-                    spicyLevel: 3,
-                    preparationTime: '10分钟'
-                },
-                { 
-                    id: 8, 
-                    name: '凉拌黄瓜', 
-                    price: 12.0, 
-                    originalPrice: 15.0,
-                    description: '爽脆凉拌黄瓜，选用新鲜黄瓜，清脆爽口，解腻开胃', 
-                    image: '', 
-                    rating: 4.4,
-                    salesCount: 89,
-                    tags: ['清爽', '开胃', '素食'],
-                    spicyLevel: 1,
-                    preparationTime: '5分钟'
-                }
-            ]
-        },
-        {
-            id: 'soup',
-            name: '汤品粥类',
-            icon: '🍲',
-            items: [
-                { 
-                    id: 9, 
-                    name: '蛋花汤', 
-                    price: 15.0, 
-                    originalPrice: 18.0,
-                    description: '清淡蛋花汤，蛋花朵朵，汤清味鲜，营养丰富', 
-                    image: '', 
-                    rating: 4.3,
-                    salesCount: 156,
-                    tags: ['清淡', '营养', '暖胃'],
-                    spicyLevel: 0,
-                    preparationTime: '8分钟'
-                },
-                { 
-                    id: 10, 
-                    name: '小米粥', 
-                    price: 8.0, 
-                    originalPrice: 12.0,
-                    description: '养胃小米粥，精选优质小米，熬制香浓，养胃润燥', 
-                    image: '', 
-                    rating: 4.6,
-                    salesCount: 98,
-                    tags: ['养胃', '营养', '温润'],
-                    spicyLevel: 0,
-                    preparationTime: '6分钟'
-                },
-                { 
-                    id: 11, 
-                    name: '白米饭', 
-                    price: 5.0, 
-                    originalPrice: 6.0,
-                    description: '优质东北大米，颗粒饱满，香甜可口', 
-                    image: '', 
-                    rating: 4.8,
-                    salesCount: 200,
-                    tags: ['主食', '香甜', '优质'],
-                    spicyLevel: 0,
-                    preparationTime: '3分钟'
-                }
-            ]
-        }
-    ],
-    cart: [
-        { id: 1, name: '宫保鸡丁', price: 32.0, quantity: 1, note: '微辣' },
-        { id: 2, name: '麻婆豆腐', price: 26.0, quantity: 1, note: '不要花椒' },
-        { id: 11, name: '白米饭', price: 5.0, quantity: 2, note: '' }
-    ],
-    orders: [
-        {
-            id: 'ORD2024011503',
-            status: 'pending',
-            items: [
-                { name: '宫保鸡丁', price: 32.0, quantity: 1 },
-                { name: '麻婆豆腐', price: 26.0, quantity: 1 },
-                { name: '白米饭', price: 5.0, quantity: 2 }
-            ],
-            total: 68.0,
-            orderTime: '2024-01-15 14:30:15',
-            tableNumber: 'A03',
-            estimatedTime: '等待确认',
-            remark: '微辣，不要花椒',
-            paymentMethod: '微信支付',
-            paymentStatus: '已支付'
-        },
-        {
-            id: 'ORD2024011502',
-            status: 'ready',
-            items: [
-                { name: '糖醋排骨', price: 42.0, quantity: 1 },
-                { name: '蛋花汤', price: 15.0, quantity: 1 },
-                { name: '白米饭', price: 5.0, quantity: 1 }
-            ],
-            total: 62.0,
-            orderTime: '2024-01-15 13:45:20',
-            tableNumber: 'B06',
-            estimatedTime: '请取餐',
-            remark: '',
-            paymentMethod: '支付宝',
-            paymentStatus: '已支付'
-        },
-        {
-            id: 'ORD2024011501',
-            status: 'preparing',
-            items: [
-                { name: '回锅肉', price: 38.0, quantity: 1 },
-                { name: '凉拌黄瓜', price: 12.0, quantity: 1 },
-                { name: '小米粥', price: 8.0, quantity: 1 }
-            ],
-            total: 58.0,
-            orderTime: '2024-01-15 12:25:30',
-            tableNumber: 'C02',
-            estimatedTime: '15分钟',
-            remark: '少放辣椒',
-            paymentMethod: '微信支付',
-            paymentStatus: '已支付'
-        },
-        {
-            id: 'ORD2024011401',
-            status: 'completed',
-            items: [
-                { name: '水煮鱼', price: 68.0, quantity: 1 },
-                { name: '口水鸡', price: 35.0, quantity: 1 },
-                { name: '白米饭', price: 5.0, quantity: 2 }
-            ],
-            total: 113.0,
-            orderTime: '2024-01-14 18:45:20',
-            tableNumber: 'A01',
-            estimatedTime: '已完成',
-            remark: '中辣',
-            paymentMethod: '微信支付',
-            paymentStatus: '已支付'
-        },
-        {
-            id: 'ORD2024011301',
-            status: 'completed',
-            items: [
-                { name: '宫保鸡丁', price: 32.0, quantity: 1 },
-                { name: '蛋花汤', price: 15.0, quantity: 1 }
-            ],
-            total: 47.0,
-            orderTime: '2024-01-13 19:15:10',
-            tableNumber: 'B08',
-            estimatedTime: '已完成',
-            remark: '',
-            paymentMethod: '现金',
-            paymentStatus: '已支付'
-        },
-        {
-            id: 'ORD2024011201',
-            status: 'cancelled',
-            items: [
-                { name: '红烧肉', price: 45.0, quantity: 1 },
-                { name: '白米饭', price: 5.0, quantity: 1 }
-            ],
-            total: 50.0,
-            orderTime: '2024-01-12 17:30:25',
-            tableNumber: 'C05',
-            estimatedTime: '已取消',
-            remark: '临时有事',
-            paymentMethod: '微信支付',
-            paymentStatus: '已退款'
-        },
-        {
-            id: 'ORD2024011202',
-            status: 'refunded',
-            items: [
-                { name: '水煮鱼', price: 68.0, quantity: 1 },
-                { name: '小米粥', price: 8.0, quantity: 1 }
-            ],
-            total: 76.0,
-            orderTime: '2024-01-12 19:45:10',
-            tableNumber: 'A05',
-            estimatedTime: '已退款',
-            remark: '菜品问题',
-            paymentMethod: '支付宝',
-            paymentStatus: '已退款'
-        },
-        {
-            id: 'ORD2024011203',
-            status: 'delayed',
-            items: [
-                { name: '糖醋排骨', price: 42.0, quantity: 2 },
-                { name: '蛋花汤', price: 15.0, quantity: 1 }
-            ],
-            total: 99.0,
-            orderTime: '2024-01-12 18:15:30',
-            tableNumber: 'B12',
-            estimatedTime: '延迟30分钟',
-            remark: '要求现做',
-            paymentMethod: '微信支付',
-            paymentStatus: '已支付'
-        },
-        {
-            id: 'ORD2024011204',
-            status: 'confirmed',
-            items: [
-                { name: '口水鸡', price: 35.0, quantity: 1 },
-                { name: '凉拌黄瓜', price: 12.0, quantity: 1 },
-                { name: '白米饭', price: 5.0, quantity: 1 }
-            ],
-            total: 52.0,
-            orderTime: '2024-01-12 20:10:15',
-            tableNumber: 'A08',
-            estimatedTime: '20分钟',
-            remark: '不要辣',
-            paymentMethod: '现金',
-            paymentStatus: '已支付'
-        }
-    ],
-    restaurantInfo: {
-        name: '仓和餐厅',
-        rating: 4.7,
-        address: '成都市锦江区春熙路123号',
-        phone: '028-8888-6666',
-        hours: '10:00-22:00',
-        features: ['川菜', '家常菜', '外卖', '堂食'],
-        announcement: '新品上市！限时优惠，全场菜品9折优惠，活动截止到本月底。'
-    },
-    promotions: [
-        {
-            id: 1,
-            title: '新用户专享',
-            description: '首单立减10元',
-            discount: 10,
-            minAmount: 50,
-            type: 'new_user'
-        },
-        {
-            id: 2,
-            title: '满减优惠',
-            description: '满100元减15元',
-            discount: 15,
-            minAmount: 100,
-            type: 'full_reduction'
-        }
-    ]
-};
-
-const pagesToLoad = [
-  'splash',
-  'wechat-login',
-  'auth-confirm',
-  'auth-processing',
-  'wechat-pay',
-  'pay-success',
-  'home',
-  'menu',
-  'detail',
-  'cart',
-  'order',
-  'payment',
-  'status',
-  'profile',
-  'orders'
-];
-
-async function loadPages() {
-  const container = document.querySelector('.app-container');
-  for (const id of pagesToLoad) {
-    const res = await fetch(`./pages/${id}.html`);
-    const html = await res.text();
-    container.insertAdjacentHTML('beforeend', html);
-  }
-}
-
-function showPage(pageId) {
-  const pages = document.querySelectorAll('.page');
-  pages.forEach(page => page.classList.remove('active'));
-  const target = document.getElementById(pageId);
-  if (target) target.classList.add('active');
-
-  if (currentPage !== pageId) {
-    pageHistory.push(currentPage);
-  }
-  currentPage = pageId;
-
-  // 移除浮动购物车相关显示逻辑
-  const bottomNav = document.querySelector('.bottom-nav');
-  const mainPages = ['home', 'menu', 'cart', 'status', 'profile'];
-  bottomNav.style.display = mainPages.includes(pageId) ? 'flex' : 'none';
-  
-  // 页面特定初始化
-  initializePage(pageId);
-}
-
-// 页面特定初始化
-function initializePage(pageId) {
-  switch (pageId) {
-    case 'orders':
-      renderOrderHistory();
-      break;
-    case 'status':
-      renderCurrentOrder();
-      break;
-    case 'menu':
-      renderMenuCategories();
-      break;
-    case 'cart':
-      renderCart();
-      break;
-    case 'profile':
-      updateUserProfile();
-      break;
-  }
-}
-
-function goBack() {
-  if (pageHistory.length > 0) {
-    const previousPage = pageHistory.pop();
-    showPage(previousPage);
-  } else {
-    showPage('home');
-  }
-}
-
-function navigateTo(pageId, element) {
-  const navItems = document.querySelectorAll('.nav-item');
-  navItems.forEach(item => item.classList.remove('active'));
-  element.classList.add('active');
-  showPage(pageId);
-}
-
-function addToCart() {
-  cartItems++;
-  updateCartBadge();
-}
-
-function addToCartFromDetail() {
-  const quantity = parseInt(document.getElementById('quantity').textContent);
-  cartItems += quantity;
-  updateCartBadge();
-  showPage('cart');
-}
-
-function updateCartBadge() {
-  const count = cartItems;
-  const ids = ['cartCountHome', 'cartCountMenu', 'cartCountDetail'];
-  ids.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.textContent = String(count);
-      el.style.display = count > 0 ? 'inline-flex' : 'none';
+// 初始化应用数据
+function initializeAppData() {
+    if (typeof miniprogramData !== 'undefined' && typeof platformData !== 'undefined') {
+        // 设置用户信息
+        miniprogramData.user = platformData.users[0];
+        miniprogramData.cart = [];
+        miniprogramData.currentMerchant = null;
+        miniprogramData.orders = [];
     }
-  });
 }
 
-function increaseQty() {
-  const qtyElement = document.getElementById('quantity');
-  const currentQty = parseInt(qtyElement.textContent);
-  qtyElement.textContent = currentQty + 1;
+// ============================================
+// 页面导航系统
+// ============================================
+
+// 显示指定页面
+async function showPage(pageId) {
+    try {
+        const response = await fetch(`./pages/${pageId}.html`);
+        if (!response.ok) throw new Error(`页面 ${pageId} 加载失败`);
+        
+        const html = await response.text();
+        const appContainer = document.querySelector('.app-container');
+        if (appContainer) {
+            appContainer.innerHTML = html;
+            
+            // 为当前页面添加 active 类
+            const currentPageElement = appContainer.querySelector('.page');
+            if (currentPageElement) {
+                currentPageElement.classList.add('active');
+            }
+        }
+        
+        currentPage = pageId;
+        
+        // 更新页面标题
+        const title = pageConfig?.titles?.[pageId] || '点当外卖';
+        document.title = title;
+        
+        // 执行页面特定的初始化
+        await initializePage(pageId);
+        
+        // 更新导航状态
+        updateNavigationState();
+        
+    } catch (error) {
+        console.error('页面加载失败:', error);
+        showErrorMessage('页面加载失败，请重试');
+    }
 }
 
-function decreaseQty() {
-  const qtyElement = document.getElementById('quantity');
-  const currentQty = parseInt(qtyElement.textContent);
-  if (currentQty > 1) {
-    qtyElement.textContent = currentQty - 1;
-  }
+// 初始化页面
+async function initializePage(pageId) {
+    switch (pageId) {
+        case 'home':
+            renderMerchantList();
+            renderRecommendedItems();
+            updateUserInfo();
+            break;
+        case 'menu':
+            renderMenu();
+            break;
+        case 'cart':
+            renderCart();
+            break;
+        case 'status':
+            renderCurrentOrder();
+            break;
+        case 'orders':
+            renderOrderHistory();
+            break;
+        case 'profile':
+            updateUserInfo();
+            break;
+    }
 }
 
-function selectPayment(element) {
-  const radios = document.querySelectorAll('.payment-radio');
-  radios.forEach(radio => radio.classList.remove('selected'));
-  const radio = element.querySelector('.payment-radio');
-  radio.classList.add('selected');
+// 更新导航状态
+function updateNavigationState() {
+    const mainPages = ['home', 'menu', 'cart', 'status', 'profile'];
+    const navItems = document.querySelectorAll('.nav-item');
+    
+    navItems.forEach(item => {
+        item.classList.remove('active');
+        const pageId = item.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+        if (pageId === currentPage) {
+            item.classList.add('active');
+        }
+    });
 }
 
-// 微信登录相关
-function startWeChatAuth() { showPage('auth-confirm'); }
-function confirmAuth() {
-  showPage('auth-processing');
-  setTimeout(() => { completeAuth(); }, 3000);
-}
-function cancelAuth() { showPage('wechat-login'); }
-function completeAuth() {
-  // 使用模拟用户数据
-  const user = miniprogramData.user;
-  
-  const username = document.querySelector('.username');
-  if (username) username.textContent = user.name;
-  
-  if (user.avatar) {
-    const avatar = document.querySelector('.avatar');
-    if (avatar) avatar.innerHTML = `<img src="${user.avatar}" alt="用户头像">`;
-  } else {
-    const placeholder = document.querySelector('.avatar-placeholder');
-    if (placeholder && user.name) placeholder.textContent = user.name.charAt(0);
-  }
-  
-  // 更新所有用户信息
-  updateUserInfo();
-  
-  showPage('home');
+// 导航到指定页面
+function navigateTo(pageId, element = null) {
+    showPage(pageId);
+    
+    // 更新导航状态
+    if (element) {
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+    }
 }
 
-// 支付相关
-function processPayment() {
-  const selectedPayment = document.querySelector('.payment-radio.selected');
-  if (!selectedPayment) return;
-  const paymentMethod = selectedPayment.closest('.payment-method');
-  const isWeChatPay = paymentMethod && paymentMethod.querySelector('.fa-weixin');
-  if (isWeChatPay) { showPage('wechat-pay'); } else { showPage('pay-success'); }
-}
+// ============================================
+// 购物车管理
+// ============================================
 
-function callWechatPay() {
-  const loadingElement = document.getElementById('payLoading');
-  const confirmBtn = document.getElementById('confirmPayBtn');
-  if (!loadingElement || !confirmBtn) return;
-  loadingElement.classList.add('show');
-  confirmBtn.disabled = true;
-  confirmBtn.style.opacity = '0.6';
-  setTimeout(() => {
-    if (Math.random() > 0.1) {
-      showPage('pay-success');
-      setTimeout(() => { showPage('status'); }, 2000);
+// 添加到购物车
+function addToCart(itemId, itemName, itemPrice, quantity = 1) {
+    if (!miniprogramData) {
+        showErrorMessage('数据未加载，请刷新页面');
+        return;
+    }
+    
+    const existingItem = miniprogramData.cart.find(item => item.id == itemId);
+    
+    if (existingItem) {
+        existingItem.quantity += quantity;
     } else {
-      alert('支付失败，请重试');
-      loadingElement.classList.remove('show');
-      confirmBtn.disabled = false;
-      confirmBtn.style.opacity = '1';
+        miniprogramData.cart.push({
+            id: itemId,
+            name: itemName,
+            price: itemPrice,
+            quantity: quantity,
+            note: ''
+        });
     }
-  }, 2000);
+    
+    cartItems = miniprogramUtils.getCartTotal(miniprogramData.cart);
+    updateCartBadge();
+    showSuccessMessage(`${itemName} 已加入购物车`);
 }
 
-function startPaymentTimer() {
-  let timeLeft = 15 * 60;
-  const timer = document.getElementById('payTimer');
-  const countdown = setInterval(() => {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    if (timer) timer.textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
-    timeLeft--;
-    if (timeLeft < 0) { clearInterval(countdown); if (timer) timer.textContent = '00:00'; }
-  }, 1000);
-  setTimeout(() => { clearInterval(countdown); showPage('pay-success'); }, 8000);
+// 从购物车移除
+function removeFromCart(itemId) {
+    if (!miniprogramData) return;
+    
+    miniprogramData.cart = miniprogramData.cart.filter(item => item.id != itemId);
+    cartItems = miniprogramUtils.getCartTotal(miniprogramData.cart);
+    updateCartBadge();
+    renderCart();
 }
 
-function refreshQRCode() {
-  const qrCode = document.querySelector('.pay-qr-code');
-  if (qrCode) {
-    qrCode.style.opacity = '0.5';
-    setTimeout(() => { qrCode.style.opacity = '1'; }, 500);
-  }
+// 更新购物车商品数量
+function updateCartQuantity(itemId, newQuantity) {
+    if (!miniprogramData) return;
+    
+    const item = miniprogramData.cart.find(item => item.id == itemId);
+    if (item) {
+        if (newQuantity <= 0) {
+            removeFromCart(itemId);
+        } else {
+            item.quantity = newQuantity;
+            cartItems = miniprogramUtils.getCartTotal(miniprogramData.cart);
+            updateCartBadge();
+            renderCart();
+        }
+    }
 }
 
-function checkPaymentStatus() { showPage('pay-success'); }
+// 更新购物车徽章
+function updateCartBadge() {
+    const ids = ['cartCountHome', 'cartCountMenu', 'cartCountDetail'];
+    ids.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = cartItems;
+            element.style.display = cartItems > 0 ? 'block' : 'none';
+        }
+    });
+    
+    // 更新购物车页面徽章
+    const cartBadge = document.getElementById('cartBadge');
+    if (cartBadge) {
+        cartBadge.textContent = cartItems;
+        cartBadge.style.display = cartItems > 0 ? 'inline-block' : 'none';
+    }
+}
 
-// 阻止页面滚动穿透（与原逻辑一致）
-document.addEventListener('touchmove', function(e) {
-  const target = e.target;
-  const scrollableElements = document.querySelectorAll('.page, .order-content, .cart-content, .home-content, .order-history, .profile-menu, .wechat-pay-page, .auth-confirm, .login-page');
-  let isScrollable = false;
-  scrollableElements.forEach(element => { if (element.contains(target)) { isScrollable = true; } });
-  if (!isScrollable) { e.preventDefault(); }
-}, { passive: false });
+// 清空购物车
+function clearCart() {
+    if (confirm('确定要清空购物车吗？')) {
+        miniprogramData.cart = [];
+        cartItems = 0;
+        updateCartBadge();
+        renderCart();
+    }
+}
 
-// 初始化
-window.addEventListener('DOMContentLoaded', async () => {
-  await loadPages();
-  
-  // 使用模拟购物车数据
-  cartItems = miniprogramData.cart.reduce((total, item) => total + item.quantity, 0);
-  updateCartBadge();
-  
-  // 更新用户信息
-  updateUserInfo();
-  
-  showPage('splash');
-  setTimeout(() => { showPage('wechat-login'); }, 2000);
-});
+// ============================================
+// 渲染函数
+// ============================================
+
+// 渲染购物车
+function renderCart() {
+    const cartContainer = document.getElementById('cartItems');
+    if (!cartContainer || !miniprogramData) return;
+    
+    if (miniprogramData.cart.length === 0) {
+        cartContainer.innerHTML = `
+            <div class="empty-cart">
+                <div class="empty-cart-icon"><i class="fas fa-shopping-cart"></i></div>
+                <div class="empty-cart-title">购物车为空</div>
+                <div class="empty-cart-desc">去菜单页看看有什么好吃的吧</div>
+                <button class="btn-primary" onclick="navigateTo('menu')">浏览菜单</button>
+            </div>
+        `;
+        return;
+    }
+    
+    const cartHtml = miniprogramData.cart.map(item => `
+        <div class="cart-item">
+            <div class="cart-item-info">
+                <div class="cart-item-name">${item.name}</div>
+                <div class="cart-item-price">¥${miniprogramUtils.formatPrice(item.price)}</div>
+                ${item.note ? `<div class="cart-item-note">备注: ${item.note}</div>` : ''}
+            </div>
+            <div class="cart-item-controls">
+                <button class="quantity-btn" onclick="updateCartQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                <span class="quantity">${item.quantity}</span>
+                <button class="quantity-btn" onclick="updateCartQuantity(${item.id}, ${item.quantity + 1})">+</button>
+                <button class="remove-btn" onclick="removeFromCart(${item.id})"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>
+    `).join('');
+    
+    cartContainer.innerHTML = cartHtml;
+    
+    // 更新总价
+    const totalAmount = miniprogramUtils.getCartAmount(miniprogramData.cart);
+    const totalElement = document.getElementById('cartTotal');
+    if (totalElement) {
+        totalElement.textContent = miniprogramUtils.formatPrice(totalAmount);
+    }
+}
+
+// 渲染菜单
+function renderMenu() {
+    if (!miniprogramData?.menuCategories) return;
+    
+    const menuContainer = document.getElementById('menuItems');
+    if (!menuContainer) return;
+    
+    const menuHtml = miniprogramData.menuCategories.map(category => `
+        <div class="menu-category">
+            <div class="category-header">
+                <span class="category-icon">${category.icon}</span>
+                <span class="category-name">${category.name}</span>
+            </div>
+            <div class="category-items">
+                ${category.items.map(item => `
+                    <div class="menu-item" onclick="showItemDetail(${item.id})">
+                        <div class="menu-item-image">
+                            ${item.image ? `<img src="${item.image}" alt="${item.name}" loading="lazy">` : '<i class="fas fa-utensils"></i>'}
+                        </div>
+                        <div class="menu-item-info">
+                            <div class="menu-item-name">${item.name}</div>
+                            <div class="menu-item-desc">${item.description}</div>
+                            <div class="menu-item-meta">
+                                <span class="menu-item-price">¥${miniprogramUtils.formatPrice(item.price)}</span>
+                                ${item.originalPrice ? `<span class="original-price">¥${miniprogramUtils.formatPrice(item.originalPrice)}</span>` : ''}
+                                <div class="item-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>${item.rating}</span>
+                                    <span class="sales-count">(${item.salesCount})</span>
+                                </div>
+                            </div>
+                            <div class="item-tags">
+                                ${item.tags ? item.tags.slice(0, 2).map(tag => `<span class="item-tag">${tag}</span>`).join('') : ''}
+                                ${item.spicyLevel > 0 ? `<span class="spicy-tag">${miniprogramUtils.getSpicyDisplay(item.spicyLevel)}</span>` : ''}
+                            </div>
+                        </div>
+                        <button class="add-btn" onclick="event.stopPropagation(); addToCart(${item.id}, '${item.name}', ${item.price})">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+    
+    menuContainer.innerHTML = menuHtml;
+}
+
+// 渲染商家列表
+function renderMerchantList() {
+    if (!platformData?.merchants) return;
+    
+    const merchantListContainer = document.getElementById('merchantList');
+    if (!merchantListContainer) return;
+    
+    const availableMerchants = platformData.merchants.filter(merchant => 
+        merchant.status === 'online' || merchant.status === 'busy'
+    );
+    
+    if (availableMerchants.length === 0) {
+        merchantListContainer.innerHTML = `
+            <div class="no-merchants">
+                <div class="no-merchants-icon"><i class="fas fa-store-slash"></i></div>
+                <div class="no-merchants-title">暂无营业商家</div>
+                <div class="no-merchants-desc">所有商家都在休息，请稍后再试</div>
+            </div>
+        `;
+        return;
+    }
+    
+    const merchantsHtml = availableMerchants.map(merchant => `
+        <div class="merchant-card" onclick="selectMerchant('${merchant.id}')">
+            <div class="merchant-header">
+                <div class="merchant-name">${merchant.name}</div>
+                <div class="merchant-status ${merchant.status}">${merchant.status === 'online' ? '营业中' : '繁忙'}</div>
+            </div>
+            <div class="merchant-info">
+                <div class="merchant-rating">
+                    <i class="fas fa-star"></i>
+                    <span>${merchant.rating}</span>
+                </div>
+                <div class="merchant-delivery">
+                    <i class="fas fa-clock"></i>
+                    <span>${merchant.averageDeliveryTime}分钟</span>
+                </div>
+                <div class="merchant-fee">
+                    配送费 ¥${miniprogramUtils.formatPrice(merchant.deliveryFee)}
+                </div>
+            </div>
+            <div class="merchant-features">
+                ${merchant.features.slice(0, 3).map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
+            </div>
+            ${merchant.announcement ? `<div class="merchant-announcement">${merchant.announcement}</div>` : ''}
+        </div>
+    `).join('');
+    
+    merchantListContainer.innerHTML = merchantsHtml;
+}
+
+// 渲染推荐商品
+function renderRecommendedItems() {
+    const recommendedContainer = document.getElementById('recommendedItems');
+    if (!recommendedContainer || !miniprogramData?.menuCategories) return;
+    
+    // 从各分类中选择推荐商品
+    const allItems = [];
+    miniprogramData.menuCategories.forEach(category => {
+        allItems.push(...category.items.slice(0, 2)); // 每个分类取前2个
+    });
+    
+    const itemsHtml = allItems.map(item => `
+        <div class="menu-item" onclick="showItemDetail(${item.id})">
+            <div class="menu-item-image">
+                ${item.image ? `<img src="${item.image}" alt="${item.name}" loading="lazy">` : '<i class="fas fa-utensils"></i>'}
+            </div>
+            <div class="menu-item-info">
+                <div class="menu-item-name">${item.name}</div>
+                <div class="menu-item-desc">${item.description}</div>
+                <div class="menu-item-meta">
+                    <span class="menu-item-price">¥${miniprogramUtils.formatPrice(item.price)}</span>
+                    ${item.originalPrice ? `<span class="original-price">¥${miniprogramUtils.formatPrice(item.originalPrice)}</span>` : ''}
+                    <div class="item-tags">
+                        ${item.tags ? item.tags.slice(0, 2).map(tag => `<span class="item-tag">${tag}</span>`).join('') : ''}
+                    </div>
+                </div>
+            </div>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart(${item.id}, '${item.name}', ${item.price})">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+    `).join('');
+    
+    recommendedContainer.innerHTML = itemsHtml;
+}
+
+// ============================================
+// 订单管理
+// ============================================
+
+// 提交订单
+function submitOrder() {
+    if (!miniprogramData?.cart || miniprogramData.cart.length === 0) {
+        showErrorMessage('请选择商品');
+        return;
+    }
+    
+    // 创建订单
+    const orderId = miniprogramUtils.generateOrderId();
+    const itemsTotal = miniprogramUtils.getCartAmount(miniprogramData.cart);
+    
+    const newOrder = {
+        id: orderId,
+        userId: miniprogramData.user?.id || 'user_001',
+        merchantId: null, // 订单提交时不指定商家
+        merchantName: null, // 将由平台分配
+        status: 'pending',
+        orderType: 'delivery',
+        items: [...miniprogramData.cart],
+        pricing: {
+            itemsTotal: itemsTotal,
+            deliveryFee: 5, // 默认配送费，分配商家后调整
+            platformFee: Math.max(itemsTotal * 0.03, 1.0),
+            discount: 0.0,
+            total: itemsTotal + 5 + Math.max(itemsTotal * 0.03, 1.0)
+        },
+        orderTime: new Date().toISOString(),
+        deliveryAddress: miniprogramData.user?.address?.default || '默认地址',
+        estimatedTime: {
+            preparation: 25,
+            delivery: 35,  
+            total: 60
+        },
+        timeline: [
+            { status: 'pending', time: new Date().toISOString(), desc: '订单已提交，正在为您智能匹配最佳商家...' }
+        ],
+        remark: document.getElementById('orderRemark')?.value || '',
+        paymentMethod: '微信支付',
+        paymentStatus: '待支付'
+    };
+    
+    // 添加到平台订单列表
+    if (platformData?.orders) {
+        platformData.orders.unshift(newOrder);
+    }
+    
+    // 清空购物车
+    miniprogramData.cart = [];
+    cartItems = 0;
+    updateCartBadge();
+    
+    // 跳转到支付页面
+    showPage('payment');
+    
+    // 智能派单流程
+    setTimeout(() => {
+        if (typeof OrderAssignmentService !== 'undefined') {
+            const assignmentResult = OrderAssignmentService.assignOrder(orderId, currentUserLocation, newOrder.items);
+            
+            if (assignmentResult.success) {
+                // 分配成功，更新订单信息
+                newOrder.merchantId = assignmentResult.merchant.id;
+                newOrder.merchantName = assignmentResult.merchant.name;
+                newOrder.status = 'assigned';
+                newOrder.pricing.deliveryFee = assignmentResult.merchant.deliveryFee;
+                newOrder.pricing.total = newOrder.pricing.itemsTotal + assignmentResult.merchant.deliveryFee + newOrder.pricing.platformFee;
+                newOrder.estimatedTime = {
+                    preparation: assignmentResult.merchant.avgPreparationTime,
+                    delivery: assignmentResult.merchant.averageDeliveryTime,
+                    total: assignmentResult.estimatedTime
+                };
+                newOrder.timeline.push({
+                    status: 'assigned',
+                    time: new Date().toISOString(),
+                    desc: `已为您匹配到【${assignmentResult.merchant.name}】，预计 ${assignmentResult.estimatedTime} 分钟送达`
+                });
+                
+                // 如果用户在状态页面，刷新显示
+                if (currentPage === 'status') {
+                    renderCurrentOrder();
+                }
+            } else {
+                // 分配失败处理
+                newOrder.timeline.push({
+                    status: 'assignment_failed',
+                    time: new Date().toISOString(),
+                    desc: `暂时无法为您分配商家：${assignmentResult.reason}，我们正在为您重新匹配...`
+                });
+                
+                if (currentPage === 'status') {
+                    renderCurrentOrder();
+                }
+            }
+        }
+    }, 2000);
+}
+
+// 渲染当前订单状态
+function renderCurrentOrder() {
+    const currentOrdersContent = document.getElementById('currentOrdersContent');
+    if (!currentOrdersContent) return;
+    
+    // 使用平台订单数据
+    let activeOrders = [];
+    if (platformData?.orders) {
+        activeOrders = platformData.orders.filter(order => 
+            order.userId === (miniprogramData.user?.id || 'user_001') &&
+            ['pending', 'assigned', 'confirmed', 'preparing', 'ready', 'delivering', 'picked_up', 'on_the_way'].includes(order.status)
+        );
+    }
+    
+    if (activeOrders.length === 0) {
+        currentOrdersContent.innerHTML = `
+            <div class="no-orders">
+                <div class="no-orders-icon"><i class="fas fa-clipboard-list"></i></div>
+                <div class="no-orders-title">暂无进行中的订单</div>
+                <div class="no-orders-desc">去菜单页看看有什么好吃的吧</div>
+                <button class="btn-primary" onclick="navigateTo('menu')">浏览菜单</button>
+            </div>
+        `;
+        return;
+    }
+    
+    const ordersHtml = activeOrders.map(order => {
+        const config = pageConfig.statusConfig[order.status] || {
+            icon: 'fas fa-question',
+            title: '未知状态',
+            desc: '订单状态异常',
+            color: '#999'
+        };
+        
+        const itemsHtml = (order.items || []).map(item => 
+            `<div class="order-item">${item.name || '未知商品'} × ${item.quantity || 1}</div>`
+        ).join('');
+        
+        return `
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-status" style="color: ${config.color}">
+                        <i class="${config.icon}"></i>
+                        <span>${config.title}</span>
+                    </div>
+                    <div class="order-id">#${order.id}</div>
+                </div>
+                <div class="order-content">
+                    <div class="order-desc">${config.desc}</div>
+                    ${order.merchantName ? `<div class="merchant-name">商家：${order.merchantName}</div>` : ''}
+                    <div class="order-items">${itemsHtml}</div>
+                    <div class="order-amount">总计：¥${miniprogramUtils.formatPrice(order.pricing?.total || 0)}</div>
+                </div>
+                <div class="order-actions">
+                    <button class="btn-secondary" onclick="viewOrderDetail('${order.id}')">查看详情</button>
+                    ${order.status === 'pending' ? `<button class="btn-danger" onclick="cancelOrder('${order.id}')">取消订单</button>` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    currentOrdersContent.innerHTML = ordersHtml;
+}
+
+// ============================================
+// 用户相关功能
+// ============================================
 
 // 更新用户信息
 function updateUserInfo() {
-  const userNameElements = document.querySelectorAll('.username, .user-name');
-  const userPointsElements = document.querySelectorAll('.user-points');
-  const userLevelElements = document.querySelectorAll('.user-level');
-  
-  userNameElements.forEach(element => {
-    if (element) element.textContent = miniprogramData.user.name;
-  });
-  
-  userPointsElements.forEach(element => {
-    if (element) element.textContent = miniprogramData.user.points + '积分';
-  });
-  
-  userLevelElements.forEach(element => {
-    if (element) element.textContent = miniprogramData.user.level;
-  });
-}
-
-// 渲染订单历史
-function renderOrderHistory() {
-  const orderHistory = document.getElementById('orderHistory');
-  if (!orderHistory) return;
-  
-  const ordersHtml = miniprogramData.orders.map(order => {
-    const statusText = {
-      'pending': '等待确认',
-      'confirmed': '已确认',
-      'preparing': '制作中',
-      'ready': '待取餐',
-      'completed': '已完成',
-      'cancelled': '已取消',
-      'refunded': '已退款',
-      'delayed': '制作延迟'
-    };
+    if (!miniprogramData?.user) return;
     
-    const statusClass = {
-      'pending': 'pending',
-      'confirmed': 'confirmed',
-      'preparing': 'preparing',
-      'ready': 'ready',
-      'completed': 'completed',
-      'cancelled': 'cancelled',
-      'refunded': 'refunded',
-      'delayed': 'delayed'
-    };
+    const userNameElements = document.querySelectorAll('.username, .user-name');
+    const userPointsElements = document.querySelectorAll('.user-points');
+    const userLevelElements = document.querySelectorAll('.user-level');
     
-    const itemsHtml = order.items.map(item => 
-      `<div class="order-item">${item.name} × ${item.quantity}</div>`
-    ).join('');
-    
-    const getActionButtons = (status, orderId) => {
-      switch (status) {
-        case 'pending':
-          return `
-            <button class="order-btn btn-danger" onclick="cancelOrder('${orderId}')">取消订单</button>
-            <button class="order-btn btn-primary" onclick="viewOrderDetail('${orderId}')">查看详情</button>
-          `;
-        case 'confirmed':
-          return `
-            <button class="order-btn btn-danger" onclick="cancelOrder('${orderId}')">取消订单</button>
-            <button class="order-btn btn-primary" onclick="rushOrder('${orderId}')">催单</button>
-          `;
-        case 'preparing':
-          return `
-            <button class="order-btn btn-secondary" onclick="viewOrderDetail('${orderId}')">查看详情</button>
-            <button class="order-btn btn-primary" onclick="rushOrder('${orderId}')">催单</button>
-          `;
-        case 'delayed':
-          return `
-            <button class="order-btn btn-warning" onclick="rushOrder('${orderId}')">继续催单</button>
-            <button class="order-btn btn-secondary" onclick="contactService('${orderId}')">联系客服</button>
-          `;
-        case 'ready':
-          return `
-            <button class="order-btn btn-success" onclick="confirmPickup('${orderId}')">确认取餐</button>
-          `;
-        case 'completed':
-          return `
-            <button class="order-btn btn-secondary" onclick="rateOrder('${orderId}')">评价</button>
-            <button class="order-btn btn-primary" onclick="reorder('${orderId}')">再来一单</button>
-          `;
-        case 'cancelled':
-          return `
-            <button class="order-btn btn-secondary" onclick="viewOrderDetail('${orderId}')">查看详情</button>
-            <button class="order-btn btn-primary" onclick="reorder('${orderId}')">重新下单</button>
-          `;
-        case 'refunded':
-          return `
-            <button class="order-btn btn-secondary" onclick="viewOrderDetail('${orderId}')">查看详情</button>
-            <button class="order-btn btn-primary" onclick="reorder('${orderId}')">重新下单</button>
-          `;
-        default:
-          return '';
-      }
-    };
-    
-    return `
-      <div class="order-card">
-        <div class="order-header">
-          <span class="order-number">订单号: ${order.id}</span>
-          <span class="order-status ${statusClass[order.status]}">${statusText[order.status]}</span>
-        </div>
-        <div class="order-items">
-          ${itemsHtml}
-        </div>
-        <div class="order-footer">
-          <span class="order-time">${order.orderTime}</span>
-          <div class="order-actions">
-            ${getActionButtons(order.status, order.id)}
-          </div>
-          <span class="order-total">¥${order.total.toFixed(2)}</span>
-        </div>
-        ${order.remark ? `<div class="order-remark">备注: ${order.remark}</div>` : ''}
-      </div>
-    `;
-  }).join('');
-  
-  orderHistory.innerHTML = ordersHtml;
-}
-
-// 订单相关操作函数
-function viewOrderDetail(orderId) {
-  const order = miniprogramData.orders.find(o => o.id === orderId);
-  if (order) {
-    alert(`订单详情:\n订单号: ${order.id}\n桌号: ${order.tableNumber}\n状态: ${order.estimatedTime}\n支付方式: ${order.paymentMethod}\n备注: ${order.remark || '无'}`);
-  }
-}
-
-function cancelOrder(orderId) {
-  if (confirm('确定要取消这个订单吗？')) {
-    const order = miniprogramData.orders.find(o => o.id === orderId);
-    if (order) {
-      order.status = 'cancelled';
-      order.estimatedTime = '已取消';
-      renderOrderHistory();
-      alert('订单已取消');
-    }
-  }
-}
-
-function rushOrder(orderId) {
-  alert('已提醒商家加急处理您的订单');
-}
-
-function confirmPickup(orderId) {
-  const order = miniprogramData.orders.find(o => o.id === orderId);
-  if (order) {
-    order.status = 'completed';
-    order.estimatedTime = '已完成';
-    renderOrderHistory();
-    alert('感谢您的光临，用餐愉快！');
-  }
-}
-
-function rateOrder(orderId) {
-  alert('评价功能开发中...');
-}
-
-function reorder(orderId) {
-  const order = miniprogramData.orders.find(o => o.id === orderId);
-  if (order) {
-    // 清空购物车并添加订单菜品
-    miniprogramData.cart = order.items.map(item => ({
-      id: Math.random(),
-      name: item.name,
-      price: item.price,
-      quantity: item.quantity,
-      note: ''
-    }));
-    cartItems = miniprogramData.cart.reduce((total, item) => total + item.quantity, 0);
-    updateCartBadge();
-    showPage('cart');
-    alert('商品已加入购物车');
-  }
-}
-
-function contactService(orderId) {
-  alert('客服电话: 028-8888-6666\n或点击右上角联系在线客服');
-}
-
-// 渲染当前订单状态页面
-function renderCurrentOrder() {
-  const currentOrdersContent = document.getElementById('currentOrdersContent');
-  if (!currentOrdersContent) return;
-  
-  // 找到所有进行中的订单
-  const activeOrders = miniprogramData.orders.filter(order => 
-    ['pending', 'preparing', 'ready', 'confirmed', 'delayed'].includes(order.status)
-  );
-  
-  if (activeOrders.length === 0) {
-    currentOrdersContent.innerHTML = `
-      <div class="no-orders">
-        <div class="no-orders-icon"><i class="fas fa-clipboard-list"></i></div>
-        <div class="no-orders-title">暂无进行中的订单</div>
-        <div class="no-orders-desc">去菜单页看看有什么好吃的吧</div>
-        <button class="btn-primary" onclick="showPage('menu')">浏览菜单</button>
-      </div>
-    `;
-    return;
-  }
-  
-  const ordersHtml = activeOrders.map(order => {
-    const statusConfig = {
-      'pending': {
-        icon: 'fas fa-clock',
-        title: '等待确认',
-        desc: '您的订单已提交，正在等待商家确认',
-        color: '#ff9500'
-      },
-      'confirmed': {
-        icon: 'fas fa-check-circle',
-        title: '已确认',
-        desc: '您的订单已确认，商家正在安排制作',
-        color: '#32d74b'
-      },
-      'preparing': {
-        icon: 'fas fa-utensils',
-        title: '厨房制作中',
-        desc: '您的订单已确认，厨房正在用心制作',
-        color: '#007aff'
-      },
-      'ready': {
-        icon: 'fas fa-bell',
-        title: '可以取餐',
-        desc: '您的订单已制作完成，请尽快取餐',
-        color: '#34c759'
-      },
-      'delayed': {
-        icon: 'fas fa-exclamation-triangle',
-        title: '制作延迟',
-        desc: '由于特殊要求或繁忙时段，制作时间有所延长',
-        color: '#ff9500'
-      }
-    };
-    
-    const config = statusConfig[order.status];
-    const orderTime = new Date(order.orderTime);
-    const timeDisplay = orderTime.toLocaleTimeString('zh-CN', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    userNameElements.forEach(element => {
+        if (element) element.textContent = miniprogramData.user.name;
     });
     
-    // 生成进度步骤
-    const getProgressSteps = (status) => {
-      const steps = [
-        { key: 'confirmed', title: '订单已确认', icon: 'fas fa-check' },
-        { key: 'paid', title: '支付成功', icon: 'fas fa-credit-card' },
-        { key: 'preparing', title: '厨房制作中', icon: 'fas fa-utensils' },
-        { key: 'ready', title: '可以取餐', icon: 'fas fa-bell' }
-      ];
-      
-      let currentStepIndex = 0;
-      if (status === 'pending') currentStepIndex = 1;
-      else if (status === 'confirmed') currentStepIndex = 1;
-      else if (status === 'preparing') currentStepIndex = 2;
-      else if (status === 'ready') currentStepIndex = 3;
-      else if (status === 'delayed') currentStepIndex = 2; // 延迟状态仍在制作阶段
-      
-      return steps.map((step, index) => {
-        let stepClass = '';
-        let stepTime = '';
-        
-        if (index < currentStepIndex) {
-          stepClass = 'completed';
-          stepTime = index === 0 ? timeDisplay : new Date(orderTime.getTime() + index * 60000).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-        } else if (index === currentStepIndex) {
-          stepClass = status === 'delayed' ? 'delayed' : 'active';
-          if (status === 'ready') {
-            stepTime = '请取餐';
-          } else if (status === 'delayed') {
-            stepTime = '延迟中';
-          } else {
-            stepTime = order.estimatedTime;
-          }
-        } else {
-          stepClass = '';
-          stepTime = '请等待';
+    userPointsElements.forEach(element => {
+        if (element) element.textContent = miniprogramData.user.points + '积分';
+    });
+    
+    userLevelElements.forEach(element => {
+        if (element) element.textContent = miniprogramData.user.level;
+    });
+}
+
+// 选择商家
+function selectMerchant(merchantId) {
+    const merchant = platformData?.merchants?.find(m => m.id === merchantId);
+    if (!merchant) return;
+    
+    miniprogramData.currentMerchant = merchant;
+    
+    // 加载商家菜单
+    loadMerchantMenu(merchantId);
+    navigateTo('menu');
+}
+
+// 加载商家菜单
+function loadMerchantMenu(merchantId) {
+    if (!platformData?.menuData) return;
+    
+    const merchantMenu = platformData.menuData[merchantId];
+    if (merchantMenu) {
+        miniprogramData.menuCategories = merchantMenu.categories;
+    }
+}
+
+// ============================================
+// 工具函数
+// ============================================
+
+// 显示成功消息
+function showSuccessMessage(message) {
+    // 简化版本的消息提示
+    alert(message);
+}
+
+// 显示错误消息
+function showErrorMessage(message) {
+    // 简化版本的错误提示
+    alert(message);
+}
+
+// 显示商品详情
+function showItemDetail(itemId) {
+    // 这里可以实现商品详情模态框
+    console.log('显示商品详情:', itemId);
+}
+
+// 查看订单详情
+function viewOrderDetail(orderId) {
+    console.log('查看订单详情:', orderId);
+}
+
+// 取消订单
+function cancelOrder(orderId) {
+    if (confirm('确定要取消这个订单吗？')) {
+        const order = platformData?.orders?.find(o => o.id === orderId);
+        if (order) {
+            order.status = 'cancelled';
+            order.timeline.push({
+                status: 'cancelled',
+                time: new Date().toISOString(),
+                desc: '订单已取消'
+            });
+            renderCurrentOrder();
+            showSuccessMessage('订单已取消');
         }
-        
-        return `
-          <div class="progress-step">
-            <div class="step-icon ${stepClass}"><i class="${step.icon}"></i></div>
-            <div class="step-info">
-              <div class="step-title">${step.title}</div>
-              <div class="step-time">${stepTime}</div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    };
+    }
+}
+
+// ============================================
+// 微信登录相关功能
+// ============================================
+
+// 开始微信授权登录
+function startWeChatAuth() {
+    // 显示授权确认页面
+    showPage('auth-confirm');
     
-    // 生成订单菜品列表
-    const itemsHtml = order.items.map(item => 
-      `<div class="order-item-detail">
-        <span class="item-name">${item.name}</span>
-        <span class="item-quantity">×${item.quantity}</span>
-        <span class="item-price">¥${(item.price * item.quantity).toFixed(2)}</span>
-      </div>`
-    ).join('');
+    // 模拟授权过程
+    setTimeout(() => {
+        showPage('auth-processing');
+        setTimeout(() => {
+            // 授权完成，跳转到首页
+            showPage('home');
+        }, 2000);
+    }, 1000);
+}
+
+// 确认授权
+function confirmAuth() {
+    // 跳转到授权处理页面
+    showPage('auth-processing');
     
-    return `
-      <div class="order-status-card" data-order-id="${order.id}">
-        <!-- 订单头部 - 总是显示 -->
-        <div class="order-card-header" onclick="toggleOrderCard('${order.id}')">
-          <div class="order-basic-info">
-            <div class="status-icon-small" style="color: ${config.color}">
-              <i class="${config.icon}"></i>
-            </div>
-            <div class="order-basic-text">
-              <div class="order-id-time">
-                <span class="order-number-short">${order.id}</span>
-                <span class="order-time-short">${timeDisplay}</span>
-              </div>
-              <div class="status-title-small">${config.title}</div>
-            </div>
-          </div>
-          <div class="order-summary-quick">
-            <div class="estimated-time-compact">
-              <span class="time-value-small">${order.estimatedTime}</span>
-            </div>
-            <div class="order-total-small">¥${order.total.toFixed(2)}</div>
-            <div class="expand-icon">
-              <i class="fas fa-chevron-down"></i>
-            </div>
-          </div>
-        </div>
-        
-        <!-- 订单详情 - 可折叠 -->
-        <div class="order-card-details collapsed" id="details-${order.id}">
-          <div class="status-header-full">
-            <div class="status-icon" style="color: ${config.color}">
-              <i class="${config.icon}"></i>
-            </div>
-            <div class="status-title">${config.title}</div>
-            <div class="status-desc">${config.desc}</div>
-          </div>
-          
-          <div class="estimated-time">
-            <div class="time-label">预计出菜时间</div>
-            <div class="time-display">
-              <span class="time-value">${order.estimatedTime}</span>
-            </div>
-          </div>
-          
-          <div class="progress-steps">
-            ${getProgressSteps(order.status)}
-          </div>
-          
-          <div class="order-section">
-            <div class="section-header">
-              <i class="fas fa-info-circle section-icon"></i>
-              <span class="section-name">订单信息</span>
-            </div>
-            <div class="order-summary">
-              <span class="summary-item">订单号</span>
-              <span class="summary-value">${order.id}</span>
-            </div>
-            <div class="order-summary">
-              <span class="summary-item">桌号</span>
-              <span class="summary-value">${order.tableNumber}</span>
-            </div>
-            <div class="order-summary">
-              <span class="summary-item">下单时间</span>
-              <span class="summary-value">${order.orderTime}</span>
-            </div>
-            <div class="order-summary">
-              <span class="summary-item">支付金额</span>
-              <span class="summary-value">¥${order.total.toFixed(2)}</span>
-            </div>
-            ${order.remark ? `
-            <div class="order-summary">
-              <span class="summary-item">备注</span>
-              <span class="summary-value">${order.remark}</span>
-            </div>
-            ` : ''}
-          </div>
-          
-          <div class="order-section">
-            <div class="section-header">
-              <i class="fas fa-utensils section-icon"></i>
-              <span class="section-name">订单详情</span>
-            </div>
-            <div class="order-items-detail">
-              ${itemsHtml}
-            </div>
-          </div>
-          
-          <div class="order-actions-status">
-            ${order.status === 'pending' ? `
-              <button class="btn-secondary" onclick="cancelOrder('${order.id}')">取消订单</button>
-            ` : ''}
-            ${order.status === 'confirmed' ? `
-              <button class="btn-secondary" onclick="cancelOrder('${order.id}')">取消订单</button>
-              <button class="btn-primary" onclick="rushOrder('${order.id}')">催单</button>
-            ` : ''}
-            ${order.status === 'preparing' ? `
-              <button class="btn-primary" onclick="rushOrder('${order.id}')">催单</button>
-            ` : ''}
-            ${order.status === 'delayed' ? `
-              <button class="btn-warning" onclick="rushOrder('${order.id}')">继续催单</button>
-              <button class="btn-secondary" onclick="contactService('${order.id}')">联系客服</button>
-            ` : ''}
-            ${order.status === 'ready' ? `
-              <button class="btn-success" onclick="confirmPickup('${order.id}')">确认取餐</button>
-            ` : ''}
-            <button class="btn-outline" onclick="viewOrderDetail('${order.id}')">查看详情</button>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-  
-  currentOrdersContent.innerHTML = ordersHtml;
+    // 模拟处理过程
+    setTimeout(() => {
+        // 授权成功，跳转到首页
+        showPage('home');
+    }, 2000);
 }
 
-// 订单卡片折叠/展开功能
-function toggleOrderCard(orderId) {
-  const detailsElement = document.getElementById(`details-${orderId}`);
-  const expandIcon = document.querySelector(`[data-order-id="${orderId}"] .expand-icon i`);
-  
-  if (!detailsElement || !expandIcon) return;
-  
-  const isCollapsed = detailsElement.classList.contains('collapsed');
-  
-  if (isCollapsed) {
-    // 展开
-    detailsElement.classList.remove('collapsed');
-    detailsElement.classList.add('expanded');
-    expandIcon.classList.remove('fa-chevron-down');
-    expandIcon.classList.add('fa-chevron-up');
-  } else {
-    // 折叠
-    detailsElement.classList.remove('expanded');
-    detailsElement.classList.add('collapsed');
-    expandIcon.classList.remove('fa-chevron-up');
-    expandIcon.classList.add('fa-chevron-down');
-  }
+// 取消授权
+function cancelAuth() {
+    // 返回微信登录页面
+    showPage('wechat-login');
 }
 
-// 其他渲染函数占位符
-function renderMenuCategories() {
-  // 菜单页面渲染逻辑
+// ============================================
+// 导航和界面交互功能
+// ============================================
+
+// 返回上一页
+function goBack() {
+    if (pageHistory.length > 0) {
+        const previousPage = pageHistory.pop();
+        showPage(previousPage);
+    } else {
+        showPage('home');
+    }
 }
 
-function renderCart() {
-  // 购物车页面渲染逻辑
+// 选择配送地址
+function selectDeliveryAddress() {
+    alert('选择配送地址功能，实际应用中打开地址选择界面');
 }
 
-function updateUserProfile() {
-  // 用户资料页面更新逻辑
-} 
+// 显示分类菜单
+function showCategoryMenu(category) {
+    console.log('显示分类菜单:', category);
+    navigateTo('menu');
+}
+
+// 选择支付方式
+function selectPayment(element) {
+    // 移除其他选中状态
+    document.querySelectorAll('.payment-method').forEach(method => {
+        method.classList.remove('selected');
+    });
+    // 添加当前选中状态
+    element.classList.add('selected');
+}
+
+// 处理支付
+function processPayment() {
+    // 模拟支付过程
+    showPage('wechat-pay');
+    setTimeout(() => {
+        showPage('pay-success');
+    }, 3000);
+}
+
+// ============================================
+// 应用初始化
+// ============================================
+
+// DOM 加载完成后初始化应用
+document.addEventListener('DOMContentLoaded', function() {
+    // 初始化数据
+    initializeAppData();
+    
+    // 更新购物车徽章
+    updateCartBadge();
+    
+    // 更新用户信息
+    updateUserInfo();
+    
+    // 显示启动页面
+    showPage('splash');
+    setTimeout(() => { 
+        showPage('wechat-login'); 
+    }, 2000);
+});
