@@ -3,6 +3,8 @@ let currentPage = 'dashboard';
 let pageHistory = [];
 let businessStatus = 'online';
 let notificationCount = 0;
+let currentMerchantId = 'merchant_001'; // 当前商家ID
+let platformOrderPolling = null;
 
 // 页面列表
 const pagesToLoad = [
@@ -15,8 +17,8 @@ const pagesToLoad = [
     'settings'
 ];
 
-// 模拟数据
-const mockData = {
+// 使用 shared 数据
+const mockData = merchantData || {
     orders: [
         {
             id: 'ORD001',
@@ -854,7 +856,7 @@ function updatePageHeader(pageId) {
     const pageTitle = document.querySelector('.page-title');
     const breadcrumb = document.querySelector('.breadcrumb .current');
     
-    const pageTitles = {
+    const pageTitles = merchantConfig?.pageTitles || {
         'dashboard': '仪表盘',
         'orders': '订单管理',
         'menu-management': '菜单管理',
@@ -4413,3 +4415,402 @@ if (!document.getElementById('customer-page-styles')) {
     styleElement.innerHTML = customerPageStyles.replace('<style>', '').replace('</style>', '');
     document.head.appendChild(styleElement);
 }
+
+// ===== 平台集成功能 =====
+
+// 平台订单管理
+const PlatformOrderManager = {
+    // 初始化平台集成
+    init() {
+        if (typeof platformData !== 'undefined') {
+            this.updateMerchantInfo();
+            this.updateOrderCount();
+            this.startPolling();
+        }
+    },
+    
+    // 更新商家信息
+    updateMerchantInfo() {
+        const merchant = platformData.merchants.find(m => m.id === currentMerchantId);
+        if (merchant) {
+            const nameElement = document.getElementById('merchantName');
+            if (nameElement) nameElement.textContent = merchant.name;
+            this.updateStatus(merchant.status);
+        }
+    },
+    
+    // 更新营业状态
+    updateStatus(status) {
+        businessStatus = status;
+        const statusDot = document.querySelector('.status-dot');
+        const statusText = document.querySelector('.status-indicator span:last-child');
+        
+        if (statusDot && statusText) {
+            statusDot.className = `status-dot ${status}`;
+            const statusMap = {
+                'online': '营业中',
+                'busy': '繁忙', 
+                'offline': '休息中'
+            };
+            statusText.textContent = statusMap[status] || status;
+        }
+    },
+    
+    // 更新订单计数
+    updateOrderCount() {
+        const merchantOrders = this.getMerchantOrders();
+        const pendingCount = merchantOrders.filter(order => 
+            ['assigned', 'confirmed'].includes(order.status)
+        ).length;
+        
+        const badge = document.getElementById('pending-orders');
+        if (badge) {
+            badge.textContent = pendingCount;
+            badge.style.display = pendingCount > 0 ? 'inline-flex' : 'none';
+        }
+    },
+    
+    // 获取当前商家的订单
+    getMerchantOrders() {
+        if (typeof platformData === 'undefined') return [];
+        return platformData.orders.filter(order => order.merchantId === currentMerchantId);
+    },
+    
+    // 开始轮询订单
+    startPolling() {
+        if (platformOrderPolling) clearInterval(platformOrderPolling);
+        
+        platformOrderPolling = setInterval(() => {
+            this.checkNewOrders();
+            this.updateOrderCount();
+        }, 5000); // 5秒检查一次
+    },
+    
+    // 检查新订单
+    checkNewOrders() {
+        const newOrders = this.getMerchantOrders().filter(order => 
+            order.status === 'assigned' && !order.merchantNotified
+        );
+        
+        newOrders.forEach(order => {
+            this.showNewOrderNotification(order);
+            order.merchantNotified = true;
+        });
+    },
+    
+    // 显示新订单通知
+    showNewOrderNotification(order) {
+        const notificationHtml = `
+            <div class="platform-notification new-order" data-order-id="${order.id}">
+                <div class="notification-header">
+                    <i class="fas fa-shopping-bag"></i>
+                    <strong>新平台订单</strong>
+                    <button class="close-btn" onclick="this.parentElement.parentElement.remove()">×</button>
+                </div>
+                <div class="notification-body">
+                    <p><strong>订单号:</strong> ${order.id}</p>
+                    <p><strong>金额:</strong> ¥${order.pricing.total.toFixed(2)}</p>
+                    <p><strong>配送:</strong> ${order.deliveryAddress.detail}</p>
+                    <p><strong>备注:</strong> ${order.remark || '无'}</p>
+                </div>
+                <div class="notification-actions">
+                    <button class="btn-accept" onclick="PlatformOrderManager.acceptOrder('${order.id}')">接单</button>
+                    <button class="btn-reject" onclick="PlatformOrderManager.rejectOrder('${order.id}')">拒单</button>
+                </div>
+            </div>
+        `;
+        
+        const container = document.getElementById('notificationContainer');
+        if (container) {
+            container.insertAdjacentHTML('afterbegin', notificationHtml);
+        }
+        
+        // 播放通知音效
+        this.playNotificationSound();
+    },
+    
+    // 接受订单
+    acceptOrder(orderId) {
+        const order = platformData.orders.find(o => o.id === orderId);
+        if (order) {
+            order.status = 'confirmed';
+            order.timeline.push({
+                status: 'confirmed',
+                time: new Date().toISOString(),
+                desc: '商家已确认订单'
+            });
+            
+            this.removeOrderNotification(orderId);
+            this.updateOrderCount();
+            this.showToast('订单已接受', 'success');
+        }
+    },
+    
+    // 拒绝订单
+    rejectOrder(orderId) {
+        const order = platformData.orders.find(o => o.id === orderId);
+        if (order) {
+            order.status = 'pending';
+            order.merchantId = null;
+            order.merchantName = null;
+            order.timeline.push({
+                status: 'rejected',
+                time: new Date().toISOString(),
+                desc: '商家拒绝订单，重新分配中'
+            });
+            
+            this.removeOrderNotification(orderId);
+            this.updateOrderCount();
+            this.showToast('订单已拒绝', 'warning');
+        }
+    },
+    
+    // 移除订单通知
+    removeOrderNotification(orderId) {
+        const notification = document.querySelector(`[data-order-id="${orderId}"]`);
+        if (notification) {
+            notification.remove();
+        }
+    },
+    
+    // 播放通知音效
+    playNotificationSound() {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        } catch (e) {
+            console.log('Audio notification not supported');
+        }
+    },
+    
+    // 显示提示消息
+    showToast(message, type = 'info') {
+        // 创建简单的toast通知
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: ${type === 'success' ? '#4CAF50' : type === 'warning' ? '#FF9800' : '#2196F3'};
+            color: white;
+            border-radius: 6px;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        `;
+        toast.textContent = message;
+        
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+};
+
+// 修改现有的订单页面渲染，集成平台订单
+function renderOrdersPageWithPlatform() {
+    if (typeof platformData !== 'undefined') {
+        const platformOrders = PlatformOrderManager.getMerchantOrders();
+        
+        // 找到订单容器并渲染平台订单
+        const ordersContainer = document.querySelector('#orders .page-content');
+        if (ordersContainer && platformOrders.length > 0) {
+            const platformOrdersHtml = `
+                <div class="platform-orders-section">
+                    <h3><i class="fas fa-layer-group"></i> 平台订单</h3>
+                    <div class="orders-grid">
+                        ${platformOrders.map(order => `
+                            <div class="order-card platform-order" data-order-id="${order.id}">
+                                <div class="order-header">
+                                    <span class="order-id">${order.id}</span>
+                                    <span class="order-status ${order.status}">
+                                        ${PlatformOrderManager.getOrderStatusText(order.status)}
+                                    </span>
+                                </div>
+                                <div class="order-details">
+                                    <p><strong>金额:</strong> ¥${order.pricing.total.toFixed(2)}</p>
+                                    <p><strong>时间:</strong> ${new Date(order.orderTime).toLocaleString()}</p>
+                                    <p><strong>地址:</strong> ${order.deliveryAddress.detail}</p>
+                                </div>
+                                <div class="order-actions">
+                                    ${PlatformOrderManager.getOrderActions(order)}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            ordersContainer.insertAdjacentHTML('afterbegin', platformOrdersHtml);
+        }
+    }
+}
+
+// 获取订单状态文本
+PlatformOrderManager.getOrderStatusText = function(status) {
+    const textMap = {
+        'assigned': '待确认',
+        'confirmed': '已确认',
+        'preparing': '制作中',
+        'ready': '待配送',
+        'delivering': '配送中',
+        'completed': '已完成',
+        'cancelled': '已取消'
+    };
+    return textMap[status] || status;
+};
+
+// 获取订单操作按钮
+PlatformOrderManager.getOrderActions = function(order) {
+    switch (order.status) {
+        case 'assigned':
+            return `
+                <button class="btn-primary btn-sm" onclick="PlatformOrderManager.acceptOrder('${order.id}')">接单</button>
+                <button class="btn-danger btn-sm" onclick="PlatformOrderManager.rejectOrder('${order.id}')">拒单</button>
+            `;
+        case 'confirmed':
+            return `<button class="btn-info btn-sm" onclick="PlatformOrderManager.startPreparing('${order.id}')">开始制作</button>`;
+        case 'preparing':
+            return `<button class="btn-success btn-sm" onclick="PlatformOrderManager.markReady('${order.id}')">制作完成</button>`;
+        case 'ready':
+            return `<button class="btn-warning btn-sm" onclick="PlatformOrderManager.markDelivering('${order.id}')">开始配送</button>`;
+        case 'delivering':
+            return `<button class="btn-success btn-sm" onclick="PlatformOrderManager.markCompleted('${order.id}')">配送完成</button>`;
+        default:
+            return '';
+    }
+};
+
+// 订单状态更新方法
+PlatformOrderManager.startPreparing = function(orderId) {
+    const order = platformData.orders.find(o => o.id === orderId);
+    if (order) {
+        order.status = 'preparing';
+        order.timeline.push({
+            status: 'preparing',
+            time: new Date().toISOString(),
+            desc: '开始制作'
+        });
+        this.showToast('已开始制作', 'success');
+        renderOrdersPageWithPlatform();
+    }
+};
+
+PlatformOrderManager.markReady = function(orderId) {
+    const order = platformData.orders.find(o => o.id === orderId);
+    if (order) {
+        order.status = 'ready';
+        order.timeline.push({
+            status: 'ready',
+            time: new Date().toISOString(),
+            desc: '制作完成'
+        });
+        this.showToast('制作完成', 'success');
+        renderOrdersPageWithPlatform();
+    }
+};
+
+PlatformOrderManager.markDelivering = function(orderId) {
+    const order = platformData.orders.find(o => o.id === orderId);
+    if (order && order.orderType === 'delivery' && typeof deliveryService !== 'undefined') {
+        // 尝试分配配送员
+        const assignmentResult = deliveryService.assignDriver(orderId);
+        
+        if (assignmentResult.success) {
+            order.status = 'picked_up';
+            this.showToast(`已安排${assignmentResult.driver.name}配送，预计${assignmentResult.estimatedTime}分钟送达`, 'success');
+            
+            // 模拟配送过程
+            this.simulateDelivery(orderId);
+        } else {
+            this.showToast(assignmentResult.reason, 'warning');
+        }
+        
+        renderOrdersPageWithPlatform();
+    } else {
+        // 兜底处理
+        order.status = 'delivering';
+        order.timeline.push({
+            status: 'delivering',
+            time: new Date().toISOString(),
+            desc: '开始配送'
+        });
+        this.showToast('已开始配送', 'success');
+        renderOrdersPageWithPlatform();
+    }
+};
+
+// 模拟配送过程
+PlatformOrderManager.simulateDelivery = function(orderId) {
+    // 3分钟后更新为配送中
+    setTimeout(() => {
+        if (typeof deliveryService !== 'undefined') {
+            deliveryService.updateDeliveryStatus(orderId, 'on_the_way');
+            this.showToast('配送员已在路上', 'info');
+        }
+    }, 3000);
+
+    // 8分钟后更新为即将送达
+    setTimeout(() => {
+        if (typeof deliveryService !== 'undefined') {
+            deliveryService.updateDeliveryStatus(orderId, 'delivering');
+            this.showToast('配送员即将送达', 'info');
+        }
+    }, 8000);
+
+    // 12分钟后完成配送
+    setTimeout(() => {
+        if (typeof deliveryService !== 'undefined') {
+            deliveryService.updateDeliveryStatus(orderId, 'delivered');
+            this.showToast('配送已完成', 'success');
+            this.updateOrderCount();
+        }
+    }, 12000);
+};
+
+PlatformOrderManager.markCompleted = function(orderId) {
+    const order = platformData.orders.find(o => o.id === orderId);
+    if (order) {
+        order.status = 'completed';
+        order.timeline.push({
+            status: 'completed',
+            time: new Date().toISOString(),
+            desc: '配送完成'
+        });
+        
+        const merchant = platformData.merchants.find(m => m.id === currentMerchantId);
+        if (merchant && merchant.currentLoad > 0) {
+            merchant.currentLoad -= 1;
+        }
+        
+        this.showToast('订单已完成', 'success');
+        this.updateOrderCount();
+        renderOrdersPageWithPlatform();
+    }
+};
+
+// 初始化平台集成
+setTimeout(() => {
+    if (typeof platformData !== 'undefined') {
+        PlatformOrderManager.init();
+        
+        // 如果当前在订单页面，渲染平台订单
+        if (currentPage === 'orders') {
+            renderOrdersPageWithPlatform();
+        }
+    }
+}, 1000);

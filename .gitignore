@@ -107,3 +107,5 @@ Thumbs.db
 server.pid
 server.log
 nohup.out
+
+tmp_images/
