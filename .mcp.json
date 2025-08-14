@@ -7,6 +7,23 @@
         "@playwright/mcp@latest"
       ],
       "env": {}
+    },
+    "@21st-dev/magic": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@21st-dev/magic@latest",
+        "API_KEY=\"a4a3b4622b7e41e6a81c04482ac08fd511cf115e80c065a297af33d61d085a6b\""
+      ]
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "env": {}
     }
   }
 }
