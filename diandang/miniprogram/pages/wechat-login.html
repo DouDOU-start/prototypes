@@ -1,17 +1,82 @@
 <div class="page" id="wechat-login">
-  <div class="login-page">
-    <div class="login-logo">
-      <i class="fab fa-weixin"></i>
+  <div class="modern-login-page">
+    <!-- 背景渐变和装饰 -->
+    <div class="login-bg-gradient"></div>
+    <div class="login-decorations">
+      <div class="decoration-wave wave-1"></div>
+      <div class="decoration-wave wave-2"></div>
+      <div class="decoration-particle particle-1"></div>
+      <div class="decoration-particle particle-2"></div>
+      <div class="decoration-particle particle-3"></div>
     </div>
-    <div class="login-title">微信授权登录</div>
-    <div class="login-subtitle">
-      为了提供更好的服务体验，<br>
-      需要获取您的微信基本信息
+
+    <!-- 登录内容 -->
+    <div class="login-content">
+      <!-- 现代化Logo区域 -->
+      <div class="login-logo-section">
+        <div class="login-logo-container">
+          <div class="logo-bg-circle"></div>
+          <div class="login-logo-icon">
+            <i class="fab fa-weixin"></i>
+          </div>
+          <div class="logo-pulse"></div>
+        </div>
+        <div class="app-branding">
+          <h2 class="app-name">点当外卖</h2>
+          <div class="app-slogan">美食即达，心意相传</div>
+        </div>
+      </div>
+
+      <!-- 登录信息 -->
+      <div class="login-info">
+        <h1 class="login-title">微信授权登录</h1>
+        <p class="login-subtitle">
+          为了提供更好的服务体验<br>
+          需要获取您的微信基本信息
+        </p>
+      </div>
+
+      <!-- 登录按钮 -->
+      <div class="login-actions">
+        <button class="modern-wechat-login-btn" onclick="startWeChatAuth()">
+          <div class="btn-bg-gradient"></div>
+          <div class="btn-content">
+            <i class="fab fa-weixin wechat-icon"></i>
+            <span class="btn-text">微信一键登录</span>
+            <div class="btn-arrow">
+              <i class="fas fa-arrow-right"></i>
+            </div>
+          </div>
+          <div class="btn-shine"></div>
+        </button>
+      </div>
+
+      <!-- 登录提示 -->
+      <div class="login-footer">
+        <div class="security-badge">
+          <i class="fas fa-shield-alt"></i>
+          <span>安全认证</span>
+        </div>
+        <div class="login-agreement">
+          登录即表示同意<a href="#" class="link">《用户协议》</a>和<a href="#" class="link">《隐私政策》</a>
+        </div>
+      </div>
     </div>
-    <button class="wechat-login-btn" onclick="startWeChatAuth()">
-      <i class="fab fa-weixin wechat-icon"></i>
-      <span>微信一键登录</span>
-    </button>
-    <div class="login-tips">登录即表示同意《用户协议》和《隐私政策》</div>
+
+    <!-- 装饰性特性点 -->
+    <div class="feature-highlights">
+      <div class="feature-item">
+        <i class="fas fa-rocket"></i>
+        <span>快速下单</span>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-shield-alt"></i>
+        <span>安全支付</span>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-shipping-fast"></i>
+        <span>快速配送</span>
+      </div>
+    </div>
   </div>
 </div> 

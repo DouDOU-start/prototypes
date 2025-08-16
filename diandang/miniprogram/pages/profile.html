@@ -1,21 +1,138 @@
 <div class="page" id="profile">
-  <div class="profile-header">
-    <div class="avatar"><div class="avatar-placeholder">微</div></div>
-    <div class="username">微信用户</div>
+  <!-- 现代化个人资料头部 -->
+  <div class="modern-profile-header">
+    <div class="profile-bg-gradient"></div>
+    <div class="profile-content">
+      <div class="modern-avatar">
+        <div class="avatar-ring"></div>
+        <div class="avatar-content">微</div>
+        <div class="avatar-status-dot"></div>
+      </div>
+      <div class="profile-info">
+        <h2 class="profile-username">微信用户</h2>
+        <p class="profile-subtitle">VIP会员 · 累计消费 ¥568</p>
+        <div class="profile-stats">
+          <div class="stat-item">
+            <div class="stat-number">12</div>
+            <div class="stat-label">订单</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">8</div>
+            <div class="stat-label">收藏</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">3</div>
+            <div class="stat-label">优惠券</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="profile-menu">
-    <div class="menu-group">
-      <div class="menu-item-link" onclick="showPage('orders')"><i class="fas fa-clipboard-list menu-item-icon"></i><span class="menu-item-text">我的订单</span><i class="fas fa-chevron-right menu-item-arrow"></i></div>
-      <div class="menu-item-link"><i class="fas fa-heart menu-item-icon"></i><span class="menu-item-text">我的收藏</span><i class="fas fa-chevron-right menu-item-arrow"></i></div>
-      <div class="menu-item-link"><i class="fas fa-gift menu-item-icon"></i><span class="menu-item-text">优惠券</span><i class="fas fa-chevron-right menu-item-arrow"></i></div>
+
+  <div class="page-content">
+    <!-- 快捷操作区域 -->
+    <div class="content-section">
+      <div class="section-title">
+        <i class="fas fa-bolt" style="color: var(--accent-color); margin-right: 8px;"></i>
+        快捷操作
+      </div>
+      
+      <div class="quick-actions-grid">
+        <div class="quick-action-card" onclick="showPage('orders')">
+          <div class="quick-action-icon orders">
+            <i class="fas fa-clipboard-list"></i>
+          </div>
+          <div class="quick-action-content">
+            <h4 class="quick-action-title">我的订单</h4>
+            <p class="quick-action-desc">查看历史订单</p>
+          </div>
+          <div class="quick-action-badge">2</div>
+        </div>
+
+        <div class="quick-action-card">
+          <div class="quick-action-icon favorites">
+            <i class="fas fa-heart"></i>
+          </div>
+          <div class="quick-action-content">
+            <h4 class="quick-action-title">我的收藏</h4>
+            <p class="quick-action-desc">收藏的美食</p>
+          </div>
+          <div class="quick-action-badge">8</div>
+        </div>
+
+        <div class="quick-action-card">
+          <div class="quick-action-icon coupons">
+            <i class="fas fa-gift"></i>
+          </div>
+          <div class="quick-action-content">
+            <h4 class="quick-action-title">优惠券</h4>
+            <p class="quick-action-desc">可用优惠券</p>
+          </div>
+          <div class="quick-action-badge">3</div>
+        </div>
+
+        <div class="quick-action-card">
+          <div class="quick-action-icon location">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <div class="quick-action-content">
+            <h4 class="quick-action-title">收货地址</h4>
+            <p class="quick-action-desc">管理地址信息</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="menu-group">
-      <div class="menu-item-link"><i class="fas fa-map-marker-alt menu-item-icon"></i><span class="menu-item-text">餐厅地址</span><i class="fas fa-chevron-right menu-item-arrow"></i></div>
-      <div class="menu-item-link"><i class="fas fa-phone menu-item-icon"></i><span class="menu-item-text">联系我们</span><i class="fas fa-chevron-right menu-item-arrow"></i></div>
-      <div class="menu-item-link"><i class="fas fa-star menu-item-icon"></i><span class="menu-item-text">评价反馈</span><i class="fas fa-chevron-right menu-item-arrow"></i></div>
+
+    <!-- 服务菜单 -->
+    <div class="content-section">
+      <div class="section-title">
+        <i class="fas fa-concierge-bell" style="color: var(--accent-color); margin-right: 8px;"></i>
+        服务中心
+      </div>
+      
+      <div class="modern-menu-group">
+        <div class="modern-menu-item">
+          <div class="menu-item-icon-wrapper contact">
+            <i class="fas fa-phone"></i>
+          </div>
+          <div class="menu-item-content">
+            <h4 class="menu-item-title">联系我们</h4>
+            <p class="menu-item-subtitle">客服电话：400-123-4567</p>
+          </div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </div>
+
+        <div class="modern-menu-item">
+          <div class="menu-item-icon-wrapper feedback">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="menu-item-content">
+            <h4 class="menu-item-title">评价反馈</h4>
+            <p class="menu-item-subtitle">帮助我们改进服务</p>
+          </div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </div>
+
+        <div class="modern-menu-item">
+          <div class="menu-item-icon-wrapper settings">
+            <i class="fas fa-cog"></i>
+          </div>
+          <div class="menu-item-content">
+            <h4 class="menu-item-title">设置</h4>
+            <p class="menu-item-subtitle">个人偏好与隐私</p>
+          </div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </div>
+      </div>
     </div>
-    <div class="menu-group">
-      <div class="menu-item-link"><i class="fas fa-cog menu-item-icon"></i><span class="menu-item-text">设置</span><i class="fas fa-chevron-right menu-item-arrow"></i></div>
+
+    <!-- 版本信息 -->
+    <div class="profile-footer">
+      <div class="app-version">
+        <i class="fas fa-mobile-alt"></i>
+        点当外卖 v2.1.0
+      </div>
+      <div class="copyright">© 2024 点当科技. 保留所有权利</div>
     </div>
   </div>
 </div> 

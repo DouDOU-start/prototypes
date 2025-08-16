@@ -2,12 +2,14 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="点当商家后台">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="format-detection" content="telephone=no">
     <title>点当商家后台 - 多平台订单管理</title>
     <link rel="apple-touch-icon" href="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=180&h=180&fit=crop&crop=center">
     <link rel="shortcut icon" href="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=32&h=32&fit=crop&crop=center">
@@ -16,6 +18,9 @@
 </head>
 <body>
     <div class="merchant-app">
+        <!-- 移动端菜单覆盖层 -->
+        <div class="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+        
         <!-- 侧边导航栏 -->
         <nav class="sidebar">
             <div class="sidebar-header">
@@ -80,6 +85,9 @@
             <!-- 顶部工具栏 -->
             <header class="toolbar">
                 <div class="toolbar-left">
+                    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" style="display: none;">
+                        <i class="fas fa-bars"></i>
+                    </button>
                     <h1 class="page-title">仪表盘</h1>
                     <div class="breadcrumb">
                         <span>首页</span>
@@ -126,5 +134,54 @@
     <script src="../shared/data/merchant-config.js"></script>
     <script src="../shared/utils/common-utils.js"></script>
     <script src="./assets/merchant-app.js"></script>
+    
+    <!-- iPad 全屏优化脚本 -->
+    <script>
+        // 处理 iPad 全屏显示
+        function handleiPadFullscreen() {
+            // 检测是否为 iPad
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isStandalone = window.navigator.standalone === true;
+            
+            if (isIOS) {
+                // 设置 CSS 自定义属性来处理动态高度
+                const setVH = () => {
+                    const vh = window.innerHeight * 0.01;
+                    document.documentElement.style.setProperty('--vh', `${vh}px`);
+                };
+                
+                // 初始设置
+                setVH();
+                
+                // 监听方向和窗口大小变化
+                window.addEventListener('resize', setVH);
+                window.addEventListener('orientationchange', () => {
+                    setTimeout(setVH, 100); // 延迟以确保方向变化完成
+                });
+                
+                // 滚动到顶部以隐藏地址栏（仅在非全屏模式下）
+                if (!isStandalone) {
+                    setTimeout(() => {
+                        window.scrollTo(0, 1);
+                        setTimeout(() => window.scrollTo(0, 0), 100);
+                    }, 500);
+                }
+                
+                // 防止页面滚动
+                document.body.addEventListener('touchmove', function(e) {
+                    if (e.target === document.body) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+            }
+        }
+        
+        // 页面加载完成后执行
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', handleiPadFullscreen);
+        } else {
+            handleiPadFullscreen();
+        }
+    </script>
 </body>
 </html>

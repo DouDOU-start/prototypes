@@ -9,48 +9,144 @@
       <span class="header-cart-badge" id="cartCountMenu" style="pointer-events: none;">0</span>
     </div>
   </div>
-  <div class="home-content">
-    <div class="search-bar">
-      <input type="text" class="search-input" placeholder="搜索菜品...">
-      <button class="search-btn"><i class="fas fa-search"></i></button>
+
+  <div class="page-content">
+    <!-- 现代化搜索区域 -->
+    <div class="search-section">
+      <div class="search-bar">
+        <input type="text" class="search-input" placeholder="搜索菜品...">
+        <button class="search-btn"><i class="fas fa-search"></i></button>
+      </div>
     </div>
-    <div class="section-title">热菜系列</div>
-    <div class="menu-list">
-      <div class="menu-item" onclick="showPage('detail')">
-        <div class="menu-item-image"><i class="fas fa-drumstick-bite"></i></div>
-        <div class="menu-item-info">
-          <div class="menu-item-name">宫保鸡丁</div>
-          <div class="menu-item-desc">经典川菜，鸡肉鲜嫩，花生香脆，口感层次丰富</div>
-          <div class="menu-item-price">¥32</div>
-        </div>
-        <button class="add-btn" onclick="event.stopPropagation(); addToCart()"><i class="fas fa-plus"></i></button>
+
+    <!-- 菜品分类 -->
+    <div class="content-section">
+      <div class="section-title">
+        <i class="fas fa-fire" style="color: var(--accent-color); margin-right: 8px;"></i>
+        热菜系列
       </div>
-      <div class="menu-item" onclick="showPage('detail')">
-        <div class="menu-item-image"><i class="fas fa-pepper-hot"></i></div>
-        <div class="menu-item-info">
-          <div class="menu-item-name">麻婆豆腐</div>
-          <div class="menu-item-desc">四川传统名菜，麻辣鲜香，豆腐嫩滑</div>
-          <div class="menu-item-price">¥25</div>
+      
+      <!-- 使用现代化食物卡片 -->
+      <div class="menu-list">
+        <div class="food-card" onclick="showPage('detail')">
+          <div class="food-card-image-container">
+            <div class="food-card-image-fallback">🍗</div>
+            <div class="food-card-rating">
+              <i class="fas fa-star"></i>
+              <span>4.8</span>
+            </div>
+            <div class="food-card-price-tag">¥32</div>
+          </div>
+          <div class="food-card-content">
+            <div class="food-card-header">
+              <h3 class="food-card-title">宫保鸡丁</h3>
+            </div>
+            <p class="food-card-description">经典川菜，鸡肉鲜嫩，花生香脆，口感层次丰富</p>
+            <div class="food-card-tags">
+              <span class="food-card-tag">招牌菜</span>
+              <span class="food-card-tag">微辣</span>
+            </div>
+            <div class="food-card-footer">
+              <div class="food-card-merchant">
+                <div class="food-card-merchant-avatar">川</div>
+                <span>川香小厨</span>
+              </div>
+              <button class="food-card-add-btn" onclick="event.stopPropagation(); addToCart('gongbao-chicken')">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
         </div>
-        <button class="add-btn" onclick="event.stopPropagation(); addToCart()"><i class="fas fa-plus"></i></button>
-      </div>
-      <div class="menu-item" onclick="showPage('detail')">
-        <div class="menu-item-image"><i class="fas fa-fish"></i></div>
-        <div class="menu-item-info">
-          <div class="menu-item-name">红烧鲈鱼</div>
-          <div class="menu-item-desc">鱼肉鲜美，汤汁浓郁，营养丰富</div>
-          <div class="menu-item-price">¥48</div>
+
+        <div class="food-card" onclick="showPage('detail')">
+          <div class="food-card-image-container">
+            <div class="food-card-image-fallback">🌶️</div>
+            <div class="food-card-rating">
+              <i class="fas fa-star"></i>
+              <span>4.7</span>
+            </div>
+            <div class="food-card-price-tag">¥25</div>
+          </div>
+          <div class="food-card-content">
+            <div class="food-card-header">
+              <h3 class="food-card-title">麻婆豆腐</h3>
+            </div>
+            <p class="food-card-description">四川传统名菜，麻辣鲜香，豆腐嫩滑，经典川菜代表</p>
+            <div class="food-card-tags">
+              <span class="food-card-tag">经典</span>
+              <span class="food-card-tag">麻辣</span>
+            </div>
+            <div class="food-card-footer">
+              <div class="food-card-merchant">
+                <div class="food-card-merchant-avatar">川</div>
+                <span>川香小厨</span>
+              </div>
+              <button class="food-card-add-btn" onclick="event.stopPropagation(); addToCart('mapo-tofu')">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
         </div>
-        <button class="add-btn" onclick="event.stopPropagation(); addToCart()"><i class="fas fa-plus"></i></button>
-      </div>
-      <div class="menu-item" onclick="showPage('detail')">
-        <div class="menu-item-image"><i class="fas fa-carrot"></i></div>
-        <div class="menu-item-info">
-          <div class="menu-item-name">糖醋里脊</div>
-          <div class="menu-item-desc">酸甜可口，色泽诱人，老少皆宜</div>
-          <div class="menu-item-price">¥35</div>
+
+        <div class="food-card" onclick="showPage('detail')">
+          <div class="food-card-image-container">
+            <div class="food-card-image-fallback">🐟</div>
+            <div class="food-card-rating">
+              <i class="fas fa-star"></i>
+              <span>4.9</span>
+            </div>
+            <div class="food-card-price-tag">¥48</div>
+          </div>
+          <div class="food-card-content">
+            <div class="food-card-header">
+              <h3 class="food-card-title">红烧鲈鱼</h3>
+            </div>
+            <p class="food-card-description">鱼肉鲜美，汤汁浓郁，营养丰富，精选优质鲈鱼制作</p>
+            <div class="food-card-tags">
+              <span class="food-card-tag">营养</span>
+              <span class="food-card-tag">鲜美</span>
+            </div>
+            <div class="food-card-footer">
+              <div class="food-card-merchant">
+                <div class="food-card-merchant-avatar">鲜</div>
+                <span>海鲜世家</span>
+              </div>
+              <button class="food-card-add-btn" onclick="event.stopPropagation(); addToCart('hongshao-fish')">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
         </div>
-        <button class="add-btn" onclick="event.stopPropagation(); addToCart()"><i class="fas fa-plus"></i></button>
+
+        <div class="food-card" onclick="showPage('detail')">
+          <div class="food-card-image-container">
+            <div class="food-card-image-fallback">🥕</div>
+            <div class="food-card-rating">
+              <i class="fas fa-star"></i>
+              <span>4.6</span>
+            </div>
+            <div class="food-card-price-tag">¥35</div>
+          </div>
+          <div class="food-card-content">
+            <div class="food-card-header">
+              <h3 class="food-card-title">糖醋里脊</h3>
+            </div>
+            <p class="food-card-description">酸甜可口，色泽诱人，老少皆宜，传统家常美味</p>
+            <div class="food-card-tags">
+              <span class="food-card-tag">酸甜</span>
+              <span class="food-card-tag">家常</span>
+            </div>
+            <div class="food-card-footer">
+              <div class="food-card-merchant">
+                <div class="food-card-merchant-avatar">家</div>
+                <span>家常小馆</span>
+              </div>
+              <button class="food-card-add-btn" onclick="event.stopPropagation(); addToCart('tangcu-liji')">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

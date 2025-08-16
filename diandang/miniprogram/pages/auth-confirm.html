@@ -1,24 +1,88 @@
 <div class="page" id="auth-confirm">
-  <div class="auth-confirm">
-    <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 340px; margin: 0 auto;">
-      <div class="auth-header">
-        <div class="app-info">
-          <div class="app-logo"><i class="fas fa-utensils"></i></div>
-          <div class="app-details">
-            <h3>仓和餐厅</h3>
-            <p>小程序向你申请以下权限</p>
+  <div class="modern-auth-confirm-page">
+    <!-- 背景渐变和装饰 -->
+    <div class="auth-bg-gradient"></div>
+    <div class="auth-decorations">
+      <div class="decoration-orb orb-1"></div>
+      <div class="decoration-orb orb-2"></div>
+      <div class="decoration-orb orb-3"></div>
+    </div>
+
+    <!-- 授权内容 -->
+    <div class="auth-content">
+      <!-- 应用信息 -->
+      <div class="auth-app-info">
+        <div class="auth-logo-container">
+          <div class="auth-logo-bg"></div>
+          <div class="auth-logo-icon">
+            <i class="fas fa-utensils"></i>
           </div>
+          <div class="auth-logo-ring"></div>
         </div>
-        <div class="auth-message">该小程序申请获取你的公开信息（昵称、头像等），请确认</div>
-        <div class="permission-list">
-          <div class="permission-title">申请权限：</div>
-          <div class="permission-item"><i class="fas fa-check permission-icon"></i>获得你的公开信息（昵称、头像等）</div>
-          <div class="permission-item"><i class="fas fa-check permission-icon"></i>获取你的手机号（用于订单通知）</div>
+        <div class="auth-app-details">
+          <h2 class="auth-app-name">点当外卖</h2>
+          <p class="auth-app-desc">微信小程序向您申请以下权限</p>
         </div>
       </div>
-      <div class="auth-buttons">
-        <button class="auth-btn auth-btn-cancel" onclick="cancelAuth()">拒绝</button>
-        <button class="auth-btn auth-btn-confirm" onclick="confirmAuth()">允许</button>
+
+      <!-- 权限申请卡片 -->
+      <div class="auth-permission-card">
+        <div class="card-header">
+          <i class="fas fa-shield-check"></i>
+          <span>权限申请</span>
+        </div>
+        
+        <div class="permission-message">
+          为了提供更好的服务体验，需要获取您的基本信息
+        </div>
+
+        <div class="permission-list">
+          <div class="permission-item">
+            <div class="permission-icon">
+              <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="permission-info">
+              <div class="permission-title">获取基本信息</div>
+              <div class="permission-desc">昵称、头像等公开信息</div>
+            </div>
+            <div class="permission-status">
+              <i class="fas fa-check-circle"></i>
+            </div>
+          </div>
+          
+          <div class="permission-item">
+            <div class="permission-icon">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <div class="permission-info">
+              <div class="permission-title">获取手机号码</div>
+              <div class="permission-desc">用于订单通知和服务联系</div>
+            </div>
+            <div class="permission-status">
+              <i class="fas fa-check-circle"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 操作按钮 -->
+      <div class="auth-actions">
+        <button class="auth-btn auth-btn-cancel" onclick="cancelAuth()">
+          <span>拒绝</span>
+        </button>
+        <button class="auth-btn auth-btn-confirm" onclick="confirmAuth()">
+          <div class="btn-gradient"></div>
+          <span>允许</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+
+      <!-- 安全提示 -->
+      <div class="auth-footer">
+        <div class="security-tips">
+          <i class="fas fa-info-circle"></i>
+          <span>我们将严格保护您的个人隐私信息</span>
+        </div>
       </div>
     </div>
   </div>

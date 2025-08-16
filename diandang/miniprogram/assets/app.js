@@ -48,6 +48,9 @@ async function showPage(pageId) {
         const title = pageConfig?.titles?.[pageId] || '点当外卖';
         document.title = title;
         
+        // 控制全屏模式（隐藏导航栏）
+        updateFullscreenMode(pageId);
+        
         // 执行页面特定的初始化
         await initializePage(pageId);
         
@@ -98,6 +101,32 @@ function updateNavigationState() {
             item.classList.add('active');
         }
     });
+}
+
+// 更新全屏模式
+function updateFullscreenMode(pageId) {
+    const fullscreenPages = ['splash', 'wechat-login', 'auth-confirm', 'auth-processing'];
+    const body = document.body;
+    
+    // 移除所有页面类名
+    body.classList.remove('page-splash', 'page-wechat-login', 'page-auth-confirm', 'page-auth-processing', 'fullscreen-mode');
+    
+    // 如果是全屏页面，添加相应的类名
+    if (fullscreenPages.includes(pageId)) {
+        body.classList.add(`page-${pageId}`, 'fullscreen-mode');
+        
+        // 确保导航栏隐藏
+        const bottomNav = document.querySelector('.bottom-nav');
+        if (bottomNav) {
+            bottomNav.style.display = 'none';
+        }
+    } else {
+        // 显示导航栏
+        const bottomNav = document.querySelector('.bottom-nav');
+        if (bottomNav) {
+            bottomNav.style.display = 'flex';
+        }
+    }
 }
 
 // 导航到指定页面
@@ -633,6 +662,205 @@ function cancelOrder(orderId) {
             showSuccessMessage('订单已取消');
         }
     }
+}
+
+// 渲染订单历史
+function renderOrderHistory() {
+    const ordersContainer = document.getElementById('ordersHistoryContent');
+    if (!ordersContainer) return;
+
+    // 获取所有订单数据
+    const orders = platformData?.orders || [];
+    
+    if (orders.length === 0) {
+        ordersContainer.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <div class="empty-title">暂无订单记录</div>
+                <div class="empty-desc">快去点单吧！</div>
+            </div>
+        `;
+        return;
+    }
+
+    // 按时间排序订单（最新的在前）
+    const sortedOrders = [...orders].sort((a, b) => new Date(b.createTime) - new Date(a.createTime));
+
+    ordersContainer.innerHTML = sortedOrders.map(order => {
+        const statusText = getOrderStatusText(order.status);
+        const statusClass = getOrderStatusClass(order.status);
+        const items = order.items || [];
+        const totalAmount = order.totalAmount || 0;
+
+        return `
+            <div class="modern-order-card">
+                <div class="order-status-header">
+                    <div class="order-number">${order.orderNumber || order.id}</div>
+                    <div class="order-status-badge ${statusClass}">
+                        <i class="fas ${getOrderStatusIcon(order.status)}"></i>
+                        <span>${statusText}</span>
+                    </div>
+                </div>
+                
+                <div class="order-items-preview">
+                    ${items.slice(0, 3).map(item => `
+                        <div class="order-item-mini">
+                            <span class="item-emoji">${getItemEmoji(item.name)}</span>
+                            <span class="item-name">${item.name}</span>
+                            <span class="item-qty">×${item.quantity}</span>
+                        </div>
+                    `).join('')}
+                    ${items.length > 3 ? `<div class="order-item-mini more-items">还有${items.length - 3}件商品...</div>` : ''}
+                </div>
+
+                <div class="order-meta">
+                    <div class="order-time">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>${formatOrderTime(order.createTime)}</span>
+                    </div>
+                    <div class="order-total">
+                        <span class="total-label">合计</span>
+                        <span class="total-amount">¥${totalAmount}</span>
+                    </div>
+                </div>
+
+                <div class="order-actions">
+                    ${order.status === 'completed' ? `
+                        <button class="action-btn secondary" onclick="reorderItems('${order.id}')">
+                            <i class="fas fa-redo"></i>
+                            再来一单
+                        </button>
+                        <button class="action-btn secondary" onclick="rateOrder('${order.id}')">
+                            <i class="fas fa-star"></i>
+                            评价订单
+                        </button>
+                    ` : `
+                        <button class="action-btn secondary" onclick="viewOrderDetail('${order.id}')">
+                            <i class="fas fa-list"></i>
+                            订单详情
+                        </button>
+                        ${order.status === 'pending' ? `
+                            <button class="action-btn secondary" onclick="cancelOrder('${order.id}')">
+                                <i class="fas fa-times"></i>
+                                取消订单
+                            </button>
+                        ` : ''}
+                    `}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 获取订单状态文本
+function getOrderStatusText(status) {
+    const statusMap = {
+        'pending': '待处理',
+        'confirmed': '已接单',
+        'preparing': '制作中',
+        'delivering': '配送中',
+        'completed': '已完成',
+        'cancelled': '已取消'
+    };
+    return statusMap[status] || '未知状态';
+}
+
+// 获取订单状态样式类
+function getOrderStatusClass(status) {
+    const classMap = {
+        'pending': 'pending',
+        'confirmed': 'preparing',
+        'preparing': 'preparing',
+        'delivering': 'preparing',
+        'completed': 'completed',
+        'cancelled': 'cancelled'
+    };
+    return classMap[status] || 'pending';
+}
+
+// 获取订单状态图标
+function getOrderStatusIcon(status) {
+    const iconMap = {
+        'pending': 'fa-clock',
+        'confirmed': 'fa-check',
+        'preparing': 'fa-utensils',
+        'delivering': 'fa-shipping-fast',
+        'completed': 'fa-check-circle',
+        'cancelled': 'fa-times-circle'
+    };
+    return iconMap[status] || 'fa-clock';
+}
+
+// 格式化订单时间
+function formatOrderTime(timeStr) {
+    if (!timeStr) return '';
+    
+    const orderTime = new Date(timeStr);
+    const now = new Date();
+    const diffInHours = (now - orderTime) / (1000 * 60 * 60);
+    
+    if (diffInHours < 24) {
+        return orderTime.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+    } else if (diffInHours < 24 * 7) {
+        const days = Math.floor(diffInHours / 24);
+        return `${days}天前`;
+    } else {
+        return orderTime.toLocaleDateString('zh-CN');
+    }
+}
+
+// 获取商品表情符号
+function getItemEmoji(itemName) {
+    const emojiMap = {
+        '宫保鸡丁': '🍗',
+        '麻婆豆腐': '🌶️',
+        '红烧鲈鱼': '🐟',
+        '糖醋里脊': '🥕',
+        '蛋花汤': '🥣',
+        '紫菜蛋花汤': '🥣',
+        '白米饭': '🍚',
+        '小米粥': '🍚',
+        '酸辣土豆丝': '🥔',
+        '蒜蓉娃娃菜': '🥬'
+    };
+    
+    // 尝试从名称中匹配关键词
+    for (const [key, emoji] of Object.entries(emojiMap)) {
+        if (itemName.includes(key)) {
+            return emoji;
+        }
+    }
+    
+    return '🍽️'; // 默认图标
+}
+
+// 重新下单
+function reorderItems(orderId) {
+    const order = platformData?.orders?.find(o => o.id === orderId);
+    if (!order || !order.items) {
+        showErrorMessage('订单信息不完整，无法重新下单');
+        return;
+    }
+
+    // 清空购物车
+    clearCart();
+    
+    // 将订单商品添加到购物车
+    order.items.forEach(item => {
+        for (let i = 0; i < item.quantity; i++) {
+            addToCart(item.id || item.name);
+        }
+    });
+    
+    showSuccessMessage('商品已加入购物车');
+    showPage('cart');
+}
+
+// 评价订单
+function rateOrder(orderId) {
+    // 这里可以实现评价功能
+    console.log('评价订单:', orderId);
+    showSuccessMessage('感谢您的评价！');
 }
 
 // ============================================

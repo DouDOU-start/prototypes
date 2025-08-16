@@ -1,12 +1,74 @@
 <div class="page" id="auth-processing">
-  <div class="login-page" style="justify-content: flex-start; padding-top: 100px;">
-    <div class="loading-spinner"></div>
-    <div class="login-title">授权处理中...</div>
-    <div class="login-subtitle">请稍候，正在获取您的信息</div>
-    <div class="auth-process">
-      <div class="auth-step"><i class="fas fa-check auth-step-icon"></i><span class="auth-step-text">连接微信服务器</span></div>
-      <div class="auth-step"><i class="fas fa-spinner fa-spin auth-step-icon"></i><span class="auth-step-text">获取用户信息</span></div>
-      <div class="auth-step"><i class="far fa-circle auth-step-icon" style="color: #ccc;"></i><span class="auth-step-text">完成登录</span></div>
+  <div class="modern-auth-processing-page">
+    <!-- 背景渐变和装饰 -->
+    <div class="processing-bg-gradient"></div>
+    <div class="processing-decorations">
+      <div class="decoration-ring ring-1"></div>
+      <div class="decoration-ring ring-2"></div>
+      <div class="decoration-ring ring-3"></div>
+    </div>
+
+    <!-- 处理内容 -->
+    <div class="processing-content">
+      <!-- 加载动画 -->
+      <div class="processing-loader">
+        <div class="loader-ring"></div>
+        <div class="loader-center">
+          <i class="fab fa-weixin"></i>
+        </div>
+        <div class="loader-dots">
+          <div class="dot dot-1"></div>
+          <div class="dot dot-2"></div>
+          <div class="dot dot-3"></div>
+        </div>
+      </div>
+
+      <!-- 处理信息 -->
+      <div class="processing-info">
+        <h2 class="processing-title">授权处理中</h2>
+        <p class="processing-subtitle">正在安全获取您的授权信息，请稍候...</p>
+      </div>
+
+      <!-- 进度步骤 -->
+      <div class="processing-steps">
+        <div class="step step-completed">
+          <div class="step-icon">
+            <i class="fas fa-check"></i>
+          </div>
+          <div class="step-info">
+            <div class="step-title">连接微信服务器</div>
+            <div class="step-desc">已成功建立安全连接</div>
+          </div>
+        </div>
+
+        <div class="step step-active">
+          <div class="step-icon">
+            <div class="spinner"></div>
+          </div>
+          <div class="step-info">
+            <div class="step-title">获取用户信息</div>
+            <div class="step-desc">正在安全获取您的基本信息</div>
+          </div>
+        </div>
+
+        <div class="step step-pending">
+          <div class="step-icon">
+            <i class="fas fa-circle"></i>
+          </div>
+          <div class="step-info">
+            <div class="step-title">完成登录</div>
+            <div class="step-desc">即将完成授权流程</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 安全提示 -->
+      <div class="processing-footer">
+        <div class="security-notice">
+          <i class="fas fa-shield-alt"></i>
+          <span>您的信息将被安全加密处理</span>
+        </div>
+      </div>
     </div>
   </div>
 </div> 

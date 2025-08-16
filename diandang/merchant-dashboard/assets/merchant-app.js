@@ -18,7 +18,7 @@ const pagesToLoad = [
 ];
 
 // 使用 shared 数据
-const mockData = merchantData || {
+const mockData = (typeof merchantData !== 'undefined' ? merchantData : null) || {
     orders: [
         {
             id: 'ORD001',
@@ -741,8 +741,38 @@ async function loadPages() {
     }
 }
 
+// 验证数据完整性
+function validateMockData() {
+    
+    if (!mockData) {
+        console.error('mockData 未定义');
+        return false;
+    }
+    
+    const requiredFields = ['orders', 'popularItems', 'notifications'];
+    const missingFields = requiredFields.filter(field => {
+        const missing = !mockData[field] || !Array.isArray(mockData[field]);
+        if (missing) {
+            console.error(`mockData.${field} 缺失或不是数组:`, mockData[field]);
+        }
+        return missing;
+    });
+    
+    if (missingFields.length > 0) {
+        console.error('缺失的数据字段:', missingFields);
+        return false;
+    }
+    
+    return true;
+}
+
 // 初始化应用
 function initializeApp() {
+    // 验证数据完整性
+    if (!validateMockData()) {
+        console.error('数据验证失败，使用默认数据');
+    }
+    
     // 显示默认页面
     showPage('dashboard');
     
@@ -760,6 +790,23 @@ function initializeApp() {
     
     // 设置通知计数
     updateNotificationBadge();
+    
+    // 渲染订单摘要
+    renderOrderSummary();
+}
+
+// 移动端菜单切换
+function toggleMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const isOpen = sidebar.classList.contains('mobile-open');
+    
+    if (isOpen) {
+        sidebar.classList.remove('mobile-open');
+        document.body.classList.remove('mobile-menu-open');
+    } else {
+        sidebar.classList.add('mobile-open');
+        document.body.classList.add('mobile-menu-open');
+    }
 }
 
 // 页面导航
@@ -777,6 +824,14 @@ function navigateToPage(pageId, navElement) {
     
     // 更新面包屑和标题
     updatePageHeader(pageId);
+    
+    // 在移动端导航后关闭菜单
+    if (window.innerWidth <= 767) {
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebar.classList.contains('mobile-open')) {
+            toggleMobileMenu();
+        }
+    }
 }
 
 // 显示页面
@@ -799,7 +854,6 @@ function showPage(pageId) {
         }
         currentPage = pageId;
         
-        console.log('显示页面:', pageId, '- 页面元素:', targetPage ? '已找到' : '未找到');
         
         // 页面特定的初始化
         initializePage(pageId);
@@ -808,7 +862,6 @@ function showPage(pageId) {
 
 // 页面特定初始化
 function initializePage(pageId) {
-    console.log('初始化页面:', pageId);
     switch (pageId) {
         case 'dashboard':
             updateDashboardStats();
@@ -830,9 +883,7 @@ function initializePage(pageId) {
             }
             break;
         case 'customers':
-            console.log('准备初始化客户管理页面');
             if (typeof initCustomersPage === 'function') {
-                console.log('开始调用initCustomersPage函数');
                 initCustomersPage();
             } else {
                 console.log('initCustomersPage函数不存在');
@@ -875,29 +926,150 @@ function updatePageHeader(pageId) {
 
 // 更新仪表盘统计数据
 function updateDashboardStats() {
-    // 更新今日订单
+    // 更新今日订单统计
     const todayOrders = document.getElementById('today-orders');
     if (todayOrders) {
         animateCountUp(todayOrders, 28);
     }
     
-    // 更新今日营收
+    // 更新今日营收统计
     const todayRevenue = document.getElementById('today-revenue');
     if (todayRevenue) {
         todayRevenue.textContent = '¥2,485';
     }
     
-    // 更新今日客户
+    // 更新今日客户统计
     const todayCustomers = document.getElementById('today-customers');
     if (todayCustomers) {
         animateCountUp(todayCustomers, 45);
     }
     
-    // 更新低库存商品
+    // 更新低库存商品统计
     const lowStockItems = document.getElementById('low-stock-items');
     if (lowStockItems) {
         animateCountUp(lowStockItems, 2);
     }
+    
+    // 更新实时营业状态卡片
+    updateBusinessStatusCard();
+    
+    // 更新快速统计卡片
+    updateQuickStats();
+}
+
+// 更新营业状态卡片
+function updateBusinessStatusCard() {
+    const businessHours = document.querySelector('.business-hours');
+    if (businessHours) {
+        const isOpen = businessStatus === 'online';
+        businessHours.className = `business-hours ${isOpen ? '' : 'closed'}`;
+        businessHours.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
+                <i class="fas fa-${isOpen ? 'clock' : 'times-circle'}" style="font-size: 24px;"></i>
+                <h3 style="margin: 0; color: white;">${isOpen ? '营业中' : '暂停营业'}</h3>
+            </div>
+            <div style="color: rgba(255, 255, 255, 0.9); font-size: 14px; text-align: center;">
+                ${isOpen ? '正在接受订单' : '暂不接受新订单'}
+            </div>
+        `;
+    }
+}
+
+// 更新快速统计
+function updateQuickStats() {
+    const quickStats = document.querySelector('.quick-stats');
+    if (quickStats) {
+        quickStats.innerHTML = `
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon primary">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> +12%
+                    </div>
+                </div>
+                <div class="stat-value" id="today-orders">28</div>
+                <div class="stat-label">今日订单</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon success">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> +8%
+                    </div>
+                </div>
+                <div class="stat-value" id="today-revenue">¥2,485</div>
+                <div class="stat-label">今日营收</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon primary">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> +15%
+                    </div>
+                </div>
+                <div class="stat-value" id="today-customers">45</div>
+                <div class="stat-label">今日客户</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-change negative">
+                        <i class="fas fa-arrow-down"></i> -2
+                    </div>
+                </div>
+                <div class="stat-value" id="low-stock-items">2</div>
+                <div class="stat-label">低库存商品</div>
+            </div>
+        `;
+    }
+}
+
+// 渲染订单摘要
+function renderOrderSummary() {
+    const orderSummary = document.querySelector('.order-summary');
+    if (!orderSummary) return;
+    
+    // 防护措施：确保 orders 数据存在
+    if (!mockData || !mockData.orders || !Array.isArray(mockData.orders)) {
+        console.warn('订单数据不存在，跳过渲染订单摘要');
+        orderSummary.innerHTML = '<div style="text-align: center; color: var(--gray-color); padding: 20px;">暂无订单数据</div>';
+        return;
+    }
+    
+    const pendingOrders = mockData.orders.filter(order => order.status === 'pending').length;
+    const preparingOrders = mockData.orders.filter(order => order.status === 'preparing').length;
+    const readyOrders = mockData.orders.filter(order => order.status === 'ready').length;
+    const completedOrders = mockData.orders.filter(order => order.status === 'completed').length;
+    
+    orderSummary.innerHTML = `
+        <div class="summary-item">
+            <div class="summary-value" style="color: var(--warning-color);">${pendingOrders}</div>
+            <div class="summary-label">待确认</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-value" style="color: var(--info-color);">${preparingOrders}</div>
+            <div class="summary-label">制作中</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-value" style="color: var(--success-color);">${readyOrders}</div>
+            <div class="summary-label">已完成</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-value" style="color: var(--gray-color);">${completedOrders}</div>
+            <div class="summary-label">已送达</div>
+        </div>
+    `;
 }
 
 // 数字动画效果
@@ -914,33 +1086,125 @@ function animateCountUp(element, targetValue) {
     }, 50);
 }
 
-// 渲染订单流
+// 渲染订单流 - 现代化设计
 function renderOrderStream() {
     const orderStream = document.getElementById('orderStream');
     if (!orderStream) return;
     
+    // 防护措施：确保 orders 数据存在
+    if (!mockData || !mockData.orders || !Array.isArray(mockData.orders)) {
+        console.warn('订单数据不存在，跳过渲染');
+        orderStream.innerHTML = '<div style="text-align: center; color: var(--gray-color); padding: 20px;">暂无订单</div>';
+        return;
+    }
+    
+    const statusText = {
+        'pending': '待确认',
+        'preparing': '制作中', 
+        'ready': '已完成',
+        'completed': '已完成',
+        'cancelled': '已取消'
+    };
+    
+    const statusIcons = {
+        'pending': 'fas fa-clock',
+        'preparing': 'fas fa-utensils',
+        'ready': 'fas fa-check-circle',
+        'completed': 'fas fa-check-double',
+        'cancelled': 'fas fa-times-circle'
+    };
+    
     const ordersHtml = mockData.orders.map(order => {
-        const statusText = {
-            'pending': '待确认',
-            'preparing': '制作中', 
-            'ready': '已完成'
-        };
-        
         const itemNames = order.items.map(item => item.name).join(', ');
         const itemCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
+        const statusClass = order.status;
         
         return `
-            <div class="order-item draggable ${order.status}" data-order-id="${order.id}" onclick="showOrderDetails('${order.id}')">
-                <div class="order-avatar">
-                    ${order.table}
+            <div class="order-item draggable ${statusClass}" 
+                 data-order-id="${order.id}" 
+                 onclick="showOrderDetails('${order.id}')"
+                 style="transition: var(--transition); cursor: pointer;">
+                <div class="order-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div class="order-id-section" style="display: flex; align-items: center; gap: 12px;">
+                        <div class="table-badge" style="
+                            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                            color: white;
+                            padding: 6px 12px;
+                            border-radius: 20px;
+                            font-weight: 600;
+                            font-size: 12px;
+                        ">${order.table}</div>
+                        <div class="order-number" style="font-weight: 600; color: var(--dark-color);">${order.id}</div>
+                    </div>
+                    <div class="order-status" style="
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        padding: 4px 12px;
+                        border-radius: 16px;
+                        font-size: 12px;
+                        font-weight: 500;
+                        background: rgba(102, 126, 234, 0.1);
+                        color: var(--primary-color);
+                    ">
+                        <i class="${statusIcons[statusClass]}"></i>
+                        ${statusText[statusClass]}
+                    </div>
                 </div>
-                <div class="order-info">
-                    <div class="order-number">${order.id} - ${order.customer}</div>
-                    <div class="order-details">${itemNames} (${itemCount}项)</div>
-                    <div class="order-time">${order.time} | 等待${order.waitTime}</div>
+                
+                <div class="order-customer" style="
+                    margin-bottom: 8px;
+                    font-weight: 500;
+                    color: var(--dark-color);
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                ">
+                    <i class="fas fa-user" style="color: var(--gray-color);"></i>
+                    ${order.customer}
                 </div>
-                <div class="order-status ${order.status}">${statusText[order.status]}</div>
-                <div class="order-amount">¥${order.amount.toFixed(2)}</div>
+                
+                <div class="order-details" style="
+                    margin-bottom: 10px;
+                    color: var(--gray-color);
+                    font-size: 13px;
+                    line-height: 1.4;
+                ">${itemNames} (${itemCount}项)</div>
+                
+                <div class="order-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="order-time" style="
+                        font-size: 12px;
+                        color: var(--gray-color);
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                    ">
+                        <i class="fas fa-clock"></i>
+                        ${order.time} | 等待${order.waitTime}
+                    </div>
+                    <div class="order-amount" style="
+                        font-size: 18px;
+                        font-weight: 700;
+                        background: linear-gradient(135deg, var(--success-color), #40c057);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        background-clip: text;
+                    ">¥${order.amount.toFixed(2)}</div>
+                </div>
+                
+                ${order.remark ? `
+                <div class="order-remark" style="
+                    margin-top: 10px;
+                    padding: 8px 12px;
+                    background: rgba(255, 212, 59, 0.1);
+                    border-radius: 8px;
+                    font-size: 12px;
+                    color: var(--warning-color);
+                    border-left: 3px solid var(--warning-color);
+                ">
+                    <i class="fas fa-exclamation-circle"></i> ${order.remark}
+                </div>
+                ` : ''}
             </div>
         `;
     }).join('');
@@ -948,25 +1212,90 @@ function renderOrderStream() {
     orderStream.innerHTML = ordersHtml;
 }
 
-// 渲染热门菜品
+// 渲染热门菜品 - 现代化设计
 function renderPopularItems() {
     const popularItems = document.getElementById('popularItems');
     if (!popularItems) return;
     
+    // 防护措施：确保 popularItems 数据存在
+    if (!mockData || !mockData.popularItems || !Array.isArray(mockData.popularItems)) {
+        console.warn('热门菜品数据不存在，跳过渲染');
+        popularItems.innerHTML = '<div style="text-align: center; color: var(--gray-color); padding: 20px;">暂无热门菜品</div>';
+        return;
+    }
+    
     const itemsHtml = mockData.popularItems.map((item, index) => {
-        let rankClass = '';
-        if (index === 0) rankClass = 'gold';
-        else if (index === 1) rankClass = 'silver';
-        else if (index === 2) rankClass = 'bronze';
+        const rankColors = {
+            0: 'linear-gradient(135deg, #ffd700, #ffed4e)', // 金色
+            1: 'linear-gradient(135deg, #c0c0c0, #e6e6e6)', // 银色
+            2: 'linear-gradient(135deg, #cd7f32, #deb887)'  // 铜色
+        };
+        
+        const rankColor = rankColors[index] || 'linear-gradient(135deg, var(--gray-color), var(--gray-medium))';
+        const rankIcon = index < 3 ? 'fas fa-crown' : 'fas fa-star';
         
         return `
-            <div class="popular-item">
-                <div class="item-rank ${rankClass}">${index + 1}</div>
-                <div class="item-details">
-                    <div class="item-name">${item.name}</div>
-                    <div class="item-sales">销量: ${item.sales}</div>
+            <div class="popular-item" style="
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(10px);
+                border-radius: var(--border-radius);
+                padding: 16px;
+                margin-bottom: 12px;
+                box-shadow: var(--shadow-sm);
+                transition: var(--transition);
+                cursor: pointer;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+            " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='var(--shadow)'" 
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-sm)'">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="item-rank" style="
+                            background: ${rankColor};
+                            color: white;
+                            width: 32px;
+                            height: 32px;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-weight: 700;
+                            font-size: 14px;
+                            box-shadow: var(--shadow-sm);
+                        ">
+                            ${index < 3 ? `<i class="${rankIcon}"></i>` : index + 1}
+                        </div>
+                        <div class="item-details">
+                            <div class="item-name" style="
+                                font-weight: 600;
+                                color: var(--dark-color);
+                                margin-bottom: 4px;
+                                font-size: 15px;
+                            ">${item.name}</div>
+                            <div style="display: flex; align-items: center; gap: 16px; font-size: 12px; color: var(--gray-color);">
+                                <span style="display: flex; align-items: center; gap: 4px;">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    销量: ${item.sales}
+                                </span>
+                                <span style="display: flex; align-items: center; gap: 4px;">
+                                    <i class="fas fa-star" style="color: #ffc107;"></i>
+                                    ${item.rating}
+                                </span>
+                                <span style="display: flex; align-items: center; gap: 4px;">
+                                    <i class="fas fa-chart-line" style="color: var(--success-color);"></i>
+                                    利润: ¥${item.profit}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-price" style="
+                        font-size: 18px;
+                        font-weight: 700;
+                        background: linear-gradient(135deg, var(--success-color), #40c057);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        background-clip: text;
+                    ">¥${item.price.toFixed(2)}</div>
                 </div>
-                <div class="item-price">¥${item.price.toFixed(2)}</div>
             </div>
         `;
     }).join('');
@@ -974,21 +1303,104 @@ function renderPopularItems() {
     popularItems.innerHTML = itemsHtml;
 }
 
-// 渲染系统通知
+// 渲染系统通知 - 现代化设计
 function renderSystemNotifications() {
     const systemNotifications = document.getElementById('systemNotifications');
     if (!systemNotifications) return;
     
+    // 防护措施：确保 notifications 数据存在
+    if (!mockData || !mockData.notifications || !Array.isArray(mockData.notifications)) {
+        console.warn('通知数据不存在，跳过渲染');
+        systemNotifications.innerHTML = '<div style="text-align: center; color: var(--gray-color); padding: 20px;">暂无通知</div>';
+        return;
+    }
+    
+    const typeColors = {
+        'warning': 'var(--warning-color)',
+        'info': 'var(--info-color)',
+        'success': 'var(--success-color)',
+        'error': 'var(--danger-color)'
+    };
+    
+    const typeBackgrounds = {
+        'warning': 'rgba(255, 212, 59, 0.1)',
+        'info': 'rgba(51, 154, 240, 0.1)',
+        'success': 'rgba(81, 207, 102, 0.1)',
+        'error': 'rgba(255, 107, 107, 0.1)'
+    };
+    
     const notificationsHtml = mockData.notifications.map(notification => `
         <div class="notification-item ${notification.unread ? 'unread' : ''}" 
-             onclick="markNotificationRead(this)">
-            <div class="notification-icon">
-                <i class="${notification.icon}"></i>
-            </div>
-            <div class="notification-content">
-                <div class="notification-title">${notification.title}</div>
-                <div class="notification-message">${notification.message}</div>
-                <div class="notification-time">${notification.time}</div>
+             onclick="markNotificationRead(this)"
+             style="
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(10px);
+                border-radius: var(--border-radius);
+                padding: 16px;
+                margin-bottom: 12px;
+                box-shadow: var(--shadow-sm);
+                transition: var(--transition);
+                cursor: pointer;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                border-left: 4px solid ${typeColors[notification.type]};
+                ${notification.unread ? 'box-shadow: var(--shadow); transform: translateY(-2px);' : ''}
+             "
+             onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='var(--shadow)'" 
+             onmouseout="this.style.transform='${notification.unread ? 'translateY(-2px)' : 'translateY(0)'}'; this.style.boxShadow='${notification.unread ? 'var(--shadow)' : 'var(--shadow-sm)'}'">
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                <div class="notification-icon" style="
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    background: ${typeBackgrounds[notification.type]};
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: ${typeColors[notification.type]};
+                    font-size: 16px;
+                    flex-shrink: 0;
+                    box-shadow: var(--shadow-sm);
+                ">
+                    <i class="${notification.icon}"></i>
+                </div>
+                <div class="notification-content" style="flex: 1;">
+                    <div class="notification-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+                        <div class="notification-title" style="
+                            font-weight: 600;
+                            color: var(--dark-color);
+                            font-size: 14px;
+                            line-height: 1.3;
+                        ">${notification.title}</div>
+                        ${notification.unread ? `
+                            <div style="
+                                width: 8px;
+                                height: 8px;
+                                background: ${typeColors[notification.type]};
+                                border-radius: 50%;
+                                flex-shrink: 0;
+                                margin-top: 2px;
+                                margin-left: 8px;
+                            "></div>
+                        ` : ''}
+                    </div>
+                    <div class="notification-message" style="
+                        color: var(--gray-color);
+                        font-size: 13px;
+                        line-height: 1.4;
+                        margin-bottom: 6px;
+                    ">${notification.message}</div>
+                    <div class="notification-time" style="
+                        font-size: 11px;
+                        color: var(--gray-color);
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                        opacity: 0.8;
+                    ">
+                        <i class="fas fa-clock"></i>
+                        ${notification.time}
+                    </div>
+                </div>
             </div>
         </div>
     `).join('');
@@ -998,6 +1410,12 @@ function renderSystemNotifications() {
 
 // 更新通知徽章
 function updateNotificationBadge() {
+    // 防护措施：确保 notifications 数据存在
+    if (!mockData || !mockData.notifications || !Array.isArray(mockData.notifications)) {
+        console.warn('通知数据不存在，跳过更新徽章');
+        return;
+    }
+    
     const unreadCount = mockData.notifications.filter(n => n.unread).length;
     const badge = document.getElementById('pending-orders');
     if (badge) {
@@ -1182,6 +1600,10 @@ function updateOrderStatus(orderId, newStatus) {
         
         // 添加到活动记录
         const currentTime = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+        // 确保 recentActivity 数组存在
+        if (!mockData.recentActivity) {
+            mockData.recentActivity = [];
+        }
         mockData.recentActivity.unshift({
             time: currentTime,
             action: '订单更新',
@@ -1377,18 +1799,37 @@ function startRealTimeUpdates() {
 
 // 模拟新订单
 function simulateNewOrder() {
+    const itemOptions = [
+        [
+            { name: '宫保鸡丁', price: 32.0, quantity: 1, note: '' },
+            { name: '白米饭', price: 5.0, quantity: 1, note: '' }
+        ],
+        [
+            { name: '麻婆豆腐', price: 26.0, quantity: 1, note: '' },
+            { name: '紫菜蛋花汤', price: 16.0, quantity: 1, note: '' }
+        ],
+        [
+            { name: '回锅肉', price: 38.0, quantity: 1, note: '' },
+            { name: '酸辣土豆丝', price: 18.0, quantity: 1, note: '' }
+        ]
+    ];
+    
+    const selectedItems = itemOptions[Math.floor(Math.random() * itemOptions.length)];
+    const totalAmount = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    
     const newOrder = {
         id: 'ORD' + String(Date.now()).slice(-3),
         customer: ['王先生', '李女士', '张先生', '赵女士'][Math.floor(Math.random() * 4)],
-        items: [
-            ['宫保鸡丁', '白米饭'],
-            ['麻婆豆腐', '紫菜蛋花汤'],
-            ['回锅肉', '酸辣土豆丝']
-        ][Math.floor(Math.random() * 3)],
-        amount: Math.floor(Math.random() * 50) + 30,
+        phone: ['138****8888', '139****6666', '137****9999', '136****5555'][Math.floor(Math.random() * 4)],
+        items: selectedItems,
+        amount: totalAmount,
         status: 'pending',
         time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
-        table: 'A' + String(Math.floor(Math.random() * 9) + 1).padStart(2, '0')
+        orderTime: new Date().toLocaleString('zh-CN'),
+        table: 'A' + String(Math.floor(Math.random() * 9) + 1).padStart(2, '0'),
+        waitTime: '刚下单',
+        paymentMethod: '微信支付',
+        remark: ''
     };
     
     mockData.orders.unshift(newOrder);
@@ -1821,9 +2262,7 @@ function setDataAlert() {
     showNotification('提醒设置', '数据提醒功能已启用', 'success');
 }
 
-function editMenuItem(itemId) {
-    showNotification('编辑菜品', `正在编辑菜品 ${itemId}`, 'info');
-}
+// 删除重复的简单版本，使用完整版本
 
 function duplicateMenuItem(itemId) {
     showNotification('复制成功', `菜品 ${itemId} 已复制`, 'success');
@@ -2355,7 +2794,7 @@ function renderOrdersPage() {
     }
 }
 
-// 创建订单卡片HTML
+// 创建订单卡片HTML - 现代化设计
 function createOrderCard(order) {
     const statusBadgeClass = `order-status-badge ${order.status}`;
     const statusText = {
@@ -2372,19 +2811,83 @@ function createOrderCard(order) {
     
     const moreItems = order.items.length > 3 ? `<span class="order-item-tag">+${order.items.length - 3}更多</span>` : '';
     
+    const urgencyIndicator = order.remark ? `
+        <div style="
+            position: absolute;
+            top: 12px;
+            right: 60px;
+            width: 12px;
+            height: 12px;
+            background: var(--danger-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.3);
+        "></div>
+    ` : '';
+
     return `
-        <div class="order-card" data-order-id="${order.id}" onclick="showOrderDetails('${order.id}')">
-            <div class="order-checkbox" onclick="event.stopPropagation(); toggleOrderSelection('${order.id}', this)">
-                <i class="fas fa-check" style="display: none;"></i>
+        <div class="order-card" data-order-id="${order.id}" onclick="showOrderDetails('${order.id}')" style="position: relative;">
+            ${urgencyIndicator}
+            
+            <div class="order-checkbox" onclick="event.stopPropagation(); toggleOrderSelection('${order.id}', this)" style="
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                width: 24px;
+                height: 24px;
+                border-radius: 6px;
+                border: 2px solid var(--gray-medium);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(10px);
+                transition: var(--transition);
+                z-index: 10;
+            ">
+                <i class="fas fa-check" style="display: none; color: white; font-size: 12px;"></i>
             </div>
             
-            <div class="order-header">
-                <div class="order-info">
-                    <div class="order-id">${order.id}</div>
-                    <div class="order-customer">
-                        <i class="fas fa-user"></i>
+            <div class="order-header" style="
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 20px;
+                padding-right: 60px;
+            ">
+                <div class="order-info" style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                        <div class="order-table" style="
+                            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                            color: white;
+                            padding: 6px 14px;
+                            border-radius: var(--border-radius-lg);
+                            font-size: 13px;
+                            font-weight: 600;
+                            box-shadow: var(--shadow-sm);
+                        ">${order.table}</div>
+                        <div class="order-id" style="
+                            font-size: 18px;
+                            font-weight: 700;
+                            color: var(--dark-color);
+                        ">${order.id}</div>
+                    </div>
+                    <div class="order-customer" style="
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        color: var(--gray-color);
+                        font-size: 14px;
+                        font-weight: 500;
+                    ">
+                        <i class="fas fa-user" style="color: var(--primary-color);"></i>
                         ${order.customer}
-                        <span class="order-table">${order.table}</span>
+                        <span style="
+                            color: var(--gray-color);
+                            font-size: 12px;
+                            opacity: 0.8;
+                        ">${order.phone}</span>
                     </div>
                 </div>
                 <div class="${statusBadgeClass}">
@@ -2392,29 +2895,100 @@ function createOrderCard(order) {
                 </div>
             </div>
             
-            <div class="order-items">
-                <div class="order-items-title">
-                    <i class="fas fa-utensils"></i>
-                    订单明细
+            <div class="order-items" style="margin-bottom: 20px;">
+                <div class="order-items-title" style="
+                    font-size: 14px;
+                    color: var(--gray-color);
+                    margin-bottom: 12px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-weight: 500;
+                ">
+                    <i class="fas fa-utensils" style="color: var(--primary-color);"></i>
+                    订单明细 (${order.items.length}项)
                 </div>
-                <div class="order-items-list">
+                <div class="order-items-list" style="
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                ">
                     ${itemsDisplay}
                     ${moreItems}
                 </div>
             </div>
             
-            <div class="order-footer">
-                <div class="order-time">
-                    <div class="order-time-label">下单时间</div>
-                    <div class="order-time-value">${order.time}</div>
+            ${order.remark ? `
+                <div style="
+                    margin-bottom: 16px;
+                    padding: 12px 16px;
+                    background: rgba(255, 212, 59, 0.1);
+                    border-left: 4px solid var(--warning-color);
+                    border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+                    font-size: 13px;
+                    color: var(--warning-color);
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                ">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>备注:</strong> ${order.remark}
                 </div>
-                <div class="order-amount">
-                    <div class="order-amount-label">订单金额</div>
-                    <div class="order-amount-value">¥${order.amount.toFixed(2)}</div>
+            ` : ''}
+            
+            <div class="order-footer" style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-top: 16px;
+                border-top: 1px solid rgba(0, 0, 0, 0.08);
+                margin-bottom: 16px;
+            ">
+                <div class="order-time">
+                    <div style="
+                        font-size: 11px;
+                        color: var(--gray-color);
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                        margin-bottom: 4px;
+                    ">下单时间</div>
+                    <div style="
+                        font-size: 13px;
+                        color: var(--dark-color);
+                        font-family: 'SF Mono', 'Monaco', 'Cascadia Code', monospace;
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                    ">
+                        <i class="fas fa-clock" style="color: var(--gray-color); font-size: 11px;"></i>
+                        ${order.time} | 等待${order.waitTime}
+                    </div>
+                </div>
+                <div class="order-amount" style="text-align: right;">
+                    <div style="
+                        font-size: 11px;
+                        color: var(--gray-color);
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                        margin-bottom: 4px;
+                    ">订单金额</div>
+                    <div style="
+                        font-size: 24px;
+                        font-weight: 800;
+                        background: linear-gradient(135deg, var(--success-color), #40c057);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        background-clip: text;
+                        line-height: 1;
+                    ">¥${order.amount.toFixed(2)}</div>
                 </div>
             </div>
             
-            <div class="order-actions">
+            <div class="order-actions" style="
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+            ">
                 ${getOrderActionButtons(order)}
             </div>
         </div>
@@ -2642,16 +3216,23 @@ function renderMenuItems() {
     const activeCategory = document.querySelector('.category-tab.active')?.getAttribute('data-category') || 'all';
     const searchTerm = document.getElementById('menuSearch')?.value.toLowerCase() || '';
     
-    // 获取所有菜品
-    let allItems = [];
-    mockData.menuCategories.forEach(category => {
-        category.items.forEach(item => {
-            allItems.push({
-                ...item,
-                categoryId: category.id,
-                categoryName: category.name
-            });
-        });
+    // 防护措施：确保菜单数据存在
+    if (!mockData || !mockData.menu || !mockData.menu.items || !Array.isArray(mockData.menu.items)) {
+        console.warn('菜单数据不存在，跳过渲染');
+        const menuGrid = document.getElementById('menuGrid');
+        const menuList = document.getElementById('menuList');
+        if (menuGrid) menuGrid.innerHTML = '<div style="text-align: center; color: var(--gray-color); padding: 40px;">暂无菜品数据</div>';
+        if (menuList) menuList.style.display = 'none';
+        return;
+    }
+    
+    // 获取所有菜品 - 从正确的数据结构中获取
+    let allItems = mockData.menu.items.map(item => {
+        const category = mockData.menu.categories.find(cat => cat.id === item.categoryId);
+        return {
+            ...item,
+            categoryName: category ? category.name : '未分类'
+        };
     });
     
     // 筛选菜品
@@ -2660,11 +3241,11 @@ function renderMenuItems() {
     // 按分类筛选
     if (activeCategory !== 'all') {
         const categoryMap = {
-            'hot': ['signature', 'homestyle'],
-            'cold': ['cold'],
-            'soup': ['soup'],
-            'staple': ['soup'], // 包含主食类的汤品粥类
-            'drink': [] // 暂无饮品数据
+            'hot': ['signature'], // 热菜包含招牌川菜
+            'cold': ['cold'], // 凉菜系列
+            'soup': ['soup'], // 汤品类
+            'staple': ['staple'], // 主食类
+            'drink': ['drink'] // 饮品类
         };
         
         if (categoryMap[activeCategory]) {
@@ -2746,11 +3327,14 @@ function renderMenuList(items) {
 function createMenuItemCard(item) {
     const statusClass = item.status === 'available' ? 'available' : 'unavailable';
     const statusText = item.status === 'available' ? '在售' : '停售';
-    const stockStatus = item.stock <= 5 ? 'low-stock' : 'normal';
+    
+    // 计算剩余库存（今日限量 - 今日已售）
+    const remainingStock = (item.dailyLimit || 0) - (item.soldToday || 0);
+    const stockStatus = remainingStock <= 5 ? 'low-stock' : 'normal';
     
     // 获取销量数据
     const salesData = mockData.popularItems.find(p => p.name === item.name);
-    const sales = salesData ? salesData.sales : Math.floor(Math.random() * 50) + 10;
+    const sales = salesData ? salesData.sales : (item.soldToday || Math.floor(Math.random() * 50) + 10);
     
     return `
         <div class="menu-item-card ${item.status !== 'available' ? 'disabled' : ''}" data-item-id="${item.id}">
@@ -2781,16 +3365,16 @@ function createMenuItemCard(item) {
                     </div>
                     <div class="menu-item-stock ${stockStatus}">
                         <i class="fas fa-box"></i>
-                        库存 ${item.stock}
+                        剩余 ${remainingStock}
                     </div>
                 </div>
                 
                 <div class="menu-item-actions">
-                    <button class="btn btn-outline" onclick="event.stopPropagation(); editMenuItem(${item.id})">
+                    <button class="btn btn-outline" onclick="event.stopPropagation(); editMenuItem('${item.id}')">
                         <i class="fas fa-edit"></i> 编辑
                     </button>
                     <button class="btn ${item.status === 'available' ? 'btn-warning' : 'btn-success'}" 
-                            onclick="event.stopPropagation(); toggleMenuItemStatus(${item.id})">
+                            onclick="event.stopPropagation(); toggleMenuItemStatus('${item.id}')">
                         <i class="fas ${item.status === 'available' ? 'fa-eye-slash' : 'fa-eye'}"></i>
                         ${item.status === 'available' ? '下架' : '上架'}
                     </button>
@@ -2808,7 +3392,7 @@ function createMenuItemRow(item) {
     const sales = salesData ? salesData.sales : Math.floor(Math.random() * 50) + 10;
     
     return `
-        <div class="table-row" data-item-id="${item.id}" onclick="editMenuItem(${item.id})">
+        <div class="table-row" data-item-id="${item.id}" onclick="editMenuItem('${item.id}')"
             <div class="table-cell item-info" data-label="菜品信息">
                 <div class="table-item-image">
                     <i class="fas fa-utensils"></i>
@@ -2825,11 +3409,11 @@ function createMenuItemRow(item) {
             </div>
             <div class="table-cell" data-label="销量">${sales}</div>
             <div class="table-cell table-actions" data-label="操作">
-                <button class="btn btn-outline" onclick="event.stopPropagation(); editMenuItem(${item.id})">
+                <button class="btn btn-outline" onclick="event.stopPropagation(); editMenuItem('${item.id}')">
                     <i class="fas fa-edit"></i>
                 </button>
                 <button class="btn ${item.status === 'available' ? 'btn-warning' : 'btn-success'}" 
-                        onclick="event.stopPropagation(); toggleMenuItemStatus(${item.id})">
+                        onclick="event.stopPropagation(); toggleMenuItemStatus('${item.id}')"
                     <i class="fas ${item.status === 'available' ? 'fa-eye-slash' : 'fa-eye'}"></i>
                 </button>
             </div>
@@ -2886,49 +3470,98 @@ function editMenuItem(itemId) {
     const item = findMenuItemById(itemId);
     if (!item) return;
     
+    // 获取分类列表
+    const categories = mockData.menu.categories || [];
+    const categoryOptions = categories.map(cat => 
+        `<option value="${cat.id}" ${cat.id === item.categoryId ? 'selected' : ''}>${cat.name}</option>`
+    ).join('');
+    
     const modalContent = `
-        <div style="padding: 24px; min-width: 500px; max-width: 600px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2>编辑菜品 - ${item.name}</h2>
-                <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
+        <div style="padding: 24px; min-width: 600px; max-width: 700px; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h2 style="margin: 0; color: var(--dark-color);">编辑菜品 - ${item.name}</h2>
+                <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--gray-color);">×</button>
             </div>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-                <div>
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">菜品名称</label>
-                    <input type="text" id="editItemName" value="${item.name}" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+            <form id="editMenuItemForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">菜品名称 *</label>
+                        <input type="text" id="editItemName" value="${item.name}" required 
+                               style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">分类</label>
+                        <select id="editItemCategory" style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                            ${categoryOptions}
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">价格</label>
-                    <input type="number" id="editItemPrice" value="${item.price}" step="0.01" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">售价 *</label>
+                        <input type="number" id="editItemPrice" value="${item.price}" step="0.01" min="0" required
+                               style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">原价</label>
+                        <input type="number" id="editItemOriginalPrice" value="${item.originalPrice || item.price}" step="0.01" min="0"
+                               style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">制作时间(分钟)</label>
+                        <input type="number" id="editItemPrepTime" value="${item.preparationTime || 15}" min="1"
+                               style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                    </div>
                 </div>
-            </div>
-            
-            <div style="margin-bottom: 16px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 600;">描述</label>
-                <textarea id="editItemDesc" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; height: 80px; resize: vertical;">${item.description}</textarea>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
-                <div>
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">成本价格</label>
-                    <input type="number" id="editItemCost" value="${item.cost}" step="0.01" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">菜品描述</label>
+                    <textarea id="editItemDesc" rows="3" 
+                              style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px; resize: vertical;">${item.description || ''}</textarea>
                 </div>
-                <div>
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">库存数量</label>
-                    <input type="number" id="editItemStock" value="${item.stock}" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">辣度等级</label>
+                        <select id="editItemSpicyLevel" style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                            <option value="0" ${item.spicyLevel === 0 ? 'selected' : ''}>不辣</option>
+                            <option value="1" ${item.spicyLevel === 1 ? 'selected' : ''}>微辣</option>
+                            <option value="2" ${item.spicyLevel === 2 ? 'selected' : ''}>中辣</option>
+                            <option value="3" ${item.spicyLevel === 3 ? 'selected' : ''}>重辣</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">每日限量</label>
+                        <input type="number" id="editItemDailyLimit" value="${item.dailyLimit || 50}" min="1"
+                               style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">状态</label>
+                        <select id="editItemStatus" style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                            <option value="available" ${item.status === 'available' ? 'selected' : ''}>在售</option>
+                            <option value="unavailable" ${item.status === 'unavailable' ? 'selected' : ''}>停售</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            
-            <div style="display: flex; gap: 12px; justify-content: center;">
-                <button class="btn btn-primary" onclick="saveMenuItem(${itemId})">
-                    <i class="fas fa-save"></i> 保存更改
-                </button>
-                <button class="btn btn-outline" onclick="closeModal()">取消</button>
-                <button class="btn btn-danger" onclick="deleteMenuItem(${itemId})">
-                    <i class="fas fa-trash"></i> 删除菜品
-                </button>
-            </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">图片链接</label>
+                    <input type="url" id="editItemImage" value="${item.image || ''}" 
+                           style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                </div>
+                
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal()">取消</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteMenuItem('${itemId}')">
+                        <i class="fas fa-trash"></i> 删除
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="saveMenuItem('${itemId}')">
+                        <i class="fas fa-save"></i> 保存更改
+                    </button>
+                </div>
+            </form>
         </div>
     `;
     
@@ -2937,38 +3570,43 @@ function editMenuItem(itemId) {
 
 // 保存菜品更改
 function saveMenuItem(itemId) {
-    const name = document.getElementById('editItemName').value;
+    const name = document.getElementById('editItemName').value.trim();
+    const category = document.getElementById('editItemCategory').value;
     const price = parseFloat(document.getElementById('editItemPrice').value);
-    const description = document.getElementById('editItemDesc').value;
-    const cost = parseFloat(document.getElementById('editItemCost').value);
-    const stock = parseInt(document.getElementById('editItemStock').value);
+    const originalPrice = parseFloat(document.getElementById('editItemOriginalPrice').value);
+    const prepTime = parseInt(document.getElementById('editItemPrepTime').value);
+    const description = document.getElementById('editItemDesc').value.trim();
+    const spicyLevel = parseInt(document.getElementById('editItemSpicyLevel').value);
+    const dailyLimit = parseInt(document.getElementById('editItemDailyLimit').value);
+    const status = document.getElementById('editItemStatus').value;
+    const image = document.getElementById('editItemImage').value.trim();
     
-    if (!name || !price || !description) {
-        showNotification('输入错误', '请填写所有必填字段', 'error');
+    // 验证必填字段
+    if (!name || !price || price <= 0) {
+        showNotification('输入错误', '请填写菜品名称和有效价格', 'error');
         return;
     }
     
-    // 更新数据
+    // 查找并更新菜品
     const item = findMenuItemById(itemId);
     if (item) {
         item.name = name;
+        item.categoryId = category;
         item.price = price;
+        item.originalPrice = originalPrice || price;
+        item.preparationTime = prepTime;
         item.description = description;
-        item.cost = cost;
-        item.stock = stock;
+        item.spicyLevel = spicyLevel;
+        item.dailyLimit = dailyLimit;
+        item.status = status;
+        if (image) item.image = image;
         
-        // 更新库存状态
-        if (stock === 0) {
-            item.status = 'out_of_stock';
-        } else if (stock <= 5) {
-            item.status = 'low_stock';
-        } else if (item.status === 'out_of_stock') {
-            item.status = 'available';
-        }
-        
+        // 更新页面显示
         renderMenuItems();
         closeModal();
-        showNotification('保存成功', '菜品信息已更新', 'success');
+        showNotification('保存成功', `菜品 "${name}" 已更新`, 'success');
+    } else {
+        showNotification('保存失败', '未找到要更新的菜品', 'error');
     }
 }
 
@@ -2984,6 +3622,162 @@ function toggleMenuItemStatus(itemId) {
     
     const statusText = newStatus === 'available' ? '上架' : '下架';
     showNotification('状态更新', `菜品 ${item.name} 已${statusText}`, 'success');
+}
+
+// 新增菜品功能
+function showAddMenuItemModal() {
+    // 获取分类列表
+    const categories = mockData.menu.categories || [];
+    const categoryOptions = categories.map(cat => 
+        `<option value="${cat.id}">${cat.name}</option>`
+    ).join('');
+    
+    const modalContent = `
+        <div style="padding: 24px; min-width: 600px; max-width: 700px; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h2 style="margin: 0; color: var(--dark-color);">添加新菜品</h2>
+                <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--gray-color);">×</button>
+            </div>
+            
+            <form id="addMenuItemForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">菜品名称 *</label>
+                        <input type="text" id="newItemName" required placeholder="请输入菜品名称"
+                               style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">分类</label>
+                        <select id="newItemCategory" style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                            <option value="">请选择分类</option>
+                            ${categoryOptions}
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">售价 *</label>
+                        <input type="number" id="newItemPrice" step="0.01" min="0" required placeholder="0.00"
+                               style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">原价</label>
+                        <input type="number" id="newItemOriginalPrice" step="0.01" min="0" placeholder="0.00"
+                               style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">制作时间(分钟)</label>
+                        <input type="number" id="newItemPrepTime" value="15" min="1"
+                               style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">菜品描述</label>
+                    <textarea id="newItemDesc" rows="3" placeholder="请输入菜品描述"
+                              style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px; resize: vertical;"></textarea>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">辣度等级</label>
+                        <select id="newItemSpicyLevel" style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                            <option value="0">不辣</option>
+                            <option value="1">微辣</option>
+                            <option value="2" selected>中辣</option>
+                            <option value="3">重辣</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">每日限量</label>
+                        <input type="number" id="newItemDailyLimit" value="50" min="1"
+                               style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">状态</label>
+                        <select id="newItemStatus" style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                            <option value="available" selected>在售</option>
+                            <option value="unavailable">停售</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-color);">图片链接</label>
+                    <input type="url" id="newItemImage" placeholder="https://example.com/image.jpg"
+                           style="width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 14px;">
+                </div>
+                
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal()">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="addMenuItem()">
+                        <i class="fas fa-plus"></i> 添加菜品
+                    </button>
+                </div>
+            </form>
+        </div>
+    `;
+    
+    showModal(null, modalContent);
+}
+
+// 添加菜品函数
+function addMenuItem() {
+    const name = document.getElementById('newItemName').value.trim();
+    const category = document.getElementById('newItemCategory').value;
+    const price = parseFloat(document.getElementById('newItemPrice').value);
+    const originalPrice = parseFloat(document.getElementById('newItemOriginalPrice').value);
+    const prepTime = parseInt(document.getElementById('newItemPrepTime').value);
+    const description = document.getElementById('newItemDesc').value.trim();
+    const spicyLevel = parseInt(document.getElementById('newItemSpicyLevel').value);
+    const dailyLimit = parseInt(document.getElementById('newItemDailyLimit').value);
+    const status = document.getElementById('newItemStatus').value;
+    const image = document.getElementById('newItemImage').value.trim();
+    
+    // 验证必填字段
+    if (!name || !category || !price || price <= 0) {
+        showNotification('输入错误', '请填写菜品名称、分类和有效价格', 'error');
+        return;
+    }
+    
+    // 生成新ID
+    const newId = 'menu_' + String(Date.now()).slice(-6);
+    
+    // 创建新菜品对象
+    const newItem = {
+        id: newId,
+        name: name,
+        categoryId: category,
+        price: price,
+        originalPrice: originalPrice || price,
+        description: description,
+        image: image || 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=400&fit=crop',
+        status: status,
+        spicyLevel: spicyLevel,
+        preparationTime: prepTime,
+        tags: [],
+        nutrition: {
+            calories: 200,
+            protein: 15,
+            carbs: 20,
+            fat: 10
+        },
+        allergens: [],
+        dailyLimit: dailyLimit,
+        soldToday: 0
+    };
+    
+    // 添加到数据中
+    if (!mockData.menu.items) {
+        mockData.menu.items = [];
+    }
+    mockData.menu.items.push(newItem);
+    
+    // 更新页面显示
+    renderMenuItems();
+    closeModal();
+    showNotification('添加成功', `菜品 "${name}" 已添加`, 'success');
 }
 
 // 删除菜品
@@ -3097,8 +3891,8 @@ function setupInventoryEvents() {
 // 更新库存统计
 function updateInventoryStats() {
     const totalItems = mockData.inventory.length;
-    const lowStockItems = mockData.inventory.filter(item => item.status === 'low_stock' || item.stock <= item.minStock).length;
-    const outOfStockItems = mockData.inventory.filter(item => item.status === 'out_of_stock' || item.stock === 0).length;
+    const lowStockItems = mockData.inventory.filter(item => item.status === 'low_stock' || item.currentStock <= item.minStock).length;
+    const outOfStockItems = mockData.inventory.filter(item => item.status === 'out_of_stock' || item.currentStock === 0).length;
     
     // 更新统计数字
     const totalStockEl = document.getElementById('total-stock-items');
@@ -3109,12 +3903,6 @@ function updateInventoryStats() {
     if (lowStockEl) lowStockEl.textContent = lowStockItems + outOfStockItems;
     if (pendingDeliveriesEl) pendingDeliveriesEl.textContent = '3'; // 模拟待到货数量
     
-    console.log('库存统计已更新:', {
-        总库存项: totalItems,
-        库存不足: lowStockItems,
-        缺货项: outOfStockItems,
-        库存数据: mockData.inventory
-    });
 }
 
 // 渲染库存列表
@@ -3129,13 +3917,13 @@ function renderInventoryList() {
     if (activeFilter !== 'all') {
         filteredItems = mockData.inventory.filter(item => {
             if (activeFilter === 'low_stock') {
-                return item.status === 'low_stock' || item.stock <= item.minStock;
+                return item.status === 'low_stock' || item.currentStock <= item.minStock;
             }
             if (activeFilter === 'out_of_stock') {
-                return item.status === 'out_of_stock' || item.stock === 0;
+                return item.status === 'out_of_stock' || item.currentStock === 0;
             }
             if (activeFilter === 'available') {
-                return item.status === 'available' && item.stock > item.minStock;
+                return item.status === 'available' && item.currentStock > item.minStock;
             }
             return item.status === activeFilter;
         });
@@ -3154,20 +3942,15 @@ function renderInventoryList() {
     
     inventoryList.innerHTML = filteredItems.map(item => createInventoryCard(item)).join('');
     
-    console.log('库存列表已渲染:', {
-        筛选条件: activeFilter,
-        筛选结果: filteredItems.length,
-        原始数据: mockData.inventory.length
-    });
 }
 
 // 创建库存卡片
 function createInventoryCard(item) {
     const statusClass = getInventoryStatusClass(item);
     const statusText = getInventoryStatusText(item);
-    const stockPercentage = Math.min((item.stock / (item.minStock * 2)) * 100, 100);
-    const isLowStock = item.stock <= item.minStock;
-    const isOutOfStock = item.stock === 0;
+    const stockPercentage = Math.min((item.currentStock / (item.minStock * 2)) * 100, 100);
+    const isLowStock = item.currentStock <= item.minStock;
+    const isOutOfStock = item.currentStock === 0;
     
     return `
         <div class="inventory-card ${statusClass}" data-item-id="${item.id}">
@@ -3188,7 +3971,7 @@ function createInventoryCard(item) {
                 <div class="stat-item">
                     <div class="stat-label">当前库存</div>
                     <div class="stat-value ${isOutOfStock ? 'danger' : isLowStock ? 'warning' : ''}"">
-                        ${item.stock} ${item.unit}
+                        ${item.currentStock} ${item.unit}
                     </div>
                 </div>
                 <div class="stat-item">
@@ -3229,15 +4012,15 @@ function createInventoryCard(item) {
 
 // 获取库存状态样式类
 function getInventoryStatusClass(item) {
-    if (item.stock === 0) return 'out-of-stock';
-    if (item.stock <= item.minStock) return 'low-stock';
+    if (item.currentStock === 0) return 'out-of-stock';
+    if (item.currentStock <= item.minStock) return 'low-stock';
     return 'normal';
 }
 
 // 获取库存状态文本
 function getInventoryStatusText(item) {
-    if (item.stock === 0) return '缺货';
-    if (item.stock <= item.minStock) return '库存不足';
+    if (item.currentStock === 0) return '缺货';
+    if (item.currentStock <= item.minStock) return '库存不足';
     return '库存充足';
 }
 
@@ -3338,7 +4121,7 @@ function editInventoryItem(itemId) {
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
                 <div>
                     <label style="display: block; margin-bottom: 8px; font-weight: 600;">当前库存</label>
-                    <input type="number" id="editInventoryStock" value="${item.stock}" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                    <input type="number" id="editInventoryStock" value="${item.currentStock}" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
                 </div>
                 <div>
                     <label style="display: block; margin-bottom: 8px; font-weight: 600;">最低库存</label>
@@ -3394,7 +4177,7 @@ function saveInventoryChanges(itemId) {
     if (item) {
         item.name = name;
         item.unit = unit;
-        item.stock = stock;
+        item.currentStock = stock;
         item.minStock = minStock;
         item.price = price;
         item.supplier = supplier;
@@ -3414,8 +4197,8 @@ function addInventoryStock(itemId) {
     
     const addAmount = prompt(`请输入要添加的${item.name}数量（${item.unit}）：`, '10');
     if (addAmount && !isNaN(addAmount) && parseInt(addAmount) > 0) {
-        item.stock += parseInt(addAmount);
-        item.status = item.stock <= item.minStock ? 'low_stock' : 'available';
+        item.currentStock += parseInt(addAmount);
+        item.status = item.currentStock <= item.minStock ? 'low_stock' : 'available';
         
         updateInventoryStats();
         renderInventoryList();
@@ -3428,7 +4211,7 @@ function createPurchaseOrder(itemId) {
     const item = mockData.inventory.find(i => i.id === itemId);
     if (!item) return;
     
-    const orderAmount = Math.max(item.minStock * 2 - item.stock, item.minStock);
+    const orderAmount = Math.max(item.minStock * 2 - item.currentStock, item.minStock);
     const totalCost = (orderAmount * item.price).toFixed(2);
     
     const confirmed = confirm(
@@ -3530,8 +4313,8 @@ function renderSuppliersList() {
             <div class="supplier-products">
                 <div class="products-label">供应产品：</div>
                 <div class="products-tags">
-                    ${supplier.products.map(product => 
-                        `<span class="product-tag">${product}</span>`
+                    ${supplier.categories.map(category => 
+                        `<span class="product-tag">${category}</span>`
                     ).join('')}
                 </div>
             </div>
@@ -3592,9 +4375,9 @@ function addNewSupplier() {
 function generateInventoryReport() {
     const reportData = {
         totalItems: mockData.inventory.length,
-        lowStockItems: mockData.inventory.filter(item => item.stock <= item.minStock).length,
-        totalValue: mockData.inventory.reduce((sum, item) => sum + (item.stock * item.price), 0),
-        avgStock: mockData.inventory.reduce((sum, item) => sum + item.stock, 0) / mockData.inventory.length
+        lowStockItems: mockData.inventory.filter(item => item.currentStock <= item.minStock).length,
+        totalValue: mockData.inventory.reduce((sum, item) => sum + (item.currentStock * item.price), 0),
+        avgStock: mockData.inventory.reduce((sum, item) => sum + item.currentStock, 0) / mockData.inventory.length
     };
     
     const modalContent = `
@@ -3639,13 +4422,13 @@ function generateInventoryReport() {
                             ${mockData.inventory.map(item => `
                                 <tr>
                                     <td style="padding: 8px 12px; border-bottom: 1px solid #f1f3f4;">${item.name}</td>
-                                    <td style="padding: 8px 12px; text-align: center; border-bottom: 1px solid #f1f3f4;">${item.stock} ${item.unit}</td>
+                                    <td style="padding: 8px 12px; text-align: center; border-bottom: 1px solid #f1f3f4;">${item.currentStock} ${item.unit}</td>
                                     <td style="padding: 8px 12px; text-align: center; border-bottom: 1px solid #f1f3f4;">
-                                        <span style="color: ${item.stock <= item.minStock ? 'var(--warning-color)' : 'var(--success-color)'};">
+                                        <span style="color: ${item.currentStock <= item.minStock ? 'var(--warning-color)' : 'var(--success-color)'};">
                                             ${getInventoryStatusText(item)}
                                         </span>
                                     </td>
-                                    <td style="padding: 8px 12px; text-align: right; border-bottom: 1px solid #f1f3f4;">¥${(item.stock * item.price).toFixed(2)}</td>
+                                    <td style="padding: 8px 12px; text-align: right; border-bottom: 1px solid #f1f3f4;">¥${(item.currentStock * item.price).toFixed(2)}</td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -3675,12 +4458,10 @@ function downloadInventoryReport() {
 
 // 初始化客户管理页面
 function initCustomersPage() {
-    console.log('执行initCustomersPage函数');
     updateCustomersStats();
     renderCustomersList();
     renderRecentReviews();
     setupCustomerFilters();
-    console.log('客户管理页面初始化完成');
 }
 
 // 更新客户统计数据
@@ -3691,24 +4472,15 @@ function updateCustomersStats() {
     const customersCount = mockData.customers.length;
     const vipCount = mockData.customers.filter(c => c.level === 'VIP').length;
     
-    console.log('更新客户统计:', {
-        总客户数: customersCount,
-        VIP客户数: vipCount,
-        客户数据: mockData.customers
-    });
     
     if (totalCustomers) {
         totalCustomers.textContent = customersCount;
-        console.log('已更新总客户数元素');
     } else {
-        console.log('未找到total-customers元素');
     }
     
     if (vipCustomers) {
         vipCustomers.textContent = vipCount;
-        console.log('已更新VIP客户数元素');
     } else {
-        console.log('未找到vip-customers元素');
     }
 }
 
@@ -3716,11 +4488,9 @@ function updateCustomersStats() {
 function renderCustomersList() {
     const customersList = document.getElementById('customers-list');
     if (!customersList) {
-        console.log('未找到customers-list元素');
         return;
     }
     
-    console.log('开始渲染客户列表, 客户数据:', mockData.customers);
     
     customersList.innerHTML = mockData.customers.map(customer => {
         const levelClass = customer.level === 'VIP' ? 'vip' : customer.level === '会员' ? 'member' : 'normal';
@@ -3750,11 +4520,11 @@ function renderCustomersList() {
                     <div class="detail-row">
                         <div class="detail-item">
                             <i class="fas fa-calendar"></i>
-                            <span>到店次数：${customer.visits}</span>
+                            <span>到店次数：${customer.totalOrders}</span>
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-utensils"></i>
-                            <span>口味偏好：${customer.preference}</span>
+                            <span>口味偏好：${customer.favoriteItems ? customer.favoriteItems.join('、') : '暂无'}</span>
                         </div>
                     </div>
                     <div class="detail-row">
@@ -3764,7 +4534,7 @@ function renderCustomersList() {
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-calculator"></i>
-                            <span>平均消费：¥${customer.avgSpent.toFixed(2)}</span>
+                            <span>平均消费：¥${(customer.totalSpent / customer.totalOrders).toFixed(2)}</span>
                         </div>
                     </div>
                 </div>
@@ -3790,7 +4560,7 @@ function renderRecentReviews() {
     const reviewsList = document.getElementById('reviews-list');
     if (!reviewsList) return;
     
-    const recentReviews = mockData.reviews.slice(0, 5);
+    const recentReviews = (mockData.reviews || []).slice(0, 5);
     
     reviewsList.innerHTML = recentReviews.map(review => {
         const starsHtml = generateStarRating(review.rating);
@@ -3873,9 +4643,9 @@ function showCustomerDetail(customerId) {
     document.getElementById('customer-notes').value = customer.notes || '';
     
     // 更新统计信息
-    document.getElementById('customer-visits').textContent = customer.visits;
+    document.getElementById('customer-visits').textContent = customer.totalOrders;
     document.getElementById('customer-spent').textContent = `¥${customer.totalSpent.toFixed(2)}`;
-    document.getElementById('customer-avg').textContent = `¥${customer.avgSpent.toFixed(2)}`;
+    document.getElementById('customer-avg').textContent = `¥${(customer.totalSpent / customer.totalOrders).toFixed(2)}`;
     document.getElementById('customer-last-visit').textContent = customer.lastVisit;
     
     // 渲染消费历史
@@ -3986,11 +4756,11 @@ function searchCustomers() {
                     <div class="detail-row">
                         <div class="detail-item">
                             <i class="fas fa-calendar"></i>
-                            <span>到店次数：${customer.visits}</span>
+                            <span>到店次数：${customer.totalOrders}</span>
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-utensils"></i>
-                            <span>口味偏好：${customer.preference}</span>
+                            <span>口味偏好：${customer.favoriteItems ? customer.favoriteItems.join('、') : '暂无'}</span>
                         </div>
                     </div>
                     <div class="detail-row">
@@ -4000,7 +4770,7 @@ function searchCustomers() {
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-calculator"></i>
-                            <span>平均消费：¥${customer.avgSpent.toFixed(2)}</span>
+                            <span>平均消费：¥${(customer.totalSpent / customer.totalOrders).toFixed(2)}</span>
                         </div>
                     </div>
                 </div>
@@ -4105,8 +4875,6 @@ function renderRevenueStats() {
         .reduce((sum, order) => sum + order.total, 0);
     
     // 模拟更新页面元素（实际页面可能没有这些元素ID）
-    console.log('今日营收:', todayRevenue);
-    console.log('月度营收:', monthRevenue);
 }
 
 // 渲染客户分析
@@ -4115,11 +4883,6 @@ function renderCustomerAnalytics() {
     const vipCustomers = mockData.customers.filter(c => c.level === 'VIP').length;
     const memberCustomers = mockData.customers.filter(c => c.level === '会员').length;
     
-    console.log('客户分析:', {
-        总客户数: totalCustomers,
-        VIP客户: vipCustomers,
-        会员客户: memberCustomers
-    });
 }
 
 // ================== 设置页面 ==================
@@ -4145,18 +4908,15 @@ function loadStoreSettings() {
     };
     
     // 填充设置表单（如果存在相应元素）
-    console.log('店铺设置已加载:', settings);
 }
 
 // 加载员工列表
 function loadStaffList() {
-    console.log('员工列表:', mockData.staff);
 }
 
 // 设置事件监听器
 function setupSettingsListeners() {
     // 设置各种开关和表单的事件监听器
-    console.log('设置页面事件监听器已初始化');
 }
 
 // 保存店铺设置
@@ -4814,3 +5574,571 @@ setTimeout(() => {
         }
     }
 }, 1000);
+
+// 切换店铺状态 (设置页面使用)
+function toggleStoreStatus() {
+    const statusBadge = document.querySelector('#settings .status-badge');
+    const toggleBtn = document.querySelector('[onclick="toggleStoreStatus()"]');
+    const sidebarStatusIndicator = document.querySelector('.sidebar .status-indicator');
+    
+    if (!statusBadge || !toggleBtn) return;
+    
+    const isOnline = statusBadge.classList.contains('online');
+    
+    if (isOnline) {
+        // 切换到暂停营业
+        statusBadge.textContent = '暂停营业';
+        statusBadge.className = 'status-badge offline';
+        toggleBtn.innerHTML = '<i class="fas fa-power-off"></i>';
+        toggleBtn.setAttribute('title', '开始营业');
+        
+        // 更新侧边栏状态
+        if (sidebarStatusIndicator) {
+            sidebarStatusIndicator.innerHTML = '<span class="status-dot offline"></span><span>暂停营业</span>';
+        }
+        
+        // 更新全局营业状态
+        if (typeof businessStatus !== 'undefined') {
+            businessStatus = 'offline';
+        }
+        
+        showNotification('营业状态', '已暂停营业，不再接受新订单', 'warning');
+    } else {
+        // 切换到营业中
+        statusBadge.textContent = '营业中';
+        statusBadge.className = 'status-badge online';
+        toggleBtn.innerHTML = '<i class="fas fa-power-off"></i>';
+        toggleBtn.setAttribute('title', '暂停营业');
+        
+        // 更新侧边栏状态
+        if (sidebarStatusIndicator) {
+            sidebarStatusIndicator.innerHTML = '<span class="status-dot online"></span><span>营业中</span>';
+        }
+        
+        // 更新全局营业状态
+        if (typeof businessStatus !== 'undefined') {
+            businessStatus = 'online';
+        }
+        
+        showNotification('营业状态', '已开始营业，可以接受新订单', 'success');
+    }
+}
+
+// 添加新桌位
+function addNewTable() {
+    const modalContent = `
+        <div class="modal-header">
+            <h3>添加新桌位</h3>
+            <button class="close-btn" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="addTableForm">
+                <div class="form-group">
+                    <label for="tableNumber">桌位号码</label>
+                    <input type="number" id="tableNumber" name="tableNumber" min="1" max="99" required>
+                </div>
+                <div class="form-group">
+                    <label for="tableCapacity">座位数量</label>
+                    <select id="tableCapacity" name="tableCapacity" required>
+                        <option value="2">2人桌</option>
+                        <option value="4">4人桌</option>
+                        <option value="6">6人桌</option>
+                        <option value="8">8人桌</option>
+                        <option value="10">10人桌</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tableType">桌位类型</label>
+                    <select id="tableType" name="tableType" required>
+                        <option value="standard">标准桌</option>
+                        <option value="booth">卡座</option>
+                        <option value="private">包厢</option>
+                        <option value="outdoor">户外桌</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+            <button class="btn btn-success" onclick="saveNewTable()">添加桌位</button>
+        </div>
+    `;
+    showModal(null, modalContent);
+}
+
+// 保存新桌位
+function saveNewTable() {
+    const form = document.getElementById('addTableForm');
+    const formData = new FormData(form);
+    
+    const tableNumber = formData.get('tableNumber');
+    const tableCapacity = formData.get('tableCapacity');
+    const tableType = formData.get('tableType');
+    
+    if (!tableNumber || !tableCapacity || !tableType) {
+        showNotification('输入错误', '请填写所有必填字段', 'error');
+        return;
+    }
+    
+    // 这里应该调用API保存桌位信息
+    showNotification('添加成功', `桌位 ${tableNumber} 号已添加`, 'success');
+    closeModal();
+    
+    // 刷新桌位布局 (如果有渲染函数的话)
+    if (typeof renderTableLayout === 'function') {
+        renderTableLayout();
+    }
+}
+
+// 编辑店铺信息
+function editStoreInfo() {
+    const modalContent = `
+        <div class="modal-header">
+            <h3>编辑店铺信息</h3>
+            <button class="close-btn" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="editStoreForm">
+                <div class="form-group">
+                    <label for="editStoreName">店铺名称</label>
+                    <input type="text" id="editStoreName" name="storeName" value="仓和餐厅" required>
+                </div>
+                <div class="form-group">
+                    <label for="editStorePhone">联系电话</label>
+                    <input type="tel" id="editStorePhone" name="storePhone" value="028-8888-6666" required>
+                </div>
+                <div class="form-group">
+                    <label for="editStoreAddress">店铺地址</label>
+                    <textarea id="editStoreAddress" name="storeAddress" rows="3" required>成都市锦江区春熙路123号</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editStoreHours">营业时间</label>
+                    <input type="text" id="editStoreHours" name="storeHours" value="10:00-22:00" required>
+                </div>
+                <div class="form-group">
+                    <label for="editStoreDescription">店铺描述</label>
+                    <textarea id="editStoreDescription" name="storeDescription" rows="3" placeholder="请输入店铺简介...">川菜特色餐厅，主营正宗川菜，环境优雅，服务周到。</textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+            <button class="btn btn-primary" onclick="saveStoreInfo()">保存修改</button>
+        </div>
+    `;
+    showModal(null, modalContent);
+}
+
+// 保存店铺信息
+function saveStoreInfo() {
+    const form = document.getElementById('editStoreForm');
+    const formData = new FormData(form);
+    
+    const storeName = formData.get('storeName');
+    const storePhone = formData.get('storePhone');
+    const storeAddress = formData.get('storeAddress');
+    const storeHours = formData.get('storeHours');
+    const storeDescription = formData.get('storeDescription');
+    
+    if (!storeName || !storePhone || !storeAddress || !storeHours) {
+        showNotification('输入错误', '请填写所有必填字段', 'error');
+        return;
+    }
+    
+    // 更新页面显示的店铺信息
+    const storeNameElement = document.getElementById('store-name');
+    const storePhoneElement = document.getElementById('store-phone');
+    const storeAddressElement = document.getElementById('store-address');
+    const storeHoursElement = document.getElementById('store-hours');
+    
+    if (storeNameElement) storeNameElement.textContent = storeName;
+    if (storePhoneElement) storePhoneElement.textContent = storePhone;
+    if (storeAddressElement) storeAddressElement.textContent = storeAddress;
+    if (storeHoursElement) storeHoursElement.textContent = storeHours;
+    
+    // 同时更新侧边栏的商家名称
+    const merchantNameElement = document.getElementById('merchantName');
+    if (merchantNameElement) merchantNameElement.textContent = storeName;
+    
+    showNotification('保存成功', '店铺信息已更新', 'success');
+    closeModal();
+}
+
+// 添加新员工
+function addNewStaff() {
+    const modalContent = `
+        <div class="modal-header">
+            <h3>添加新员工</h3>
+            <button class="close-btn" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="addStaffForm">
+                <div class="form-group">
+                    <label for="staffName">员工姓名</label>
+                    <input type="text" id="staffName" name="staffName" required>
+                </div>
+                <div class="form-group">
+                    <label for="staffPhone">联系电话</label>
+                    <input type="tel" id="staffPhone" name="staffPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="staffPosition">职位</label>
+                    <select id="staffPosition" name="staffPosition" required>
+                        <option value="">请选择职位</option>
+                        <option value="服务员">服务员</option>
+                        <option value="收银员">收银员</option>
+                        <option value="厨师">厨师</option>
+                        <option value="后厨助理">后厨助理</option>
+                        <option value="清洁员">清洁员</option>
+                        <option value="主管">主管</option>
+                        <option value="经理">经理</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="staffSalary">基础工资</label>
+                    <input type="number" id="staffSalary" name="staffSalary" min="0" step="100" placeholder="请输入月工资">
+                </div>
+                <div class="form-group">
+                    <label for="staffStartDate">入职日期</label>
+                    <input type="date" id="staffStartDate" name="staffStartDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="staffStatus">员工状态</label>
+                    <select id="staffStatus" name="staffStatus" required>
+                        <option value="active">在职</option>
+                        <option value="probation">试用期</option>
+                        <option value="leave">请假</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="staffNotes">备注信息</label>
+                    <textarea id="staffNotes" name="staffNotes" rows="3" placeholder="请输入备注信息..."></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+            <button class="btn btn-primary" onclick="saveNewStaff()">添加员工</button>
+        </div>
+    `;
+    showModal(null, modalContent);
+    
+    // 设置默认入职日期为今天
+    setTimeout(() => {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('staffStartDate').value = today;
+    }, 100);
+}
+
+// 保存新员工
+function saveNewStaff() {
+    const form = document.getElementById('addStaffForm');
+    const formData = new FormData(form);
+    
+    const staffName = formData.get('staffName');
+    const staffPhone = formData.get('staffPhone');
+    const staffPosition = formData.get('staffPosition');
+    const staffSalary = formData.get('staffSalary');
+    const staffStartDate = formData.get('staffStartDate');
+    const staffStatus = formData.get('staffStatus');
+    const staffNotes = formData.get('staffNotes');
+    
+    if (!staffName || !staffPhone || !staffPosition || !staffStartDate || !staffStatus) {
+        showNotification('输入错误', '请填写所有必填字段', 'error');
+        return;
+    }
+    
+    // 验证电话号码格式
+    const phoneRegex = /^1[3-9]\d{9}$|^0\d{2,3}-?\d{7,8}$/;
+    if (!phoneRegex.test(staffPhone)) {
+        showNotification('输入错误', '请输入正确的电话号码格式', 'error');
+        return;
+    }
+    
+    // 创建新员工对象
+    const newStaff = {
+        id: 'staff_' + Date.now(),
+        name: staffName,
+        phone: staffPhone,
+        position: staffPosition,
+        salary: staffSalary || '面议',
+        startDate: staffStartDate,
+        status: staffStatus,
+        notes: staffNotes || '',
+        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face'
+    };
+    
+    // 这里应该调用API保存员工信息
+    // 模拟保存成功
+    showNotification('添加成功', `员工 ${staffName} 已成功添加`, 'success');
+    closeModal();
+    
+    // 刷新员工列表 (如果有渲染函数的话)
+    if (typeof renderStaffList === 'function') {
+        renderStaffList();
+    }
+}
+
+// 数据备份
+function backupData() {
+    showNotification('开始备份', '正在备份店铺数据...', 'info');
+    
+    // 模拟备份过程
+    setTimeout(() => {
+        try {
+            // 收集要备份的数据
+            const backupData = {
+                timestamp: new Date().toISOString(),
+                storeInfo: {
+                    name: document.getElementById('store-name')?.textContent || '仓和餐厅',
+                    phone: document.getElementById('store-phone')?.textContent || '028-8888-6666',
+                    address: document.getElementById('store-address')?.textContent || '成都市锦江区春熙路123号',
+                    hours: document.getElementById('store-hours')?.textContent || '10:00-22:00'
+                },
+                orders: mockData?.orders || [],
+                menu: mockData?.menu || [],
+                inventory: mockData?.inventory || [],
+                staff: mockData?.staff || [],
+                settings: {
+                    notifications: document.getElementById('notifications-enabled')?.checked || true,
+                    voiceAlerts: document.getElementById('voice-alerts')?.checked || true,
+                    autoPrint: document.getElementById('auto-print')?.checked || true,
+                    stockWarning: document.getElementById('stock-warning-threshold')?.value || 10,
+                    timeoutWarning: document.getElementById('timeout-warning')?.value || 30
+                }
+            };
+            
+            // 创建备份文件
+            const fileName = `merchant_backup_${new Date().toISOString().split('T')[0]}.json`;
+            const jsonStr = JSON.stringify(backupData, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            
+            // 创建下载链接
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // 更新页面显示的备份时间
+            const backupDesc = document.querySelector('.data-item .data-desc');
+            if (backupDesc && backupDesc.textContent.includes('上次备份')) {
+                const now = new Date();
+                backupDesc.textContent = `上次备份：${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            }
+            
+            showNotification('备份完成', '数据备份文件已下载', 'success');
+        } catch (error) {
+            console.error('备份失败:', error);
+            showNotification('备份失败', '数据备份过程中出现错误', 'error');
+        }
+    }, 1500);
+}
+
+// 导出数据 (增强版本)
+function exportData() {
+    const modalContent = `
+        <div class="modal-header">
+            <h3>导出营业数据</h3>
+            <button class="close-btn" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="exportDataForm">
+                <div class="form-group">
+                    <label for="exportType">导出类型</label>
+                    <select id="exportType" name="exportType" required>
+                        <option value="orders">订单数据</option>
+                        <option value="sales">销售报表</option>
+                        <option value="menu">菜单数据</option>
+                        <option value="inventory">库存数据</option>
+                        <option value="staff">员工数据</option>
+                        <option value="all">全部数据</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="exportFormat">导出格式</label>
+                    <select id="exportFormat" name="exportFormat" required>
+                        <option value="json">JSON格式</option>
+                        <option value="csv">CSV格式</option>
+                        <option value="excel">Excel格式</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dateRange">时间范围</label>
+                    <select id="dateRange" name="dateRange" required>
+                        <option value="today">今日</option>
+                        <option value="week">本周</option>
+                        <option value="month">本月</option>
+                        <option value="quarter">本季度</option>
+                        <option value="year">今年</option>
+                        <option value="all">全部</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+            <button class="btn btn-success" onclick="performExport()">开始导出</button>
+        </div>
+    `;
+    showModal(null, modalContent);
+}
+
+// 执行导出
+function performExport() {
+    const form = document.getElementById('exportDataForm');
+    const formData = new FormData(form);
+    
+    const exportType = formData.get('exportType');
+    const exportFormat = formData.get('exportFormat');
+    const dateRange = formData.get('dateRange');
+    
+    if (!exportType || !exportFormat || !dateRange) {
+        showNotification('输入错误', '请选择所有导出选项', 'error');
+        return;
+    }
+    
+    closeModal();
+    showNotification('开始导出', `正在导出${exportType}数据...`, 'info');
+    
+    // 模拟导出过程
+    setTimeout(() => {
+        const fileName = `${exportType}_${dateRange}_${new Date().toISOString().split('T')[0]}.${exportFormat}`;
+        
+        let exportData = {};
+        switch (exportType) {
+            case 'orders':
+                exportData = mockData?.orders || [];
+                break;
+            case 'sales':
+                exportData = {
+                    summary: '销售报表数据',
+                    period: dateRange,
+                    totalSales: '¥12,345',
+                    orderCount: 156
+                };
+                break;
+            case 'menu':
+                exportData = mockData?.menu || [];
+                break;
+            case 'inventory':
+                exportData = mockData?.inventory || [];
+                break;
+            case 'staff':
+                exportData = mockData?.staff || [];
+                break;
+            case 'all':
+                exportData = {
+                    orders: mockData?.orders || [],
+                    menu: mockData?.menu || [],
+                    inventory: mockData?.inventory || [],
+                    staff: mockData?.staff || []
+                };
+                break;
+        }
+        
+        // 创建下载文件
+        const jsonStr = JSON.stringify(exportData, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showNotification('导出完成', '数据文件已下载', 'success');
+    }, 2000);
+}
+
+// 检查更新
+function checkUpdates() {
+    showNotification('检查更新', '正在检查系统更新...', 'info');
+    
+    // 模拟检查更新过程
+    setTimeout(() => {
+        const currentVersion = 'v2.1.3';
+        const hasUpdate = Math.random() > 0.5; // 随机模拟是否有更新
+        
+        if (hasUpdate) {
+            const newVersion = 'v2.1.4';
+            const modalContent = `
+                <div class="modal-header">
+                    <h3>发现新版本</h3>
+                    <button class="close-btn" onclick="closeModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="update-info">
+                        <div class="version-info">
+                            <div class="current-version">
+                                <label>当前版本：</label>
+                                <span>${currentVersion}</span>
+                            </div>
+                            <div class="new-version">
+                                <label>最新版本：</label>
+                                <span class="highlight">${newVersion}</span>
+                            </div>
+                        </div>
+                        <div class="update-notes">
+                            <h4>更新内容：</h4>
+                            <ul>
+                                <li>修复了订单处理的若干问题</li>
+                                <li>优化了页面加载速度</li>
+                                <li>新增了数据统计功能</li>
+                                <li>改进了用户界面体验</li>
+                                <li>增强了系统安全性</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeModal()">稍后更新</button>
+                    <button class="btn btn-primary" onclick="startUpdate()">立即更新</button>
+                </div>
+            `;
+            showModal(null, modalContent);
+        } else {
+            showNotification('已是最新版本', `当前版本 ${currentVersion} 已是最新版本`, 'success');
+        }
+    }, 2000);
+}
+
+// 开始更新
+function startUpdate() {
+    closeModal();
+    showNotification('开始更新', '系统更新正在进行中，请勿关闭页面...', 'info');
+    
+    // 模拟更新过程
+    let progress = 0;
+    const updateInterval = setInterval(() => {
+        progress += Math.random() * 20;
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(updateInterval);
+            showNotification('更新完成', '系统已成功更新到最新版本', 'success');
+            
+            // 更新版本显示
+            setTimeout(() => {
+                const versionElement = document.querySelector('.data-item .data-desc');
+                if (versionElement && versionElement.textContent.includes('当前版本')) {
+                    versionElement.textContent = '当前版本：v2.1.4';
+                }
+            }, 1000);
+        }
+    }, 500);
+}

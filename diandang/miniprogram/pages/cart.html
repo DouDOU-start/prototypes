@@ -4,34 +4,112 @@
     <h1>购物车</h1>
     <div></div>
   </div>
-  <div class="cart-content">
-    <div class="cart-item">
-      <div class="cart-item-image"><i class="fas fa-drumstick-bite"></i></div>
-      <div class="cart-item-info">
-        <div class="cart-item-name">宫保鸡丁 (微辣)</div>
-        <div class="cart-item-price">¥32</div>
+
+  <div class="page-content">
+    <!-- 购物车标题区域 -->
+    <div class="content-section">
+      <div class="section-title">
+        <i class="fas fa-shopping-cart" style="color: var(--accent-color); margin-right: 8px;"></i>
+        我的购物车
       </div>
-      <div class="quantity-btns">
-        <button class="qty-btn"><i class="fas fa-minus"></i></button>
-        <span class="quantity">2</span>
-        <button class="qty-btn"><i class="fas fa-plus"></i></button>
+      
+      <!-- 现代化购物车项目 -->
+      <div class="cart-items-container">
+        <div class="modern-cart-item">
+          <div class="cart-item-image-modern">
+            <span class="cart-food-emoji">🍗</span>
+          </div>
+          <div class="cart-item-content">
+            <div class="cart-item-header">
+              <h4 class="cart-item-title">宫保鸡丁</h4>
+              <div class="cart-item-tags">
+                <span class="cart-tag">微辣</span>
+                <span class="cart-tag">招牌</span>
+              </div>
+            </div>
+            <div class="cart-item-desc">经典川菜，鸡肉鲜嫩，花生香脆</div>
+            <div class="cart-item-meta">
+              <div class="cart-item-price">¥32</div>
+              <div class="quantity-controls">
+                <button class="qty-btn-modern minus" onclick="decreaseQty(this)">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <span class="quantity-display">2</span>
+                <button class="qty-btn-modern plus" onclick="increaseQty(this)">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <button class="remove-item-btn" onclick="removeItem(this)">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+
+        <div class="modern-cart-item">
+          <div class="cart-item-image-modern">
+            <span class="cart-food-emoji">🐟</span>
+          </div>
+          <div class="cart-item-content">
+            <div class="cart-item-header">
+              <h4 class="cart-item-title">红烧鲈鱼</h4>
+              <div class="cart-item-tags">
+                <span class="cart-tag">营养</span>
+                <span class="cart-tag">鲜美</span>
+              </div>
+            </div>
+            <div class="cart-item-desc">鱼肉鲜美，汤汁浓郁，营养丰富</div>
+            <div class="cart-item-meta">
+              <div class="cart-item-price">¥48</div>
+              <div class="quantity-controls">
+                <button class="qty-btn-modern minus" onclick="decreaseQty(this)">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <span class="quantity-display">1</span>
+                <button class="qty-btn-modern plus" onclick="increaseQty(this)">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <button class="remove-item-btn" onclick="removeItem(this)">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
       </div>
-    </div>
-    <div class="cart-item">
-      <div class="cart-item-image"><i class="fas fa-fish"></i></div>
-      <div class="cart-item-info">
-        <div class="cart-item-name">红烧鲈鱼</div>
-        <div class="cart-item-price">¥48</div>
-      </div>
-      <div class="quantity-btns">
-        <button class="qty-btn"><i class="fas fa-minus"></i></button>
-        <span class="quantity">1</span>
-        <button class="qty-btn"><i class="fas fa-plus"></i></button>
+
+      <!-- 价格汇总卡片 -->
+      <div class="cart-summary-card">
+        <div class="summary-row">
+          <span>商品小计</span>
+          <span>¥112</span>
+        </div>
+        <div class="summary-row">
+          <span>配送费</span>
+          <span>¥3</span>
+        </div>
+        <div class="summary-row discount">
+          <span>优惠券</span>
+          <span>-¥5</span>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-total">
+          <span>合计</span>
+          <span class="total-amount">¥110</span>
+        </div>
       </div>
     </div>
   </div>
-  <div class="cart-bottom">
-    <div class="total-price">合计: ¥112</div>
-    <button class="checkout-btn" onclick="showPage('order')">去结算</button>
+
+  <!-- 现代化底部结算 -->
+  <div class="modern-cart-bottom">
+    <div class="cart-total-display">
+      <div class="total-label">总计</div>
+      <div class="total-value">¥110</div>
+    </div>
+    <button class="modern-checkout-btn" onclick="showPage('order')">
+      <span>去结算</span>
+      <i class="fas fa-arrow-right"></i>
+    </button>
   </div>
 </div> 

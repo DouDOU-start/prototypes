@@ -211,6 +211,70 @@ const merchantData = {
         }
     ],
 
+    // 供应商数据
+    suppliers: [
+        {
+            id: 'supplier_001',
+            name: '蜀香源食材',
+            contact: '李经理',
+            phone: '028-6688-9999',
+            address: '成都市双流区食材批发市场A区28号',
+            rating: 4.8,
+            cooperationYears: 3,
+            categories: ['肉类', '调料'],
+            deliveryDays: ['周一', '周三', '周五'],
+            minOrderAmount: 500
+        },
+        {
+            id: 'supplier_002',
+            name: '川味豆制品厂',
+            contact: '王师傅',
+            phone: '028-7799-5566',
+            address: '成都市温江区豆制品工业园',
+            rating: 4.6,
+            cooperationYears: 2,
+            categories: ['豆制品'],
+            deliveryDays: ['周二', '周四', '周六'],
+            minOrderAmount: 200
+        },
+        {
+            id: 'supplier_003',
+            name: '绿源蔬菜基地',
+            contact: '张农户',
+            phone: '028-5544-3322',
+            address: '成都市郫都区绿色蔬菜基地',
+            rating: 4.5,
+            cooperationYears: 1,
+            categories: ['蔬菜'],
+            deliveryDays: ['每日配送'],
+            minOrderAmount: 300
+        },
+        {
+            id: 'supplier_004',
+            name: '鲜活水产市场',
+            contact: '陈老板',
+            phone: '028-8877-6655',
+            address: '成都市青白江区水产批发市场',
+            rating: 4.7,
+            cooperationYears: 4,
+            categories: ['水产'],
+            deliveryDays: ['周一', '周四'],
+            minOrderAmount: 800
+        },
+        {
+            id: 'supplier_005',
+            name: '川香调料批发',
+            contact: '刘总',
+            phone: '028-9966-4433',
+            address: '成都市金牛区调料批发中心',
+            rating: 4.9,
+            cooperationYears: 5,
+            categories: ['调料', '干货'],
+            deliveryDays: ['周三', '周六'],
+            minOrderAmount: 600
+        }
+    ],
+
     // 客户数据
     customers: [
         {
@@ -307,24 +371,38 @@ const merchantData = {
                 status: 'active'
             },
             {
+                id: 'cold',
+                name: '凉菜系列',
+                icon: '🥗',
+                sort: 2,
+                status: 'active'
+            },
+            {
                 id: 'soup',
                 name: '汤品类',
                 icon: '🍲',
-                sort: 2,
+                sort: 3,
                 status: 'active'
             },
             {
                 id: 'staple',
                 name: '主食类',
                 icon: '🍚',
-                sort: 3,
+                sort: 4,
                 status: 'active'
             },
             {
                 id: 'vegetable',
                 name: '素食类',
                 icon: '🥬',
-                sort: 4,
+                sort: 5,
+                status: 'active'
+            },
+            {
+                id: 'drink',
+                name: '饮品类',
+                icon: '🥤',
+                sort: 6,
                 status: 'active'
             }
         ],
@@ -372,11 +450,199 @@ const merchantData = {
                 allergens: ['大豆'],
                 dailyLimit: 40,
                 soldToday: 22
+            },
+            {
+                id: 'menu_003',
+                name: '口水鸡',
+                categoryId: 'cold',
+                price: 35.0,
+                originalPrice: 38.0,
+                description: '四川经典凉菜，鸡肉嫩滑，麻辣鲜香',
+                image: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?w=400&h=400&fit=crop',
+                status: 'available',
+                spicyLevel: 2,
+                preparationTime: 20,
+                tags: ['凉菜', '麻辣', '开胃'],
+                nutrition: {
+                    calories: 220,
+                    protein: 32,
+                    carbs: 5,
+                    fat: 9
+                },
+                allergens: ['芝麻'],
+                dailyLimit: 30,
+                soldToday: 18
+            },
+            {
+                id: 'menu_004',
+                name: '蛋花汤',
+                categoryId: 'soup',
+                price: 15.0,
+                originalPrice: 18.0,
+                description: '清淡营养的蛋花汤，汤汁清澈，蛋花朵朵',
+                image: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&h=400&fit=crop',
+                status: 'available',
+                spicyLevel: 0,
+                preparationTime: 8,
+                tags: ['清淡', '营养', '暖胃'],
+                nutrition: {
+                    calories: 95,
+                    protein: 8,
+                    carbs: 3,
+                    fat: 6
+                },
+                allergens: ['鸡蛋'],
+                dailyLimit: 50,
+                soldToday: 31
+            },
+            {
+                id: 'menu_005',
+                name: '白米饭',
+                categoryId: 'staple',
+                price: 5.0,
+                originalPrice: 6.0,
+                description: '优质东北大米，粒粒饱满，香甜可口',
+                image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=400&fit=crop',
+                status: 'available',
+                spicyLevel: 0,
+                preparationTime: 5,
+                tags: ['主食', '经典'],
+                nutrition: {
+                    calories: 130,
+                    protein: 3,
+                    carbs: 28,
+                    fat: 0
+                },
+                allergens: [],
+                dailyLimit: 100,
+                soldToday: 68
+            },
+            {
+                id: 'menu_006',
+                name: '酸辣土豆丝',
+                categoryId: 'vegetable',
+                price: 18.0,
+                originalPrice: 20.0,
+                description: '爽脆酸辣的土豆丝，开胃解腻',
+                image: 'https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=400&h=400&fit=crop',
+                status: 'available',
+                spicyLevel: 1,
+                preparationTime: 10,
+                tags: ['素食', '酸辣', '爽脆'],
+                nutrition: {
+                    calories: 125,
+                    protein: 2,
+                    carbs: 25,
+                    fat: 3
+                },
+                allergens: [],
+                dailyLimit: 35,
+                soldToday: 24
+            },
+            {
+                id: 'menu_007',
+                name: '柠檬蜂蜜茶',
+                categoryId: 'drink',
+                price: 22.0,
+                originalPrice: 25.0,
+                description: '新鲜柠檬配天然蜂蜜，酸甜解腻',
+                image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=400&h=400&fit=crop',
+                status: 'available',
+                spicyLevel: 0,
+                preparationTime: 5,
+                tags: ['饮品', '清爽', '解腻'],
+                nutrition: {
+                    calories: 85,
+                    protein: 0,
+                    carbs: 22,
+                    fat: 0
+                },
+                allergens: [],
+                dailyLimit: 25,
+                soldToday: 12
+            },
+            {
+                id: 'menu_008',
+                name: '回锅肉',
+                categoryId: 'signature',
+                price: 38.0,
+                originalPrice: 42.0,
+                description: '经典川菜回锅肉，肥瘦相间，香辣下饭',
+                image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=400&fit=crop',
+                status: 'available',
+                spicyLevel: 2,
+                preparationTime: 18,
+                tags: ['招牌', '香辣', '经典'],
+                nutrition: {
+                    calories: 385,
+                    protein: 25,
+                    carbs: 8,
+                    fat: 28
+                },
+                allergens: [],
+                dailyLimit: 25,
+                soldToday: 16
             }
         ]
     },
 
     // 商家信息
+    // 热门菜品数据
+    popularItems: [
+        { name: '宫保鸡丁', sales: 156, price: 32.0, category: '招牌川菜', rating: 4.8, profit: 18.0 },
+        { name: '麻婆豆腐', sales: 134, price: 26.0, category: '招牌川菜', rating: 4.7, profit: 15.0 },
+        { name: '回锅肉', sales: 128, price: 38.0, category: '招牌川菜', rating: 4.9, profit: 22.0 },
+        { name: '水煮鱼', sales: 95, price: 68.0, category: '招牌川菜', rating: 4.8, profit: 35.0 },
+        { name: '鱼香肉丝', sales: 87, price: 28.0, category: '招牌川菜', rating: 4.6, profit: 16.0 },
+        { name: '糖醋排骨', sales: 76, price: 42.0, category: '经典家常', rating: 4.7, profit: 24.0 },
+        { name: '口水鸡', sales: 65, price: 35.0, category: '凉菜系列', rating: 4.5, profit: 20.0 },
+        { name: '酸辣土豆丝', sales: 58, price: 18.0, category: '素菜小炒', rating: 4.4, profit: 12.0 }
+    ],
+    
+    // 系统通知数据
+    notifications: [
+        {
+            title: '库存预警',
+            message: '土豆、豆腐、草鱼库存不足，请及时补充',
+            time: '10分钟前',
+            icon: 'fas fa-exclamation-triangle',
+            type: 'warning',
+            unread: true
+        },
+        {
+            title: '新订单提醒',
+            message: '收到来自C05桌的新订单，金额¥62.0',
+            time: '2分钟前',
+            icon: 'fas fa-shopping-cart',
+            type: 'info',
+            unread: true
+        },
+        {
+            title: 'VIP客户光临',
+            message: '赵女士（VIP会员）刚刚到店，请优先安排',
+            time: '15分钟前',
+            icon: 'fas fa-crown',
+            type: 'info',
+            unread: true
+        },
+        {
+            title: '营业数据',
+            message: '今日营业额已达¥2485.0，比昨日同期增长12%',
+            time: '30分钟前',
+            icon: 'fas fa-chart-line',
+            type: 'success',
+            unread: false
+        },
+        {
+            title: '系统更新',
+            message: '收银系统已更新至V2.1.3版本，新增优惠券功能',
+            time: '2小时前',
+            icon: 'fas fa-sync-alt',
+            type: 'success',
+            unread: false
+        }
+    ],
+
     merchantInfo: {
         id: 'merchant_001',
         name: '仓和川菜馆',

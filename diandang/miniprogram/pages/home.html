@@ -25,25 +25,76 @@
       </div>
     </div>
 
-    <!-- 快捷分类 -->
+    <!-- 现代化美食分类 -->
     <div class="category-section">
-      <div class="section-title">美食分类</div>
+      <div class="section-title">
+        <i class="fas fa-utensils" style="color: #ff6b35; margin-right: 8px;"></i>
+        美食分类
+      </div>
       <div class="category-grid">
-        <div class="category-item" onclick="showCategoryMenu('川菜')">
-          <div class="category-icon">🌶️</div>
+        <div class="category-item modern-category" onclick="showCategoryMenu('川菜')">
+          <div class="category-icon-modern">
+            <span class="category-emoji">🌶️</span>
+            <div class="category-glow"></div>
+          </div>
           <div class="category-name">川菜</div>
+          <div class="category-desc">麻辣鲜香</div>
         </div>
-        <div class="category-item" onclick="showCategoryMenu('家常菜')">
-          <div class="category-icon">🍲</div>
+        <div class="category-item modern-category" onclick="showCategoryMenu('家常菜')">
+          <div class="category-icon-modern">
+            <span class="category-emoji">🍲</span>
+            <div class="category-glow"></div>
+          </div>
           <div class="category-name">家常菜</div>
+          <div class="category-desc">温馨美味</div>
         </div>
-        <div class="category-item" onclick="showCategoryMenu('汤品')">
-          <div class="category-icon">🥣</div>
+        <div class="category-item modern-category" onclick="showCategoryMenu('汤品')">
+          <div class="category-icon-modern">
+            <span class="category-emoji">🥣</span>
+            <div class="category-glow"></div>
+          </div>
           <div class="category-name">汤品</div>
+          <div class="category-desc">营养滋补</div>
         </div>
-        <div class="category-item" onclick="showCategoryMenu('主食')">
-          <div class="category-icon">🍚</div>
+        <div class="category-item modern-category" onclick="showCategoryMenu('主食')">
+          <div class="category-icon-modern">
+            <span class="category-emoji">🍚</span>
+            <div class="category-glow"></div>
+          </div>
           <div class="category-name">主食</div>
+          <div class="category-desc">饱腹暖胃</div>
+        </div>
+        <div class="category-item modern-category" onclick="showCategoryMenu('饮品')">
+          <div class="category-icon-modern">
+            <span class="category-emoji">🥤</span>
+            <div class="category-glow"></div>
+          </div>
+          <div class="category-name">饮品</div>
+          <div class="category-desc">清爽怡人</div>
+        </div>
+        <div class="category-item modern-category" onclick="showCategoryMenu('甜品')">
+          <div class="category-icon-modern">
+            <span class="category-emoji">🍰</span>
+            <div class="category-glow"></div>
+          </div>
+          <div class="category-name">甜品</div>
+          <div class="category-desc">香甜诱人</div>
+        </div>
+        <div class="category-item modern-category" onclick="showCategoryMenu('烧烤')">
+          <div class="category-icon-modern">
+            <span class="category-emoji">🍢</span>
+            <div class="category-glow"></div>
+          </div>
+          <div class="category-name">烧烤</div>
+          <div class="category-desc">香气扑鼻</div>
+        </div>
+        <div class="category-item modern-category" onclick="showCategoryMenu('海鲜')">
+          <div class="category-icon-modern">
+            <span class="category-emoji">🦐</span>
+            <div class="category-glow"></div>
+          </div>
+          <div class="category-name">海鲜</div>
+          <div class="category-desc">鲜美嫩滑</div>
         </div>
       </div>
     </div>
@@ -52,9 +103,132 @@
     <div class="merchants-section">
       <div class="section-title">今日推荐</div>
       
-      <!-- 推荐菜品列表 -->
+      <!-- 现代化推荐菜品列表 -->
       <div class="menu-list" id="recommendedItems">
-        <!-- 推荐菜品将通过JS动态渲染 -->
+        <!-- 示例现代化食物卡片 -->
+        <div class="food-card" onclick="showPage('detail')">
+          <div class="food-card-image-container">
+            <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&h=300&fit=crop" 
+                 alt="宫保鸡丁" class="food-card-image">
+            <div class="food-card-rating">
+              <i class="fas fa-star"></i>
+              <span>4.8</span>
+            </div>
+            <div class="food-card-price-tag">¥28</div>
+          </div>
+          <div class="food-card-content">
+            <div class="food-card-header">
+              <h3 class="food-card-title">宫保鸡丁</h3>
+            </div>
+            <p class="food-card-description">经典川菜，嫩滑鸡肉搭配香脆花生米，酸甜适中，开胃下饭</p>
+            <div class="food-card-tags">
+              <span class="food-card-tag">招牌菜</span>
+              <span class="food-card-tag">微辣</span>
+            </div>
+            <div class="food-card-footer">
+              <div class="food-card-merchant">
+                <div class="food-card-merchant-avatar">川</div>
+                <span>川香小厨</span>
+              </div>
+              <button class="food-card-add-btn" onclick="event.stopPropagation(); addToCart('gongbao-chicken')">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="food-card" onclick="showPage('detail')">
+          <div class="food-card-image-container">
+            <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=400&h=300&fit=crop" 
+                 alt="红烧肉" class="food-card-image">
+            <div class="food-card-rating">
+              <i class="fas fa-star"></i>
+              <span>4.6</span>
+            </div>
+            <div class="food-card-price-tag">¥35</div>
+          </div>
+          <div class="food-card-content">
+            <div class="food-card-header">
+              <h3 class="food-card-title">红烧肉</h3>
+            </div>
+            <p class="food-card-description">肥瘦相间，软糯香甜，色泽红润诱人，传统家常味道</p>
+            <div class="food-card-tags">
+              <span class="food-card-tag">家常菜</span>
+              <span class="food-card-tag">不辣</span>
+            </div>
+            <div class="food-card-footer">
+              <div class="food-card-merchant">
+                <div class="food-card-merchant-avatar">家</div>
+                <span>家常小馆</span>
+              </div>
+              <button class="food-card-add-btn" onclick="event.stopPropagation(); addToCart('hongshao-pork')">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="food-card" onclick="showPage('detail')">
+          <div class="food-card-image-container">
+            <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=300&fit=crop" 
+                 alt="蛋炒饭" class="food-card-image">
+            <div class="food-card-rating">
+              <i class="fas fa-star"></i>
+              <span>4.5</span>
+            </div>
+            <div class="food-card-price-tag">¥15</div>
+          </div>
+          <div class="food-card-content">
+            <div class="food-card-header">
+              <h3 class="food-card-title">招牌蛋炒饭</h3>
+            </div>
+            <p class="food-card-description">粒粒分明的香米饭，嫩滑鸡蛋和时蔬完美融合</p>
+            <div class="food-card-tags">
+              <span class="food-card-tag">主食</span>
+              <span class="food-card-tag">实惠</span>
+            </div>
+            <div class="food-card-footer">
+              <div class="food-card-merchant">
+                <div class="food-card-merchant-avatar">快</div>
+                <span>快餐小站</span>
+              </div>
+              <button class="food-card-add-btn" onclick="event.stopPropagation(); addToCart('fried-rice')">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="food-card" onclick="showPage('detail')">
+          <div class="food-card-image-container">
+            <img src="https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=400&h=300&fit=crop" 
+                 alt="麻婆豆腐" class="food-card-image">
+            <div class="food-card-rating">
+              <i class="fas fa-star"></i>
+              <span>4.7</span>
+            </div>
+            <div class="food-card-price-tag">¥22</div>
+          </div>
+          <div class="food-card-content">
+            <div class="food-card-header">
+              <h3 class="food-card-title">麻婆豆腐</h3>
+            </div>
+            <p class="food-card-description">嫩滑豆腐配香辣肉末，麻辣鲜香，经典川菜代表</p>
+            <div class="food-card-tags">
+              <span class="food-card-tag">川菜</span>
+              <span class="food-card-tag">中辣</span>
+            </div>
+            <div class="food-card-footer">
+              <div class="food-card-merchant">
+                <div class="food-card-merchant-avatar">川</div>
+                <span>川香小厨</span>
+              </div>
+              <button class="food-card-add-btn" onclick="event.stopPropagation(); addToCart('mapo-tofu')">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
